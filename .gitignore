@@ -1,0 +1,23 @@
+# Bağımlılıklar
+node_modules/
+*/node_modules/
+
+# Vite build çıktısı
+client/dist/
+
+# Loglar
+*.log
+npm-debug.log*
+
+# OS dosyaları
+.DS_Store
+Thumbs.db
+
+# Editör
+.vscode/
+.idea/
+.claude/
+
+# Ortam dosyaları
+.env
+.env.local

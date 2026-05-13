@@ -1,0 +1,125 @@
+/* Faz 6 — Tartışma Ekranı (Aşama C sade hali) */
+
+.tartisma {
+  height: 100%;
+  background: var(--gokyuzu);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.tartisma-bas {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: white;
+  border-bottom: 1px solid rgba(42, 157, 143, 0.2);
+  box-shadow: var(--golge-yumusak);
+  flex-shrink: 0;
+}
+
+.tartisma-faz {
+  font-family: var(--font-baslik);
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--derin);
+  line-height: 1.1;
+}
+
+.tartisma-altfaz {
+  font-family: var(--font-alinti);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--deniz);
+  margin-top: 2px;
+}
+
+.tartisma-sayac {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-family: var(--font-baslik);
+  background: var(--deniz);
+  color: white;
+  padding: 6px 16px;
+  border-radius: 999px;
+}
+
+.tartisma-sayac-degeri {
+  font-size: 22px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  min-width: 1.5em;
+  text-align: center;
+}
+
+.tartisma-sayac-birim {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  opacity: 0.85;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tartisma-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  margin: 16px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, white 0%, #EAFAF7 100%);
+  border: 1px solid var(--deniz);
+  gap: 12px;
+  box-shadow: var(--golge-yumusak);
+}
+
+.tartisma-banner-metin {
+  flex: 1;
+  min-width: 0;
+}
+
+.tartisma-banner-baslik {
+  font-family: var(--font-baslik);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--derin);
+}
+
+.tartisma-banner-altyazi {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--deniz);
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+.tartisma-banner-btn {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--derin);
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--font-ui);
+  transition: transform 0.1s ease, background 0.15s ease;
+}
+
+.tartisma-banner-btn:hover { background: #1a313d; }
+.tartisma-banner-btn:active { transform: scale(0.96); }
+.tartisma-banner-btn-aktif { background: var(--deniz); }
+
+.tartisma-not-bandi {
+  margin: auto 16px 16px;
+  padding: 10px 14px;
+  background: rgba(168, 218, 220, 0.25);
+  border: 1px dashed rgba(42, 157, 143, 0.3);
+  border-radius: 10px;
+  font-family: var(--font-alinti);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--derin);
+  text-align: center;
+}

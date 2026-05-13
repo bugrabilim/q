@@ -1,0 +1,200 @@
+/* Sürekli Sohbet Paneli — sağ kolon, layout içinde sabit */
+
+.sohbet-paneli {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: white;
+  border-left: 1px solid rgba(42, 157, 143, 0.18);
+  min-width: 0;
+}
+
+/* Üst başlık */
+.sohbet-bas {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(42, 157, 143, 0.15);
+  background: linear-gradient(to right, white 0%, #F5FBFA 100%);
+  flex-shrink: 0;
+}
+
+.sohbet-bas-baslik {
+  font-family: var(--font-baslik);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--derin);
+}
+
+.sohbet-bas-mod {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--deniz);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: rgba(42, 157, 143, 0.1);
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+/* Mesaj listesi */
+.sohbet-mesajlar {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--gokyuzu);
+}
+
+.sohbet-bos {
+  text-align: center;
+  font-family: var(--font-alinti);
+  font-style: italic;
+  font-size: 13px;
+  color: rgba(38, 70, 83, 0.45);
+  padding: 16px 0;
+}
+
+.sohbet-mesaj {
+  display: flex;
+  flex-direction: column;
+  max-width: 85%;
+  align-self: flex-start;
+}
+
+.sohbet-mesaj-ben {
+  align-self: flex-end;
+}
+
+.sohbet-mesaj-sistem {
+  align-self: center;
+  max-width: 95%;
+}
+
+.sohbet-mesaj-sistem-metin {
+  display: inline-block;
+  font-family: var(--font-alinti);
+  font-style: italic;
+  font-size: 12px;
+  color: var(--deniz);
+  background: white;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--deniz-acik);
+  text-align: center;
+}
+
+.sohbet-mesaj-isim {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(38, 70, 83, 0.6);
+  padding: 0 8px;
+  margin-bottom: 2px;
+}
+
+.sohbet-mesaj-ben .sohbet-mesaj-isim {
+  text-align: right;
+}
+
+.sohbet-mesaj-metin {
+  background: white;
+  border: 1px solid rgba(42, 157, 143, 0.18);
+  border-radius: 12px;
+  border-top-left-radius: 4px;
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--derin);
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.sohbet-mesaj-ben .sohbet-mesaj-metin {
+  background: var(--deniz);
+  border-color: var(--deniz);
+  color: white;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 4px;
+}
+
+/* Kanal renkleri */
+.sohbet-mesaj-kanal-fobik .sohbet-mesaj-metin {
+  background: rgba(230, 57, 70, 0.08);
+  border-color: rgba(230, 57, 70, 0.3);
+}
+
+.sohbet-mesaj-ben.sohbet-mesaj-kanal-fobik .sohbet-mesaj-metin {
+  background: var(--gelenekci);
+  border-color: var(--gelenekci);
+  color: white;
+}
+
+.sohbet-mesaj-kanal-ayrilan .sohbet-mesaj-metin {
+  background: rgba(244, 162, 97, 0.1);
+  border-color: rgba(244, 162, 97, 0.4);
+}
+
+.sohbet-mesaj-ben.sohbet-mesaj-kanal-ayrilan .sohbet-mesaj-metin {
+  background: var(--gunes);
+  border-color: var(--gunes);
+  color: white;
+}
+
+/* Form */
+.sohbet-form {
+  display: flex;
+  gap: 6px;
+  padding: 8px 10px;
+  background: white;
+  border-top: 1px solid rgba(42, 157, 143, 0.15);
+  flex-shrink: 0;
+}
+
+.sohbet-input {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(42, 157, 143, 0.2);
+  background: var(--gokyuzu);
+  color: var(--derin);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.sohbet-input:focus {
+  border-color: var(--deniz);
+}
+
+.sohbet-input::placeholder {
+  color: rgba(38, 70, 83, 0.4);
+}
+
+.sohbet-input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.sohbet-gonder {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--deniz);
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.sohbet-gonder:hover:not(:disabled) {
+  background: #228679;
+}
+
+.sohbet-gonder:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

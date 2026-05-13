@@ -1,0 +1,438 @@
+/* Faz 2 — Lobi Ekranı stilleri (v2)
+   Aksiyon butonları (bot/başlat) Madde 2 ile listenin üstüne alındı —
+   bu yüzden lobi sayfası normal scroll yapabilir; liste uzasa da butonlar yerinde kalır. */
+
+.lobi {
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--gokyuzu) 0%, #D4ECF5 100%);
+  padding: 16px;
+}
+
+.lobi-icerik {
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lobi-baslik {
+  display: flex;
+  align-items: center;
+}
+
+.geri-btn {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--deniz);
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+}
+
+.geri-btn:hover {
+  background: var(--deniz-acik);
+}
+
+/* Oda Kodu Kartı */
+.oda-kodu-kart {
+  background: white;
+  border: 2px solid var(--deniz);
+  border-radius: 16px;
+  padding: 24px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.15s ease;
+  box-shadow: var(--golge-yumusak);
+}
+
+.oda-kodu-kart:hover {
+  box-shadow: var(--golge-orta);
+  transform: translateY(-1px);
+}
+
+.oda-kodu-kart:active {
+  transform: scale(0.99);
+}
+
+.oda-kodu-etiket {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--deniz);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+
+.oda-kodu {
+  font-family: var(--font-baslik);
+  font-weight: 600;
+  font-size: 48px;
+  letter-spacing: 0.25em;
+  color: var(--derin);
+  line-height: 1.1;
+  padding-left: 0.25em;
+}
+
+.oda-kodu-ipucu {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--deniz);
+  margin-top: 8px;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Oyuncu Bölümü */
+.oyuncu-baslik-satir {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
+.oyuncu-baslik {
+  font-family: var(--font-baslik);
+  font-weight: 600;
+  font-size: 22px;
+  color: var(--derin);
+}
+
+.oyuncu-sayac {
+  font-family: var(--font-baslik);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--deniz);
+}
+
+.oyuncu-sayac .bolu {
+  opacity: 0.4;
+  margin: 0 2px;
+  font-weight: 400;
+}
+
+.oyuncu-bolumu {
+  display: flex;
+  flex-direction: column;
+}
+
+.oyuncu-listesi {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.oyuncu-satir {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: white;
+  border-radius: 10px;
+  font-size: 16px;
+  border: 1px solid transparent;
+}
+
+.oyuncu-ben {
+  border-color: var(--deniz);
+  background: #F0FAFB;
+}
+
+.oyuncu-bot {
+  background: #F8F4ED;
+}
+
+.oyuncu-bos {
+  background: transparent;
+  border: 1px dashed rgba(42, 157, 143, 0.4);
+  color: var(--deniz);
+  opacity: 0.6;
+  font-size: 14px;
+  font-style: italic;
+}
+
+.oyuncu-isim {
+  color: var(--derin);
+  font-weight: 500;
+}
+
+.ben-etiketi {
+  color: var(--deniz);
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.rozet-grup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rozet {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rozet-host {
+  background: var(--derin);
+  color: white;
+}
+
+.rozet-bot {
+  background: var(--gunes);
+  color: white;
+}
+
+.bot-sil-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(230, 57, 70, 0.1);
+  color: var(--gelenekci);
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
+}
+
+.bot-sil-btn:hover {
+  background: var(--gelenekci);
+  color: white;
+}
+
+/* Madde 2: Üst aksiyon bandı — bot/başlat oyuncu listesinin üstünde sabit */
+.lobi-ust-aksiyon {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(42, 157, 143, 0.15);
+}
+
+/* Madde 3: Roller galerisi (lobide) */
+.lobi-roller-bolum {
+  flex-shrink: 0;
+  padding: 14px 0 4px;
+  border-top: 1px solid rgba(42, 157, 143, 0.15);
+}
+
+.lobi-roller-baslik {
+  font-family: var(--font-baslik);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--derin);
+}
+
+.lobi-roller-altyazi {
+  font-family: var(--font-alinti);
+  font-style: italic;
+  font-size: 12px;
+  color: rgba(38, 70, 83, 0.55);
+  margin-top: 2px;
+  margin-bottom: 10px;
+}
+
+.lobi-roller-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 8px;
+}
+
+.lobi-rol-kart {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 10px 12px;
+  background: white;
+  border: 2px solid rgba(42, 157, 143, 0.2);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.15s ease, background 0.15s ease;
+  text-align: left;
+}
+
+.lobi-rol-kart:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--golge-orta);
+  background: #FBFEFD;
+}
+
+.lobi-rol-kart:active {
+  transform: scale(0.97);
+}
+
+.lobi-rol-kart-grup {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.lobi-rol-kart-ad {
+  font-family: var(--font-baslik);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--derin);
+  line-height: 1.2;
+}
+
+.lobi-rol-kart-karakter {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: rgba(38, 70, 83, 0.65);
+  font-style: italic;
+}
+
+/* Popup arkaplanı + kart */
+.lobi-popup-arka {
+  position: fixed;
+  inset: 0;
+  background: rgba(38, 70, 83, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 16px;
+  backdrop-filter: blur(2px);
+}
+
+.lobi-popup-kart {
+  position: relative;
+  background: white;
+  border: 3px solid var(--deniz);
+  border-radius: 16px;
+  padding: 22px 22px 18px;
+  max-width: 460px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 12px 40px rgba(38, 70, 83, 0.35);
+}
+
+.lobi-popup-kapat {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(38, 70, 83, 0.08);
+  color: var(--derin);
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.lobi-popup-kapat:hover {
+  background: rgba(38, 70, 83, 0.18);
+}
+
+.lobi-popup-bas {
+  text-align: center;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid rgba(42, 157, 143, 0.18);
+}
+
+.lobi-popup-grup {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 4px;
+}
+
+.lobi-popup-ad {
+  font-family: var(--font-baslik);
+  font-weight: 600;
+  font-size: 28px;
+  color: var(--derin);
+  margin-bottom: 6px;
+  line-height: 1.1;
+}
+
+.lobi-popup-karakter {
+  font-family: var(--font-baslik);
+  font-size: 14px;
+  color: var(--derin);
+  opacity: 0.85;
+}
+
+.lobi-popup-bolum {
+  margin-top: 12px;
+}
+
+.lobi-popup-bolum-baslik {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--deniz);
+  margin-bottom: 4px;
+}
+
+.lobi-popup-bolum-metin {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--derin);
+}
+
+.lobi-popup-motivasyon {
+  font-family: var(--font-alinti);
+  font-style: italic;
+}
+
+.lobi-popup-kazanma {
+  margin-top: 14px;
+  padding: 10px 12px;
+  background: rgba(42, 157, 143, 0.08);
+  border-radius: 8px;
+  border-left: 3px solid var(--deniz);
+}
+
+.bilgi {
+  text-align: center;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--deniz);
+}
+
+.bilgi-host {
+  padding: 14px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid var(--deniz-acik);
+}
+
+/* Bot ekleme butonu */
+.btn-bot {
+  background: white;
+  color: var(--gunes);
+  border: 1px dashed var(--gunes);
+  font-size: 14px;
+  padding: 10px 16px;
+}
+
+.btn-bot:hover:not(:disabled) {
+  background: rgba(244, 162, 97, 0.1);
+}

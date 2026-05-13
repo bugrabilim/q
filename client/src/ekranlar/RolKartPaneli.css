@@ -1,0 +1,120 @@
+/* Sürekli Rol Kart Paneli — sol kolonun alt yarısı */
+
+.rol-kart-paneli {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.rol-kart-paneli-bas {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(42, 157, 143, 0.12);
+  background: linear-gradient(to right, white 0%, #FFF8EE 100%);
+  cursor: pointer;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.rol-kart-paneli-bas:hover {
+  background: linear-gradient(to right, white 0%, #FFF1DC 100%);
+}
+
+.rol-kart-paneli-baslik {
+  font-family: var(--font-baslik);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--derin);
+}
+
+.rol-kart-paneli-acma {
+  font-family: var(--font-baslik);
+  font-size: 18px;
+  color: var(--deniz);
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(42, 157, 143, 0.1);
+  font-weight: 700;
+}
+
+.rol-kart-paneli-icerik {
+  padding: 12px 14px 16px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.rol-kart-paneli-grup-bant {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+.rol-kart-paneli-karakter {
+  font-family: var(--font-baslik);
+  font-size: 13px;
+  color: var(--derin);
+  opacity: 0.85;
+  margin-bottom: 10px;
+}
+
+.rol-kart-paneli-bolum {
+  margin-top: 10px;
+}
+
+.rol-kart-paneli-bolum-baslik {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--deniz);
+  margin-bottom: 3px;
+}
+
+.rol-kart-paneli-bolum-metin {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--derin);
+}
+
+.rol-kart-paneli-motivasyon {
+  font-family: var(--font-alinti);
+  font-style: italic;
+  font-size: 13.5px;
+  color: rgba(38, 70, 83, 0.85);
+}
+
+.rol-kart-paneli-kazanma {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: rgba(42, 157, 143, 0.08);
+  border-radius: 8px;
+  border-left: 3px solid var(--deniz);
+}
+
+.rol-kart-paneli-bos {
+  padding: 16px;
+  text-align: center;
+  font-family: var(--font-alinti);
+  font-style: italic;
+  font-size: 13px;
+  color: rgba(38, 70, 83, 0.5);
+}

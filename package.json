@@ -1,0 +1,17 @@
+{
+  "name": "q",
+  "version": "0.1.0",
+  "private": true,
+  "description": "q — Köy hayatı sosyal dedüksiyon oyunu (prototip)",
+  "scripts": {
+    "kur": "npm install && cd server && npm install && cd ../client && npm install",
+    "dev": "concurrently -n SUNUCU,ARAYUZ -c yellow,green \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "cd server && node index.js",
+    "dev:client": "cd client && npm run dev",
+    "build": "cd client && npm install && npm run build && cd ../server && npm install",
+    "start": "node server/index.js"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

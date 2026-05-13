@@ -1,0 +1,219 @@
+/* Faz 8 — Bitiş Ekranı stilleri */
+
+/* Madde 9: Kazanan grubuna göre soluk arkaplan tonu */
+.bitis-kapsayici {
+  min-height: 100vh;
+  color: var(--derin);
+  font-family: var(--font-ui);
+  padding: 0 0 40px;
+  max-width: 720px;
+  margin: 0 auto;
+  background: var(--gokyuzu);
+}
+
+.bitis-kapsayici--ozgurlukcu {
+  background: linear-gradient(180deg, rgba(6, 167, 125, 0.15) 0%, var(--gokyuzu) 50%);
+}
+
+.bitis-kapsayici--gelenekci {
+  background: linear-gradient(180deg, rgba(230, 57, 70, 0.15) 0%, var(--gokyuzu) 50%);
+}
+
+.bitis-kapsayici--tarafsiz {
+  background: linear-gradient(180deg, rgba(244, 162, 97, 0.18) 0%, var(--gokyuzu) 50%);
+}
+
+.bitis-yukleniyor {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-style: italic;
+  opacity: 0.6;
+  background: var(--gokyuzu);
+}
+
+/* Kazanan başlığı */
+.bitis-baslik-kutu {
+  padding: 36px 24px 28px;
+  text-align: center;
+  color: white;
+  margin-bottom: 24px;
+}
+
+.bitis-etiket {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  opacity: 0.85;
+  margin-bottom: 8px;
+}
+
+.bitis-baslik {
+  font-family: var(--font-baslik);
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 6px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.bitis-altyazi {
+  font-family: var(--font-alinti);
+  font-style: italic;
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+/* Bölüm */
+.bitis-bolum {
+  background: white;
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin: 0 16px 16px;
+  box-shadow: var(--golge-yumusak);
+}
+
+.bitis-bolum-baslik {
+  font-family: var(--font-baslik);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--derin);
+  margin-bottom: 14px;
+}
+
+/* Tarafsız bireysel kazananlar */
+.bitis-tarafsiz-liste {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bitis-tarafsiz-satir {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(244, 162, 97, 0.12);
+  border: 1px solid rgba(244, 162, 97, 0.3);
+  padding: 10px 14px;
+  border-radius: 10px;
+}
+
+.bitis-tarafsiz-isim {
+  font-family: var(--font-baslik);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--derin);
+}
+
+.bitis-tarafsiz-rol {
+  font-size: 13px;
+  color: var(--gunes);
+  font-weight: 500;
+}
+
+/* Madde 10: Tek liste, satır satır, herkes aynı ton */
+.bitis-tum-roller {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bitis-tum-satir {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(168, 218, 220, 0.18);
+  font-size: 15px;
+}
+
+.bitis-tum-renk-noktasi {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.bitis-tum-isim {
+  font-family: var(--font-baslik);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--derin);
+  flex: 1;
+  min-width: 0;
+}
+
+.bitis-tum-rol {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+}
+
+/* Tarafsız bireysel kazananlar — vurgulu kart (Madde 11) */
+.bitis-bolum--tarafsiz {
+  background: linear-gradient(135deg, #FFF8EE 0%, white 100%);
+  border-left: 4px solid var(--gunes);
+  box-shadow: 0 4px 16px rgba(244, 162, 97, 0.18);
+}
+
+/* Aksiyon butonları */
+.bitis-aksiyon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  padding: 0 16px;
+}
+
+.bitis-yeni-btn {
+  background: var(--deniz);
+  color: white;
+  font-size: 17px;
+  font-weight: 600;
+  padding: 14px 32px;
+  border-radius: 14px;
+  transition: opacity 0.15s, transform 0.1s;
+  box-shadow: var(--golge-orta);
+}
+
+.bitis-yeni-btn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.bitis-yeni-btn:active {
+  transform: scale(0.97);
+}
+
+.bitis-yeni-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.bitis-bekliyor {
+  font-size: 14px;
+  opacity: 0.6;
+  font-style: italic;
+}
+
+.bitis-cikis-btn {
+  font-size: 13px;
+  opacity: 0.55;
+  padding: 6px 12px;
+  text-decoration: underline;
+  background: transparent;
+  color: var(--derin);
+}
+
+.bitis-cikis-btn:hover {
+  opacity: 0.85;
+}

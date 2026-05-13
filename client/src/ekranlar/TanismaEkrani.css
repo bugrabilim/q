@@ -1,0 +1,178 @@
+/* Faz 4 — Tanışma Ekranı (Aşama C sade hali) */
+
+.tanisma {
+  height: 100%;
+  background: var(--gokyuzu);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+/* Üst başlık */
+.tanisma-bas {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: white;
+  border-bottom: 1px solid rgba(42, 157, 143, 0.2);
+  box-shadow: var(--golge-yumusak);
+  flex-shrink: 0;
+}
+
+.tanisma-faz {
+  font-family: var(--font-baslik);
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--derin);
+  line-height: 1.1;
+}
+
+.tanisma-altfaz {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--deniz);
+  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tanisma-sayac {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-family: var(--font-baslik);
+  background: var(--deniz);
+  color: white;
+  padding: 6px 16px;
+  border-radius: 999px;
+}
+
+.tanisma-sayac-degeri {
+  font-size: 22px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  min-width: 1.5em;
+  text-align: center;
+}
+
+.tanisma-sayac-birim {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  opacity: 0.85;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Banner */
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  margin: 12px 16px 0;
+  border-radius: 12px;
+  background: white;
+  border: 1px solid var(--deniz-acik);
+  gap: 12px;
+  box-shadow: var(--golge-yumusak);
+}
+
+.banner-basvuru {
+  border-color: var(--gunes);
+  background: linear-gradient(135deg, white 0%, #FFF5EC 100%);
+}
+
+.banner-hazir {
+  border-color: var(--deniz);
+  background: linear-gradient(135deg, white 0%, #EAFAF7 100%);
+}
+
+.banner-metin {
+  flex: 1;
+  min-width: 0;
+}
+
+.banner-baslik {
+  font-family: var(--font-baslik);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--derin);
+}
+
+.banner-altyazi {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--deniz);
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+.banner-btn {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--derin);
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--font-ui);
+  transition: transform 0.1s ease, background 0.15s ease;
+}
+
+.banner-btn:hover { background: #1a313d; }
+.banner-btn:active { transform: scale(0.96); }
+.banner-btn-aktif { background: var(--deniz); }
+
+/* Açıklananlar */
+.tanisma-aciklanan-bolum {
+  margin: 16px 16px 0;
+  padding: 14px 16px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid rgba(42, 157, 143, 0.15);
+  box-shadow: var(--golge-yumusak);
+}
+
+.tanisma-aciklanan-baslik {
+  font-family: var(--font-baslik);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--derin);
+  margin-bottom: 8px;
+}
+
+.tanisma-aciklanan-liste {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tanisma-aciklanan-satir {
+  background: rgba(168, 218, 220, 0.2);
+  border: 1px solid rgba(42, 157, 143, 0.2);
+  border-radius: 999px;
+  padding: 4px 12px;
+}
+
+.tanisma-aciklanan-isim {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--derin);
+}
+
+/* Bilgi bandı */
+.tanisma-not-bandi {
+  margin: auto 16px 16px;
+  padding: 10px 14px;
+  background: rgba(168, 218, 220, 0.25);
+  border: 1px dashed rgba(42, 157, 143, 0.3);
+  border-radius: 10px;
+  font-family: var(--font-alinti);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--derin);
+  text-align: center;
+}

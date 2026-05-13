@@ -1,0 +1,161 @@
+/* Faz 1 — Açılış Ekranı stilleri (v2: canlı palet, el yazısı yok) */
+
+.acilis {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: linear-gradient(180deg, var(--gokyuzu) 0%, #D4ECF5 100%);
+}
+
+.acilis-icerik {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.acilis-baslik {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.logo {
+  font-family: var(--font-baslik);
+  font-weight: 600;
+  font-size: 38px;
+  color: var(--derin);
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+}
+
+.slogan {
+  font-family: var(--font-alinti);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--deniz);
+  margin-top: 12px;
+}
+
+.form-grup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.etiket {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--deniz);
+  padding-left: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.alan {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 16px;
+  background: white;
+  border: 1px solid var(--deniz-acik);
+  border-radius: 12px;
+  color: var(--derin);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.alan::placeholder {
+  color: rgba(38, 70, 83, 0.4);
+}
+
+.alan:focus {
+  outline: none;
+  border-color: var(--deniz);
+  box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.15);
+}
+
+.alan-kod {
+  font-family: var(--font-baslik);
+  font-size: 22px;
+  letter-spacing: 0.4em;
+  text-align: center;
+  padding-left: 16px;
+}
+
+.btn {
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: var(--font-ui);
+  transition: transform 0.1s ease, opacity 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-birincil {
+  background: var(--deniz);
+  color: white;
+  box-shadow: 0 2px 6px rgba(42, 157, 143, 0.3);
+}
+
+.btn-birincil:hover:not(:disabled) {
+  background: #228679;
+  box-shadow: 0 3px 10px rgba(42, 157, 143, 0.4);
+}
+
+.btn-ikincil {
+  background: white;
+  color: var(--derin);
+  border: 1px solid var(--deniz);
+}
+
+.btn-ikincil:hover:not(:disabled) {
+  background: var(--deniz-acik);
+}
+
+.ayirici {
+  position: relative;
+  text-align: center;
+  margin: 8px 0;
+}
+
+.ayirici::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--deniz);
+  opacity: 0.3;
+}
+
+.ayirici span {
+  position: relative;
+  background: var(--gokyuzu);
+  padding: 0 12px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--deniz);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.hata {
+  text-align: center;
+  color: var(--gelenekci);
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 4px;
+}

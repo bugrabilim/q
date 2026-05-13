@@ -1,0 +1,176 @@
+/* Faz 3 — Rol Kartı Ekranı stilleri (v2) */
+
+.rol-ekran {
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--gokyuzu) 0%, #D4ECF5 100%);
+  padding: 24px 16px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.rol-yukleniyor {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gokyuzu);
+}
+
+.rol-yukleniyor-yazi {
+  font-family: var(--font-alinti);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--deniz);
+}
+
+.rol-icerik {
+  max-width: 460px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Üst — kim olduğun */
+.rol-ust {
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.rol-etiket {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--deniz);
+}
+
+.rol-ben {
+  color: var(--derin);
+  font-weight: 600;
+}
+
+.rol-ipucu {
+  font-family: var(--font-alinti);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--deniz);
+  opacity: 0.8;
+  margin-top: 4px;
+}
+
+/* Ana rol kartı */
+.rol-kart {
+  background: white;
+  border: 2px solid var(--deniz);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--golge-orta);
+}
+
+.rol-kart-bas {
+  text-align: center;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(42, 157, 143, 0.2);
+}
+
+.rol-grup {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+
+.rol-ad {
+  font-family: var(--font-baslik);
+  font-weight: 600;
+  font-size: 36px;
+  color: var(--derin);
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.rol-karakter {
+  font-family: var(--font-baslik);
+  font-size: 16px;
+  color: var(--derin);
+  opacity: 0.85;
+}
+
+.rol-karakter-isim {
+  font-weight: 600;
+}
+
+.rol-karakter-ayrac {
+  opacity: 0.4;
+}
+
+/* Bölümler */
+.rol-bolum {
+  margin-top: 16px;
+}
+
+.rol-bolum-baslik {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--deniz);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.rol-bolum-metin {
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--derin);
+}
+
+.rol-motivasyon {
+  font-family: var(--font-alinti);
+  font-style: italic;
+  font-size: 16px;
+}
+
+.rol-kazanma {
+  margin-top: 20px;
+  padding: 12px 14px;
+  background: rgba(42, 157, 143, 0.08);
+  border-radius: 10px;
+  border-left: 3px solid var(--deniz);
+}
+
+.rol-kazanma .rol-bolum-baslik {
+  margin-bottom: 4px;
+}
+
+/* Alt — onay */
+.rol-alt {
+  margin-top: 4px;
+}
+
+.rol-bekleme {
+  text-align: center;
+  padding: 18px;
+  background: white;
+  border-radius: 12px;
+  border: 1px dashed var(--deniz);
+}
+
+.rol-bekleme-yazi {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--deniz);
+  margin-bottom: 4px;
+}
+
+.rol-bekleme-sayac {
+  font-family: var(--font-baslik);
+  font-size: 24px;
+  color: var(--derin);
+  font-weight: 600;
+}
