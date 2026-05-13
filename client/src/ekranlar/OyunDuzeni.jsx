@@ -7,7 +7,6 @@ import { socket } from '../socket.js';
 import OyuncuListesi from './OyuncuListesi.jsx';
 import RolKartPaneli from './RolKartPaneli.jsx';
 import SohbetPaneli from './SohbetPaneli.jsx';
-import NotDefteriModal from './NotDefteriModal.jsx';
 import './OyunDuzeni.css';
 
 // Fobik roller (gece sohbet kanalı için)
@@ -25,8 +24,7 @@ export default function OyunDuzeni({
   const [oyuncularSnapshot, setOyuncularSnapshot] = useState([]);
   // Madde 7: Mobilde aktif sekme — 'sol' (Köy+Rol) | 'orta' (Oyun) | 'sag' (Sohbet)
   const [mobilSekme, setMobilSekme] = useState('orta');
-  // v1.3 — Not defteri modal state
-  const [notModalAcik, setNotModalAcik] = useState(false);
+  // v1.3 — Not defteri modal artık OyuncuListesi'nde (Master §13)
 
   useEffect(() => {
     function listeGeldi(d) {
@@ -47,14 +45,8 @@ export default function OyunDuzeni({
 
   return (
     <div className="oyun-duzeni" data-mobil-sekme={mobilSekme}>
-      {/* v1.3 — Sağ üst sabit butonlar: 📓 Not Defteri + ✕ Oyundan Çık */}
-      <button
-        className="oyun-duzeni-not-btn"
-        onClick={() => setNotModalAcik(true)}
-        title="Not defteri"
-      >
-        📓 Not Defteri
-      </button>
+      {/* v1.3 — 📓 Not Defteri butonu OyuncuListesi başlığına taşındı (Master §13).
+          Burada sadece sağ üst ✕ Oyundan Çık kalıyor. */}
       {onAyril && (
         <button className="oyun-duzeni-cikis" onClick={cikisYap} title="Oyundan çık">
           ✕ Oyundan Çık
@@ -108,15 +100,6 @@ export default function OyunDuzeni({
           <span className="oyun-duzeni-sekme-etiket">Sohbet</span>
         </button>
       </nav>
-
-      {/* v1.3 — Not defteri modal */}
-      {notModalAcik && (
-        <NotDefteriModal
-          oyuncuId={oyuncuId}
-          oyuncular={oyuncularSnapshot}
-          onKapat={() => setNotModalAcik(false)}
-        />
-      )}
     </div>
   );
 }

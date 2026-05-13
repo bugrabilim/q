@@ -1,8 +1,10 @@
 // Queer Quest Quench — Sürekli Oyuncu Listesi (Madde 8 + 12)
 // Tüm fazlarda sabit görünür. Ayrıldıysa çizik + rol etiketi, kimliği açıklandıysa rol etiketi.
+// v1.3: Başlık çubuğunda 📓 Not Defteri butonu (Master §13).
 
 import { useEffect, useState } from 'react';
 import { socket } from '../socket.js';
+import NotDefteriModal from './NotDefteriModal.jsx';
 import './OyuncuListesi.css';
 
 const GRUP_RENGI = {
@@ -19,6 +21,8 @@ const GRUP_SEMBOL = {
 export default function OyuncuListesi({ oyuncuId, faz }) {
   const [oyuncular, setOyuncular] = useState([]);
   const [acik, setAcik] = useState(true);
+  // v1.3 — Not defteri modal state (Master §13: liste başlığındaki 📓 butonu)
+  const [notModalAcik, setNotModalAcik] = useState(false);
 
   // Mount'ta + faz değiştiğinde server'dan listeyi iste
   useEffect(() => {
@@ -43,17 +47,33 @@ export default function OyuncuListesi({ oyuncuId, faz }) {
 
   return (
     <div className={`oyuncu-listesi ${acik ? '' : 'oyuncu-listesi--kapali'}`}>
-      <header
-        className="oyuncu-listesi-bas"
-        onClick={() => setAcik(a => !a)}
-        title={acik ? 'Listeyi kapat' : 'Listeyi aç'}
-      >
-        <span className="oyuncu-listesi-baslik">👥 Köy</span>
+      <header className="oyuncu-listesi-bas">
+        <span
+          className="oyuncu-listesi-baslik-tikla"
+          onClick={() => setAcik(a => !a)}
+          title={acik ? 'Listeyi kapat' : 'Listeyi aç'}
+        >
+          <span className="oyuncu-listesi-baslik">👥 Köy</span>
+        </span>
         <span className="oyuncu-listesi-sag-bas">
           <span className="oyuncu-listesi-sayac">
             {koydekiler.length}/{oyuncular.length}
           </span>
-          <span className="oyuncu-listesi-acma">{acik ? '−' : '+'}</span>
+          {/* v1.3 — 📓 Not defteri butonu (Master §13) */}
+          <button
+            className="oyuncu-listesi-not-btn"
+            onClick={(e) => { e.stopPropagation(); setNotModalAcik(true); }}
+            title="Not Defteri"
+          >
+            📓
+          </button>
+          <span
+            className="oyuncu-listesi-acma"
+            onClick={() => setAcik(a => !a)}
+            title={acik ? 'Listeyi kapat' : 'Listeyi aç'}
+          >
+            {acik ? '−' : '+'}
+          </span>
         </span>
       </header>
 
@@ -77,6 +97,15 @@ export default function OyuncuListesi({ oyuncuId, faz }) {
           )}
         </div>
       )}
+
+      {/* v1.3 — Not defteri modal */}
+      {notModalAcik && (
+        <NotDefteriModal
+          oyuncuId={oyuncuId}
+          oyuncular={oyuncular}
+          onKapat={() => setNotModalAcik(false)}
+        />
+      )}
     </div>
   );
 }
@@ -85,6 +114,8 @@ function Satir({ o, oyuncuId }) {
   const benim = o.id === oyuncuId;
   const ayrilmis = !o.koydeMi;
   const rol = o.rol;
+  // v1.3 — "Oyundan Çık" ile ayrılanlar için ibare (köy oylama/Kaan ile farklı)
+  const oyundanAyrildi = ayrilmis && o.ayrilmaSebebi === 'kendi';
   return (
     <li
       className={`oyuncu-listesi-satir ${ayrilmis ? 'oyuncu-listesi-satir--ayrilmis' : ''} ${benim ? 'oyuncu-listesi-satir--ben' : ''}`}
@@ -93,9 +124,12 @@ function Satir({ o, oyuncuId }) {
         {o.isim}
         {benim && <span className="oyuncu-listesi-sen"> (sen)</span>}
         {o.hostMu && <span className="oyuncu-listesi-host">host</span>}
+        {oyundanAyrildi && (
+          <span className="oyuncu-listesi-cikti">(oyundan ayrıldı)</span>
+        )}
       </span>
       <span className="oyuncu-listesi-sag">
-        {!o.baglantiVar && <span className="oyuncu-listesi-cevrimdisi">●</span>}
+        {!o.baglantiVar && !ayrilmis && <span className="oyuncu-listesi-cevrimdisi">●</span>}
         {rol && (
           <span
             className="oyuncu-listesi-rol"

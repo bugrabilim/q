@@ -38,33 +38,7 @@
   transform: scale(0.96);
 }
 
-/* v1.3 — Sağ üst "📓 Not Defteri" butonu (Çıkış'ın solunda) */
-.oyun-duzeni-not-btn {
-  position: absolute;
-  top: 10px;
-  right: 140px; /* Çıkış butonunun solunda */
-  z-index: 50;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: rgba(244, 162, 97, 0.9);
-  color: white;
-  font-family: var(--font-ui);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(38, 70, 83, 0.2);
-  transition: background 0.15s ease, transform 0.1s ease;
-}
-
-.oyun-duzeni-not-btn:hover {
-  background: var(--gunes);
-}
-
-.oyun-duzeni-not-btn:active {
-  transform: scale(0.96);
-}
+/* v1.3 — 📓 Not Defteri butonu OyuncuListesi başlığına taşındı (Master §13). */
 
 .oyun-duzeni-sol {
   display: flex;
@@ -191,21 +165,9 @@
     font-size: 11px;
   }
 
-  /* 📓 Not Defteri butonu mobilde de küçülsün — Çıkış'ın olmadığı yerlerde
-     sağ üst köşeye geç, var olduğu yerde Çıkış'ın solunda kal. */
-  .oyun-duzeni-not-btn {
-    top: 8px;
-    right: 8px; /* default: Çıkış görünmeyen sekmelerde */
-    padding: 5px 10px;
-    font-size: 11px;
-  }
-  .oyun-duzeni[data-mobil-sekme="sol"] .oyun-duzeni-not-btn {
-    right: 120px; /* Çıkış görünür olduğunda solunda */
-  }
-
   /* v1.3 — Mobilde Çıkış butonu yalnızca "Köy/Rol" sekmesinde görünür
      (Oyun sekmesindeki sayaç ile çakışmasını engellemek için).
-     📓 Not Defteri butonu HER sekmede görünür kalır (her faz erişilebilir). */
+     📓 Not Defteri butonu OyuncuListesi başlığında, her sekmede o panelin içinde. */
   .oyun-duzeni-cikis {
     display: none;
   }

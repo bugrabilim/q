@@ -99,7 +99,9 @@ function oyuncuListesi(oda, kullaniciId) {
       baglantiVar: p.baglantiVar !== false,
       bot: !!p.bot,
       hostMu: !!p.hostMu,
-      rol: rolBilgi
+      rol: rolBilgi,
+      // v1.3 — Master §15: "kendi" = Oyundan Çık ile ayrıldı (sistem mesajı + ibareli liste)
+      ayrilmaSebebi: p.ayrilmaSebebi || null
     };
   });
 }
@@ -1550,6 +1552,44 @@ io.on('connection', (socket) => {
     if (!mevcutOda || !rooms[mevcutOda]) return;
     const oda = rooms[mevcutOda];
     const ayrilan = oyuncuyuBul(oda, oyuncuId);
+
+    // v1.3 — Master §15: Oyun başladıysa "Oyundan Çık" = köyden ayrılma
+    // (oyuncuyu listeden silmek yerine koydeMi=false yap, sistem mesajı + kontroller)
+    if (oda.faz !== 'lobi' && ayrilan && ayrilan.koydeMi !== false) {
+      ayrilan.koydeMi = false;
+      ayrilan.baglantiVar = false;
+      ayrilan.ayrilmaSebebi = 'kendi'; // "köyden gönderildi" değil, kendi isteği
+      ayrilan.ayrildigGunduz = oda.oyun?.geceTuru || 0;
+
+      // Sistem mesajı: sohbette herkese duyuru
+      sistemMesaji(oda, `🚪 ${ayrilan.isim} oyundan ayrıldı.`);
+
+      // Ayrılanlar kanalına da ekle (Trans + ayrılanlar sohbet için)
+      ayrilanlarOdasinaAl(oda, ayrilan);
+
+      // Liste güncellensin
+      oyuncuListesiYayinla(oda);
+
+      // Master §15 helper'ları: host transfer + erken bitiş kontrolü
+      hostuTransferEt(oda);
+      lobiyiYayinla(oda.kod);
+      const kazanan = kazananGrupBul(oda)
+        || (!gercekOyuncuKoydeMi(oda) ? erkenBitisKazanani(oda) : null);
+      if (kazanan) {
+        if (!gercekOyuncuKoydeMi(oda)) {
+          sistemMesaji(oda, `Köyde gerçek oyuncu kalmadı — oyun otomatik sonlandırılıyor.`);
+        }
+        setTimeout(() => bitiseBasla(oda, kazanan), 1500);
+      }
+
+      console.log(`[oyun] ${oda.kod} — ${ayrilan.isim} oyundan ayrıldı (koydeMi=false)`);
+
+      socket.leave(mevcutOda);
+      mevcutOda = null;
+      return;
+    }
+
+    // Lobi senaryosu: oyuncuyu listeden tamamen sil (eski davranış)
     oda.players = oda.players.filter(p => p.id !== oyuncuId);
     if (oda.players.length === 0 || oda.players.every(p => p.bot)) {
       // Tüm gerçek oyuncular gittiyse odayı kapat
