@@ -25,6 +25,13 @@ const GRUP_SEMBOL = {
   gelenekci: '🔴'
 };
 
+// v1.3 — Bitiş ekranında renk gradyanı sırası: yeşil → sarı → kırmızı
+const GRUP_SIRA = {
+  ozgurlukcu: 0,
+  tarafsiz: 1,
+  gelenekci: 2
+};
+
 export default function BitisEkrani({ benimIsmim, oyuncuId, onAyril }) {
   const [bitis, setBitis] = useState(null);
   const [hostMu, setHostMu] = useState(false);
@@ -72,6 +79,11 @@ export default function BitisEkrani({ benimIsmim, oyuncuId, onAyril }) {
 
   const { kazananGrup, tumRoller = [], tarafsizKazananlar = [], geceTuru } = bitis;
 
+  // v1.3 — Master §11: Yeşil (özg) üstte → Sarı (tarafsız) ortada → Kırmızı (gel) altta
+  const siraliRoller = [...tumRoller].sort(
+    (a, b) => (GRUP_SIRA[a.rol.grup] ?? 99) - (GRUP_SIRA[b.rol.grup] ?? 99)
+  );
+
   // Madde 9: Kazanan grubuna göre arkaplan tonu
   const kazananRenk = GRUP_RENGI[kazananGrup] || 'var(--derin)';
 
@@ -112,11 +124,12 @@ export default function BitisEkrani({ benimIsmim, oyuncuId, onAyril }) {
         </section>
       )}
 
-      {/* Madde 10: Tek liste, gruplama yok, herkes aynı ton */}
+      {/* Madde 10: Tek liste, gruplama başlığı yok, herkes aynı ton.
+          v1.3: Yeşil → Sarı → Kırmızı sırasıyla. */}
       <section className="bitis-bolum">
         <h2 className="bitis-bolum-baslik">Tüm Roller</h2>
         <ul className="bitis-tum-roller">
-          {tumRoller.map(o => (
+          {siraliRoller.map(o => (
             <li key={o.oyuncuId} className="bitis-tum-satir">
               <span
                 className="bitis-tum-renk-noktasi"

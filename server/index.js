@@ -418,7 +418,10 @@ function oyunuBaslat(oda) {
     fazTimerleri: [],
     baslangicZamani: Date.now(),
     // Cinsiyet haritası (Azra için): rol id → cinsiyet
-    karakterCinsiyetleri: new Map(Object.entries(KARAKTER_CINSIYET))
+    karakterCinsiyetleri: new Map(Object.entries(KARAKTER_CINSIYET)),
+    // v1.3 — Master §10: Not defteri her fazdan yazılabilir.
+    // Map oyun başlangıcında oluşturuluyor ki tanışma/sabah'tan da yazılabilsin.
+    geceNotlari: new Map()
   };
 
   oda.players.forEach(p => {
@@ -1807,6 +1810,44 @@ io.on('connection', (socket) => {
     const temiz = String(metin || '').slice(0, 1000);
     oda.oyun.geceNotlari.set(oyuncuId, temiz);
     callback?.({ ok: true });
+  });
+
+  // v1.3 — Master §10: Ayrılan oyuncuların not defterleri tekrar açılabilir.
+  // Kendi notunu veya köyden ayrılmış bir oyuncunun (ifşa olmuş) notunu getir.
+  socket.on('not:getir', ({ hedefId }, callback) => {
+    if (!mevcutOda || !rooms[mevcutOda]) return callback?.({ ok: false });
+    const oda = rooms[mevcutOda];
+    if (!oda.oyun?.geceNotlari) return callback?.({ ok: false });
+
+    const hedef = hedefId || oyuncuId;
+    const hedefOyuncu = oyuncuyuBul(oda, hedef);
+    if (!hedefOyuncu) return callback?.({ ok: false, hata: 'Oyuncu bulunamadı' });
+
+    // Kendi notunu her zaman alabilir
+    if (hedef === oyuncuId) {
+      return callback?.({
+        ok: true,
+        isim: hedefOyuncu.isim,
+        kendi: true,
+        koydeMi: hedefOyuncu.koydeMi !== false,
+        metin: oda.oyun.geceNotlari.get(hedef) || ''
+      });
+    }
+
+    // Başkasının notu: yalnızca o oyuncu köyden ayrılmışsa (ifşa olduğu için)
+    if (hedefOyuncu.koydeMi !== false) {
+      return callback?.({ ok: false, hata: 'Bu oyuncu hâlâ köyde — notu görüntülenemez' });
+    }
+    const rol = oda.oyun.roller?.get(hedef);
+    callback?.({
+      ok: true,
+      isim: hedefOyuncu.isim,
+      kendi: false,
+      koydeMi: false,
+      rolAd: rol?.ad || null,
+      grup: rol?.grup || null,
+      metin: oda.oyun.geceNotlari.get(hedef) || ''
+    });
   });
 
   // NOT: Eski `gece:fobikMesaj` event'i kaldırıldı.

@@ -3,7 +3,7 @@
 // Aşama C sonrası: rol kartı, sohbet ve oyuncu listesi OyunDuzeni'nde sürekli görünür.
 // Bu ekran sadece gece aksiyonu (hedef seçimi) + sayaç + not defteri içerir.
 
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { socket } from '../socket.js';
 import './GeceEkrani.css';
 
@@ -28,9 +28,7 @@ export default function GeceEkrani({ benimIsmim, oyuncuId, benimRolum }) {
   // ─ Oyuncu listesi (gece aksiyonu için seçim listesi) ─
   const [oyuncular, setOyuncular] = useState([]);
 
-  // ─ Not defteri ─
-  const [not, setNot] = useState('');
-  const notTimerRef = useRef(null);
+  // v1.3 — Not defteri buradan kaldırıldı; sağ üst 📓 modaldan erişilir.
 
   // ─ Gece turu / özel görev ─
   const [geceTuru, setGeceTuru] = useState(1);
@@ -48,7 +46,6 @@ export default function GeceEkrani({ benimIsmim, oyuncuId, benimRolum }) {
       if (typeof cevap.aksiyonSayisi === 'number') setAksiyonSayisi(cevap.aksiyonSayisi);
       if (typeof cevap.aktifSayisi === 'number') setAktifSayisi(cevap.aktifSayisi);
       if (cevap.oyuncular) setOyuncular(cevap.oyuncular);
-      if (cevap.benimNotum) setNot(cevap.benimNotum);
     });
   }, []);
 
@@ -131,14 +128,7 @@ export default function GeceEkrani({ benimIsmim, oyuncuId, benimRolum }) {
     });
   }
 
-  // ─── Not defteri (debounce 1sn) ───────────────────────────
-  const notGuncelle = useCallback((deger) => {
-    setNot(deger);
-    clearTimeout(notTimerRef.current);
-    notTimerRef.current = setTimeout(() => {
-      socket.emit('gece:notGuncelle', { metin: deger });
-    }, 1000);
-  }, []);
+  // v1.3 — Not defteri yazma mantığı NotDefteriModal'a taşındı.
 
   function hedefMetni() {
     if (ciftHedef) {
@@ -241,17 +231,8 @@ export default function GeceEkrani({ benimIsmim, oyuncuId, benimRolum }) {
         )}
       </section>
 
-      {/* Not defteri */}
-      <section className="gece-not-bolum">
-        <label className="gece-not-etiket">📓 Not defteri</label>
-        <textarea
-          className="gece-not-alan"
-          value={not}
-          onChange={e => notGuncelle(e.target.value)}
-          placeholder="Gece notlarını buraya yaz…"
-          rows={4}
-        />
-      </section>
+      {/* v1.3 — Not defteri buradan kaldırıldı; artık sağ üst 📓 butonundan
+          modal olarak açılır (Master §10). */}
     </div>
   );
 }

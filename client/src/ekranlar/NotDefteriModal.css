@@ -1,0 +1,198 @@
+/* v1.3 — Not Defteri Modal (Master §10) */
+
+.not-modal-arka {
+  position: fixed;
+  inset: 0;
+  background: rgba(38, 70, 83, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+  animation: not-modal-fade 0.12s ease-out;
+}
+
+@keyframes not-modal-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.not-modal-kart {
+  background: white;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(38, 70, 83, 0.3);
+  border: 2px solid var(--deniz);
+}
+
+.not-modal-bas {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: linear-gradient(to right, #FFF8EE 0%, white 100%);
+  border-bottom: 1px solid rgba(42, 157, 143, 0.15);
+  flex-shrink: 0;
+}
+
+.not-modal-baslik {
+  font-family: var(--font-baslik);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--derin);
+  margin: 0;
+}
+
+.not-modal-kapat {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--derin);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.12s;
+}
+
+.not-modal-kapat:hover {
+  background: rgba(38, 70, 83, 0.08);
+}
+
+/* Sekme barı: Notum + ayrılan oyuncular */
+.not-modal-sekme-bar {
+  display: flex;
+  gap: 4px;
+  padding: 10px 12px;
+  overflow-x: auto;
+  background: rgba(168, 218, 220, 0.12);
+  border-bottom: 1px solid rgba(42, 157, 143, 0.12);
+  flex-shrink: 0;
+}
+
+.not-modal-sekme {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(42, 157, 143, 0.25);
+  background: white;
+  color: var(--derin);
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+  white-space: nowrap;
+}
+
+.not-modal-sekme:hover {
+  background: rgba(42, 157, 143, 0.08);
+}
+
+.not-modal-sekme--aktif {
+  background: var(--deniz);
+  color: white;
+  border-color: var(--deniz);
+}
+
+.not-modal-sekme--aktif:hover {
+  background: var(--deniz);
+}
+
+/* İçerik */
+.not-modal-icerik {
+  flex: 1;
+  min-height: 0;
+  padding: 14px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+}
+
+.not-modal-altyazi {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.not-modal-textarea {
+  width: 100%;
+  min-height: 220px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(42, 157, 143, 0.25);
+  background: #FFFEF7;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--derin);
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.not-modal-textarea:focus {
+  border-color: var(--deniz);
+}
+
+.not-modal-okuma {
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: rgba(168, 218, 220, 0.1);
+  border: 1px solid rgba(42, 157, 143, 0.15);
+  border-radius: 10px;
+  padding: 12px;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--derin);
+  min-height: 220px;
+  margin: 0;
+}
+
+.not-modal-okuma em {
+  color: rgba(38, 70, 83, 0.5);
+  font-style: italic;
+}
+
+.not-modal-bilgi {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  color: rgba(38, 70, 83, 0.55);
+  font-style: italic;
+}
+
+.not-modal-bos,
+.not-modal-hata {
+  text-align: center;
+  padding: 24px;
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  color: rgba(38, 70, 83, 0.6);
+}
+
+.not-modal-hata {
+  color: var(--gelenekci);
+}
+
+/* Mobilde tam ekran benzeri */
+@media (max-width: 600px) {
+  .not-modal-arka {
+    padding: 0;
+    align-items: flex-end;
+  }
+  .not-modal-kart {
+    max-width: none;
+    max-height: 92vh;
+    border-radius: 14px 14px 0 0;
+    border: none;
+    border-top: 2px solid var(--deniz);
+  }
+}
