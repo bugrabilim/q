@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { socket } from '../socket.js';
+import SesButonu from '../ses/SesButonu.jsx';
 import './LobiEkrani.css';
 
 const GRUP_BILGI = {
@@ -74,6 +75,7 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
           <button className="geri-btn" onClick={odadanAyril} title="Lobiden ayrıl">
             ← Ayrıl
           </button>
+          <SesButonu muzikFazi="gunduz" />
         </header>
 
         <section className="oda-kodu-kart" onClick={koduPanoyaKopyala}>

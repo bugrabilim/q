@@ -5,6 +5,7 @@
 import { useEffect, useState } from 'react';
 import { socket } from '../socket.js';
 import NotDefteriModal from './NotDefteriModal.jsx';
+import { efektCal } from '../ses/SesYoneticisi.js';
 import './OyuncuListesi.css';
 
 const GRUP_RENGI = {
@@ -62,7 +63,7 @@ export default function OyuncuListesi({ oyuncuId, faz }) {
           {/* v1.3 — 📓 Not defteri butonu (Master §13) */}
           <button
             className="oyuncu-listesi-not-btn"
-            onClick={(e) => { e.stopPropagation(); setNotModalAcik(true); }}
+            onClick={(e) => { e.stopPropagation(); efektCal('notdefteri'); setNotModalAcik(true); }}
             title="Not Defteri"
           >
             📓
@@ -103,7 +104,7 @@ export default function OyuncuListesi({ oyuncuId, faz }) {
         <NotDefteriModal
           oyuncuId={oyuncuId}
           oyuncular={oyuncular}
-          onKapat={() => setNotModalAcik(false)}
+          onKapat={() => { efektCal('notdefteri'); setNotModalAcik(false); }}
         />
       )}
     </div>

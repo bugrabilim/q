@@ -1,0 +1,117 @@
+/* Q — Ses Ayarları Modal'ı */
+
+.ses-ayar-arka {
+  position: fixed;
+  inset: 0;
+  background: rgba(38, 70, 83, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.ses-ayar-kart {
+  position: relative;
+  background: white;
+  border-radius: 14px;
+  padding: 22px 24px 18px;
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 12px 40px rgba(38, 70, 83, 0.25);
+  font-family: var(--font-ui);
+  color: var(--derin);
+}
+
+.ses-ayar-kapat {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: var(--derin);
+  font-size: 18px;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+.ses-ayar-kapat:hover {
+  opacity: 1;
+  background: rgba(38, 70, 83, 0.08);
+}
+
+.ses-ayar-baslik {
+  font-family: var(--font-baslik);
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 16px;
+  padding-right: 28px;
+}
+
+.ses-ayar-satir {
+  margin-bottom: 14px;
+}
+
+.ses-ayar-etiket {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.ses-ayar-deger {
+  font-variant-numeric: tabular-nums;
+  color: var(--deniz);
+  font-weight: 600;
+}
+
+.ses-ayar-slider {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--deniz-acik);
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+}
+
+.ses-ayar-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--deniz);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(38, 70, 83, 0.25);
+  transition: transform 0.1s ease;
+}
+
+.ses-ayar-slider::-webkit-slider-thumb:active {
+  transform: scale(1.1);
+}
+
+.ses-ayar-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--deniz);
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(38, 70, 83, 0.25);
+}
+
+.ses-ayar-bilgi {
+  font-size: 11px;
+  color: var(--derin);
+  opacity: 0.5;
+  margin: 12px 0 0;
+  text-align: center;
+}

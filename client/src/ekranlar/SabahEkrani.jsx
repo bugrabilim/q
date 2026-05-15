@@ -4,6 +4,7 @@
 
 import { useEffect, useState } from 'react';
 import { socket } from '../socket.js';
+import { efektCal } from '../ses/SesYoneticisi.js';
 import './SabahEkrani.css';
 
 const GRUP_RENGI = {
@@ -57,6 +58,7 @@ export default function SabahEkrani({ benimIsmim, oyuncuId, onAyril, benimRolumI
 
   function devamEt() {
     if (devamGonderildi) return;
+    efektCal('tikla');
     setDevamGonderildi(true);
     socket.emit('sabah:devam', null, (cevap) => {
       if (!cevap?.ok) {

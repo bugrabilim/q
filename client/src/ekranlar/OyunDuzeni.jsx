@@ -7,6 +7,8 @@ import { socket } from '../socket.js';
 import OyuncuListesi from './OyuncuListesi.jsx';
 import RolKartPaneli from './RolKartPaneli.jsx';
 import SohbetPaneli from './SohbetPaneli.jsx';
+import SesButonu from '../ses/SesButonu.jsx';
+import { fazaMuzikEslestir } from '../ses/sesHaritasi.js';
 import './OyunDuzeni.css';
 
 // Fobik roller (gece sohbet kanalı için)
@@ -45,13 +47,16 @@ export default function OyunDuzeni({
 
   return (
     <div className="oyun-duzeni" data-mobil-sekme={mobilSekme}>
-      {/* v1.3 — 📓 Not Defteri butonu OyuncuListesi başlığına taşındı (Master §13).
-          Burada sadece sağ üst ✕ Oyundan Çık kalıyor. */}
-      {onAyril && (
-        <button className="oyun-duzeni-cikis" onClick={cikisYap} title="Oyundan çık">
-          ✕ Oyundan Çık
-        </button>
-      )}
+      {/* Sağ üst köşe — ses aç/kapat + oyundan çık.
+          v1.3 — 📓 Not Defteri butonu OyuncuListesi başlığına taşındı (Master §13). */}
+      <div className="oyun-duzeni-sag-ust">
+        <SesButonu muzikFazi={fazaMuzikEslestir(faz)} />
+        {onAyril && (
+          <button className="oyun-duzeni-cikis" onClick={cikisYap} title="Oyundan çık">
+            ✕ Oyundan Çık
+          </button>
+        )}
+      </div>
 
       {/* Sol kolon — oyuncu listesi + rol kartı */}
       <aside className={`oyun-duzeni-sol ${mobilSekme === 'sol' ? 'oyun-duzeni-aktif' : ''}`}>

@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { socket } from '../socket.js';
+import { efektCal } from '../ses/SesYoneticisi.js';
 import './TartismaEkrani.css';
 
 export default function TartismaEkrani({ benimIsmim, oyuncuId, benimRolumId }) {
@@ -53,6 +54,7 @@ export default function TartismaEkrani({ benimIsmim, oyuncuId, benimRolumId }) {
   }, [sonZaman]);
 
   function hazirToggle() {
+    efektCal('tikla');
     if (hazirMiyim) {
       socket.emit('tartisma:hazirGeriCek', null, (cevap) => {
         if (cevap?.ok) setHazirMiyim(false);

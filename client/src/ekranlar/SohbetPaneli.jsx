@@ -3,6 +3,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { socket } from '../socket.js';
+import { efektCal } from '../ses/SesYoneticisi.js';
 import './SohbetPaneli.css';
 
 export default function SohbetPaneli({
@@ -16,6 +17,8 @@ export default function SohbetPaneli({
   const [mesajlar, setMesajlar] = useState([]);
   const [taslak, setTaslak] = useState('');
   const chatBitisRef = useRef(null);
+  // Bildirim ses efekti için son çalma anı (2 sn cooldown — bot kalabalığında spam olmasın)
+  const sonBildirimRef = useRef(0);
 
   // Mount + faz değişiminde mesaj geçmişini kaynaklara göre topla
   useEffect(() => {
@@ -31,10 +34,16 @@ export default function SohbetPaneli({
   useEffect(() => {
     function chatMesaj(mesaj) {
       setMesajlar(prev => [...prev, mesaj]);
+      // Bildirim — kendi mesajım değilse + 2 sn'de bir
+      const simdi = Date.now();
+      if (mesaj?.oyuncuId !== oyuncuId && simdi - sonBildirimRef.current > 2000) {
+        sonBildirimRef.current = simdi;
+        efektCal('bildirim');
+      }
     }
     socket.on('chat:mesaj', chatMesaj);
     return () => socket.off('chat:mesaj', chatMesaj);
-  }, []);
+  }, [oyuncuId]);
 
   // Otomatik scroll
   useEffect(() => {

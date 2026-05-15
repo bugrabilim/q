@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { socket } from '../socket.js';
+import { efektCal } from '../ses/SesYoneticisi.js';
 import './TanismaEkrani.css';
 
 const GRUP_SEMBOL = {
@@ -98,6 +99,7 @@ export default function TanismaEkrani({ benimIsmim, oyuncuId }) {
   }
 
   function hazirToggle() {
+    efektCal('tikla');
     if (hazirMiyim) {
       socket.emit('tanisma:hazirGeriCek', null, (cevap) => {
         if (cevap?.ok) setHazirMiyim(false);

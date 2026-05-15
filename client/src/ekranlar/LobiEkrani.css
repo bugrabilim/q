@@ -20,6 +20,7 @@
 .lobi-baslik {
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
 .geri-btn {

@@ -11,11 +11,17 @@
 }
 
 /* Sağ üst sabit "Oyundan Çık" butonu (Madde 2) */
-.oyun-duzeni-cikis {
+.oyun-duzeni-sag-ust {
   position: absolute;
   top: 10px;
   right: 12px;
   z-index: 50;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.oyun-duzeni-cikis {
   padding: 6px 12px;
   border-radius: 999px;
   background: rgba(230, 57, 70, 0.9);
@@ -157,21 +163,28 @@
     color: var(--derin);
   }
 
-  /* Sağ üst çıkış butonu mobilde küçülsün */
-  .oyun-duzeni-cikis {
+  /* Sağ üst köşe mobilde küçülsün */
+  .oyun-duzeni-sag-ust {
     top: 8px;
     right: 8px;
+  }
+  .oyun-duzeni-cikis {
     padding: 5px 10px;
     font-size: 11px;
   }
 
-  /* v1.3 — Mobilde Çıkış butonu yalnızca "Köy/Rol" sekmesinde görünür
-     (Oyun sekmesindeki sayaç ile çakışmasını engellemek için).
+  /* v1.3 — Mobilde sağ üst köşe (ses aç/kapat + çıkış) yalnızca "Köy/Rol"
+     sekmesinde görünür — Oyun sekmesindeki sayaç ile çakışmasını engeller.
      📓 Not Defteri butonu OyuncuListesi başlığında, her sekmede o panelin içinde. */
-  .oyun-duzeni-cikis {
+  .oyun-duzeni-sag-ust {
     display: none;
   }
-  .oyun-duzeni[data-mobil-sekme="sol"] .oyun-duzeni-cikis {
-    display: inline-block;
+  .oyun-duzeni[data-mobil-sekme="sol"] .oyun-duzeni-sag-ust {
+    display: flex;
+  }
+  /* Sağ üst köşe butonları sol panelin üstünde kendi bandında durur —
+     OyuncuListesi başlığı (sayaç + 📓) ile çakışmaz. */
+  .oyun-duzeni[data-mobil-sekme="sol"] .oyun-duzeni-sol {
+    padding-top: 44px;
   }
 }

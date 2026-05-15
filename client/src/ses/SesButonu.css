@@ -1,0 +1,71 @@
+/* Q — Ses Aç/Kapat Düğmesi */
+
+.ses-btn {
+  font-family: var(--font-ui);
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.ses-btn:active {
+  transform: scale(0.96);
+}
+
+.ses-btn-grup {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* İlk kullanım — büyük etiketli buton */
+.ses-btn--ilk {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--deniz);
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 6px rgba(38, 70, 83, 0.2);
+}
+
+.ses-btn--ilk:hover {
+  background: var(--derin);
+}
+
+/* Aç-kapa — küçük ikon düğmesi */
+.ses-btn--toggle,
+.ses-btn--ayarlar {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 15px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(38, 70, 83, 0.2);
+}
+
+.ses-btn--toggle,
+.ses-btn--ayarlar:hover {
+  background: white;
+}
+
+.ses-btn--kapali {
+  opacity: 0.6;
+}
+
+@media (max-width: 860px) {
+  .ses-btn--ilk {
+    padding: 6px 11px;
+    font-size: 12px;
+  }
+  .ses-btn--toggle,
+.ses-btn--ayarlar {
+    width: 28px;
+    height: 28px;
+    font-size: 13px;
+  }
+}

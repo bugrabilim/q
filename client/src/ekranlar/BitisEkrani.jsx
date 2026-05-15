@@ -3,6 +3,9 @@
 
 import { useEffect, useState } from 'react';
 import { socket } from '../socket.js';
+import SesButonu from '../ses/SesButonu.jsx';
+import { muzikCal, efektCal } from '../ses/SesYoneticisi.js';
+import { fazaMuzikEslestir } from '../ses/sesHaritasi.js';
 import './BitisEkrani.css';
 
 const GRUP_AD = {
@@ -58,6 +61,15 @@ export default function BitisEkrani({ benimIsmim, oyuncuId, onAyril }) {
     return () => socket.off('faz:degisti', fazDegisti);
   }, []);
 
+  // Bitiş müziği + kazan ses efekti — kazanan gruba göre (M4 + M5).
+  // Gelenekçi kazandı → bağlama; diğer durumlar (özgürlükçü / sadece tarafsız) → disco.
+  useEffect(() => {
+    if (bitis?.kazananGrup) {
+      efektCal('kazan');
+      muzikCal(fazaMuzikEslestir('bitis', bitis.kazananGrup));
+    }
+  }, [bitis?.kazananGrup]);
+
   function yeniOyun() {
     if (yeniOyunGonderildi) return;
     setYeniOyunGonderildi(true);
@@ -92,6 +104,11 @@ export default function BitisEkrani({ benimIsmim, oyuncuId, onAyril }) {
       className={`bitis-kapsayici bitis-kapsayici--${kazananGrup}`}
       style={{ '--kazanan-renk': kazananRenk }}
     >
+      {/* Sağ üst — ses aç/kapat */}
+      <div className="bitis-sag-ust">
+        <SesButonu muzikFazi={fazaMuzikEslestir('bitis', kazananGrup)} />
+      </div>
+
       {/* Kazanan başlığı */}
       <header
         className="bitis-baslik-kutu"

@@ -2,6 +2,7 @@
 
 /* Madde 9: Kazanan grubuna göre soluk arkaplan tonu */
 .bitis-kapsayici {
+  position: relative;
   min-height: 100vh;
   color: var(--derin);
   font-family: var(--font-ui);
@@ -9,6 +10,13 @@
   max-width: 720px;
   margin: 0 auto;
   background: var(--gokyuzu);
+}
+
+.bitis-sag-ust {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 50;
 }
 
 .bitis-kapsayici--ozgurlukcu {

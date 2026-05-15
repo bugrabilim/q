@@ -13,6 +13,8 @@ import OylamaEkrani from './ekranlar/OylamaEkrani.jsx';
 import BitisEkrani from './ekranlar/BitisEkrani.jsx';
 import AyrilanEkrani from './ekranlar/AyrilanEkrani.jsx';
 import OyunDuzeni from './ekranlar/OyunDuzeni.jsx';
+import { muzikCal, efektCal } from './ses/SesYoneticisi.js';
+import { fazaMuzikEslestir } from './ses/sesHaritasi.js';
 
 const OYLAMA_FAZLARI = new Set(['oylama_1', 'savunma', 'oylama_2', 'oylama_tartisma', 'oylama_sonuc']);
 
@@ -60,6 +62,8 @@ export default function App() {
       setBenimRolum(rol);
     }
     function oyuncuAyrildi(bilgi) {
+      // Köyden ayrılma efekti — herkes duysun (kendine veya başkasına)
+      efektCal('ayrilma');
       if (bilgi.oyuncuId === socket.id) {
         setAyrilmaBilgisi({ rolAd: bilgi.rolAd, grup: bilgi.grup, sebep: bilgi.sebep });
         gidFazRef.current('ayrilan');
@@ -74,6 +78,14 @@ export default function App() {
       socket.off('oyuncu:ayrildi', oyuncuAyrildi);
     };
   }, []);
+
+  // Faz bazlı müzik geçişi (M4) — serverFaz/faz değiştikçe doğru müziği çal.
+  // Bitiş müziğini BitisEkrani kendi kazananGrup bilgisiyle çalar; burada atlanır.
+  useEffect(() => {
+    const etkinFaz = serverFaz || faz;
+    if (etkinFaz === 'bitis') return;
+    muzikCal(fazaMuzikEslestir(etkinFaz));
+  }, [serverFaz, faz]);
 
   // setFaz her çağrıldığında fazRef'i de güncelle
   function gidFaz(yeniFaz) { fazRef.current = yeniFaz; setFaz(yeniFaz); }

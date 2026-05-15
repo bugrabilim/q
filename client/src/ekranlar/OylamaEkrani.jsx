@@ -4,6 +4,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { socket } from '../socket.js';
+import { efektCal } from '../ses/SesYoneticisi.js';
 import './OylamaEkrani.css';
 
 export default function OylamaEkrani({ benimIsmim, oyuncuId, onFazDegisti, benimRolumId }) {
@@ -174,6 +175,7 @@ export default function OylamaEkrani({ benimIsmim, oyuncuId, onFazDegisti, benim
 
   // Oy ver (1. oylama)
   function oyVer(hedefId) {
+    efektCal('oylama');
     if (benimOyum1 === hedefId) {
       // Aynı kişiye basarsan geri çek
       socket.emit('oylama1:oyGeriCek', null, (cevap) => {
@@ -189,6 +191,7 @@ export default function OylamaEkrani({ benimIsmim, oyuncuId, onFazDegisti, benim
   // 2. oylama
   function ikinciOy(karar) {
     if (benimOyum2 === karar) return; // zaten verdim
+    efektCal('oylama');
     socket.emit('oylama2:oyVer', { karar }, (cevap) => {
       if (cevap?.ok) setBenimOyum2(karar);
     });
@@ -197,6 +200,7 @@ export default function OylamaEkrani({ benimIsmim, oyuncuId, onFazDegisti, benim
   // Savunma: hazır
   function savunmaHazirToggle() {
     if (hazirMiyim) return; // tek yönlü
+    efektCal('tikla');
     socket.emit('savunma:hazir', null, (cevap) => {
       if (cevap?.ok) setHazirMiyim(true);
     });
@@ -204,6 +208,7 @@ export default function OylamaEkrani({ benimIsmim, oyuncuId, onFazDegisti, benim
 
   // Tekrar tartışma: hazır
   function tartismaHazirToggle() {
+    efektCal('tikla');
     if (hazirMiyim) {
       socket.emit('oylama_tartisma:hazirGeriCek', null, (cevap) => {
         if (cevap?.ok) setHazirMiyim(false);
@@ -217,6 +222,7 @@ export default function OylamaEkrani({ benimIsmim, oyuncuId, onFazDegisti, benim
 
   // Oylama Sonuç (Madde 2): hazır
   function sonucHazirToggle() {
+    efektCal('tikla');
     if (hazirMiyim) {
       socket.emit('oylama_sonuc:hazirGeriCek', null, (cevap) => {
         if (cevap?.ok) setHazirMiyim(false);
