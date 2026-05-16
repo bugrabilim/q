@@ -20,6 +20,14 @@
   flex-shrink: 0;
 }
 
+/* Masaüstünde sağ üst köşedeki ⚙️ Ayarlar butonu (oyun-duzeni-sag-ust)
+   bu başlığın üstüne oturuyor — sağdan boşluk bırakıp çakışmayı önle. */
+@media (min-width: 861px) {
+  .sohbet-bas {
+    padding-right: 60px;
+  }
+}
+
 .sohbet-bas-baslik {
   font-family: var(--font-baslik);
   font-weight: 600;

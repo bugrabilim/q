@@ -71,8 +71,9 @@
 .bitis-kapsayici--tarafsiz .bitis-partikul:nth-child(3n) { top: 60%; }
 .bitis-kapsayici--tarafsiz .bitis-partikul:nth-child(5n) { top: 80%; }
 
-/* İçeriği partiküllerin üstüne koy */
-.bitis-kapsayici > :not(.bitis-partikul-katman) {
+/* İçeriği partiküllerin üstüne koy — sağ üst köşe hariç (kendi
+   absolute pozisyonu ve daha yüksek z-index'i var) */
+.bitis-kapsayici > :not(.bitis-partikul-katman):not(.bitis-sag-ust) {
   position: relative;
   z-index: 2;
 }
@@ -81,11 +82,12 @@
   .bitis-partikul-katman { display: none; }
 }
 
+/* Sağ üst — ⚙️ ayarlar butonu kazanan banner'ın üstünde durmalı (tıklanabilir) */
 .bitis-sag-ust {
   position: absolute;
   top: 12px;
   right: 12px;
-  z-index: 50;
+  z-index: 100;
 }
 
 .bitis-kapsayici--ozgurlukcu {

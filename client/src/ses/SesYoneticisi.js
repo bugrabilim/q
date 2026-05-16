@@ -99,7 +99,9 @@ function muzikCalDosya(faz, dosya) {
 
   aktifMuzik = { faz, dosya, howl: yeni, sonrakiZamanlayici: null };
 
-  // Çoklu parça fazlarda: parça bitmeden GECIS_MS önce sıradakine geç
+  // Çoklu parça fazlarda: parça bitmeden GECIS_MS önce sıradakine geç.
+  // Ayrıca onend fallback'i: timer kaçırılırsa (sekme arka planda, throttle vs.)
+  // veya süre kestirimi yanlışsa, parça gerçekten bitince zinciri devam ettir.
   if (cogul) {
     const planla = (sureSn) => {
       const gecmeAni = Math.max(1000, sureSn * 1000 - GECIS_MS);
@@ -113,7 +115,18 @@ function muzikCalDosya(faz, dosya) {
     };
     const s = yeni.duration();
     if (s > 0) planla(s);
+    else if (yeni.state() === 'loaded') planla(yeni.duration());
     else yeni.once('load', () => planla(yeni.duration()));
+
+    // Güvenlik ağı: parça bittiğinde hâlâ aynı faz/parça aktifse sıradakine geç.
+    // (loop:false olduğu için 'end' tetiklenir; her muzikCalDosya çağrısında
+    // yeni bir 'once' kaydı kurulur.)
+    yeni.once('end', () => {
+      if (aktifMuzik && aktifMuzik.faz === faz && aktifMuzik.howl === yeni) {
+        if (aktifMuzik.sonrakiZamanlayici) clearTimeout(aktifMuzik.sonrakiZamanlayici);
+        sirayaGec(faz);
+      }
+    });
   }
 }
 

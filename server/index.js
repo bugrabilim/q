@@ -29,7 +29,7 @@ const io = new Server(httpServer, {
 const SURE_BASVURU = Number(process.env.Q_BASVURU_MS || 5_000);
 const SURE_TANISMA = Number(process.env.Q_TANISMA_MS || 30_000);
 // v1.5 — Madde 1: Rol kartı max süre (otomatik tanışmaya geç)
-const SURE_ROL = Number(process.env.Q_ROL_MS || 30_000);
+const SURE_ROL = Number(process.env.Q_ROL_MS || 10_000);
 // v1.5 — Madde 2: Sabah ekranı max süre (host basmasa da otomatik devam)
 const SURE_SABAH = Number(process.env.Q_SABAH_MS || 30_000);
 
@@ -575,6 +575,53 @@ function botlarHazirOlur(oda) {
       }
     }, 3000 + Math.random() * 8000);
   });
+}
+
+// Bug #7: Bir gerçek oyuncu "Hazır" basınca,
+// tüm gerçek (bot olmayan, köyde, bağlı) oyuncular hazırsa
+// kalan botları anında "Hazır" olarak işaretle.
+//
+// "Gerçek oyuncu" filtresi:
+//   - bot değil
+//   - köyde (koydeMi !== false)
+//   - bağlı (baglantiVar !== false)
+//
+// Faz bazında değişen şey sadece "köyde + bağlı" şartı:
+//   - tanisma: tüm gerçek oyuncuları say (rol henüz dağıtılmış, kimse köyden ayrılmamış)
+//   - tartisma / oylama_tartisma / oylama_sonuc: aktif (köyde + bağlı) gerçek oyuncular
+function tumGercekOyuncularHazirMi(oda, faz) {
+  if (!oda.oyun) return false;
+  let gercekler;
+  if (faz === 'tanisma') {
+    gercekler = oda.players.filter(p => !p.bot);
+  } else {
+    gercekler = oda.players.filter(p =>
+      !p.bot && p.koydeMi !== false && p.baglantiVar !== false
+    );
+  }
+  if (gercekler.length === 0) return false; // hepsi botsa bekleme mantığını bozma
+  return gercekler.every(p => oda.oyun.hazirOlanlar.has(p.id));
+}
+
+// Kalan tüm botları hazırOlanlar'a anında ekle (faza özel filtreyle).
+function kalanBotlariHazirYap(oda, faz) {
+  if (!oda.oyun) return;
+  const botFiltre = (b) => {
+    if (!b.bot) return false;
+    if (faz === 'tanisma') return true;
+    return b.koydeMi !== false && b.baglantiVar !== false;
+  };
+  oda.players.filter(botFiltre).forEach(bot => {
+    oda.oyun.hazirOlanlar.add(bot.id);
+  });
+}
+
+// Bir gerçek oyuncu "Hazır" bastıktan sonra çağrılır.
+// Tüm gerçekler hazırsa botları doldurur ve mevcut faz kontrolünü tetikler.
+function gercekHazirsaBotlariDoldur(oda, faz, kontrolFn) {
+  if (!tumGercekOyuncularHazirMi(oda, faz)) return;
+  kalanBotlariHazirYap(oda, faz);
+  if (typeof kontrolFn === 'function') kontrolFn();
 }
 
 // ─── Oyun Başlatma ───────────────────────────────────────────
@@ -2071,6 +2118,8 @@ io.on('connection', (socket) => {
     }
     oda.oyun.hazirOlanlar.add(oyuncuId);
     callback?.({ ok: true });
+    // Bug #7: Tüm gerçek oyuncular hazırsa botları anında doldur
+    gercekHazirsaBotlariDoldur(oda, 'tanisma', () => hazirKontrol(oda));
     hazirKontrol(oda);
   });
 
@@ -2240,6 +2289,8 @@ io.on('connection', (socket) => {
     if (!oyuncu || oyuncu.koydeMi === false) return callback?.({ ok: false });
     oda.oyun.hazirOlanlar.add(oyuncuId);
     callback?.({ ok: true });
+    // Bug #7: Tüm gerçek oyuncular hazırsa botları anında doldur
+    gercekHazirsaBotlariDoldur(oda, 'tartisma', () => tartismaHazirKontrol(oda));
     tartismaHazirKontrol(oda);
   });
 
@@ -2342,6 +2393,8 @@ io.on('connection', (socket) => {
     if (!oyuncu || oyuncu.koydeMi === false) return callback?.({ ok: false });
     oda.oyun.hazirOlanlar.add(oyuncuId);
     callback?.({ ok: true });
+    // Bug #7: Tüm gerçek oyuncular hazırsa botları anında doldur
+    gercekHazirsaBotlariDoldur(oda, 'oylama_tartisma');
     const aktif = oda.players.filter(p => p.koydeMi !== false && p.baglantiVar !== false);
     io.to(oda.kod).emit('tartisma:hazirDurumu', { hazir: oda.oyun.hazirOlanlar.size, toplam: aktif.length });
     if (oda.oyun.hazirOlanlar.size >= aktif.length) tartismadanOylamaya(oda);
@@ -2366,6 +2419,8 @@ io.on('connection', (socket) => {
     if (!oyuncu || oyuncu.koydeMi === false) return callback?.({ ok: false });
     oda.oyun.hazirOlanlar.add(oyuncuId);
     callback?.({ ok: true });
+    // Bug #7: Tüm gerçek oyuncular hazırsa botları anında doldur
+    gercekHazirsaBotlariDoldur(oda, 'oylama_sonuc', () => oylamaSonucuHazirKontrol(oda));
     oylamaSonucuHazirKontrol(oda);
   });
 

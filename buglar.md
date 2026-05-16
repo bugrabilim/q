@@ -54,3 +54,69 @@ T6/T7 sırasında bulunan hatalar burada izlenir. Format için ajan-plani.md →
   3. Modal kart `<div>` sarmalayıcısına `onTouchStart` + `onTouchEnd` stopPropagation eklendi (mobilde slider dokunuşu arka plana sızıp modalı kapatmıyor).
   4. `::-ms-thumb` + `::-ms-track` tamamlandı, tüm tarayıcılarda tutarlı.
 - **Dosyalar:** `client/src/ses/SesAyarlariModal.jsx` + `client/src/ses/SesAyarlariModal.css`
+
+---
+
+### Bug #4 — Müzik kuyruğu bitince tekrar başlamıyor
+- **Faz/ekran:** Tüm gündüz/gece fazları
+- **Tarih:** 2026-05-16
+- **Sürüm:** v1.7
+- **Adımlar:** Oyunda müzik çalsın → bir parça bitince sıradaki çalsın → o da bitince yeni parça çalmıyor.
+- **Beklenen:** Master Bölüm 20: Parçalar crossfade ile rotasyon, faz boyunca süreklilik.
+- **Gerçekleşen:** Sıradaki parça bittiğinde kuyruk duruyor.
+- **Öncelik:** Yüksek — atmosfer kaybı
+- **Durum:** Açık
+- **Olası sebep:** `SesYoneticisi.js` rotasyon listesi tüketildiğinde resetlenmiyor; `onend` callback sonsuz döngü garanti etmiyor.
+- **Dosyalar:** `client/src/ses/SesYoneticisi.js`
+
+---
+
+### Bug #5 — Rol Dağıtımı süresi 30 sn çok uzun, 10 sn olsun
+- **Faz/ekran:** Faz 3 — Rol Dağıtımı
+- **Tarih:** 2026-05-16
+- **Sürüm:** v1.7
+- **Adımlar:** Lobiden oyuna geçtikten sonra rol kartı ekranı max 30 sn bekliyor.
+- **Beklenen:** Max 10 sn (Buğra talebi).
+- **Öncelik:** Orta — UX hızlandırma
+- **Durum:** Açık
+- **Düzeltme:** `SURE_ROL = 10_000` (`server/index.js`); master Bölüm 11 Faz 3 ve Bölüm 12 ekran özeti güncelle.
+- **Dosyalar:** `server/index.js`, `q-master-belge12.md`
+
+---
+
+### Bug #6 — Masaüstünde ⚙️ ayarlar butonu sohbet "Köy Meydanı" başlığının üstüne kaymış
+- **Faz/ekran:** Tüm oyun ekranları (masaüstü)
+- **Tarih:** 2026-05-16
+- **Sürüm:** v1.7
+- **Adımlar:** Masaüstü ekranında oyun aç → sağ üstte ⚙️ butonu ile sohbet panelinin "Köy Meydanı" başlığı çakışıyor.
+- **Beklenen:** Ayarlar butonu sohbet panelinin başlığıyla çakışmasın.
+- **Öncelik:** Orta — UI
+- **Durum:** Açık
+- **Düzeltme:** `OyunDuzeni.css` sağ üst pozisyonu / `SesButonu` z-index ve top değeri ayarlanmalı.
+- **Dosyalar:** `client/src/ekranlar/OyunDuzeni.css`, `client/src/ses/SesButonu.css`, `client/src/ekranlar/SohbetPaneli.css`
+
+---
+
+### Bug #7 — Botlar tüm canlı oyuncular hazır basınca hemen bassın
+- **Faz/ekran:** Tanışma, Tartışma, Savunma, Oylama Sonucu (her "Hazır" butonu olan faz)
+- **Tarih:** 2026-05-16
+- **Sürüm:** v1.7
+- **Adımlar:** Az gerçek oyuncuyla oyun → tüm gerçek oyuncular "Hazır" basıyor → botlar kendi gecikmelerini bekliyor → faz uzun sürüyor.
+- **Beklenen:** Tüm gerçek oyuncular hazır basınca botlar gecikmesiz "Hazır" emit etsin → faz erken bitsin.
+- **Öncelik:** Orta — UX hızlandırma
+- **Durum:** Açık
+- **Düzeltme:** `server/index.js` bot otomasyon kontrolünde her "hazır" geldiğinde "gerçek oyuncuların hepsi hazır mı?" kontrolü; öyleyse kalan botları anında hazır işaretle.
+- **Dosyalar:** `server/index.js`
+
+---
+
+### Bug #8 — Bitiş ekranında ⚙️ ve 🔊 butonları kazanan grup zemini arkasında kalıyor
+- **Faz/ekran:** Faz 8 — Bitiş
+- **Tarih:** 2026-05-16
+- **Sürüm:** v1.7
+- **Adımlar:** Oyun bittiğinde "X Kazandı" yeşil/kırmızı zemin görünür → sağ üst ⚙️ + 🔊 butonları zeminin arkasında kalıyor, tıklanamıyor.
+- **Beklenen:** Butonlar üstte ve tıklanabilir.
+- **Öncelik:** Orta — UI
+- **Durum:** Açık
+- **Düzeltme:** `BitisEkrani.css` kazanan gradient banner z-index düşürülmeli veya butonların container'ı yükseltilmeli.
+- **Dosyalar:** `client/src/ekranlar/BitisEkrani.css`, `client/src/ses/SesButonu.css`
