@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { socket } from '../socket.js';
 import NotDefteriModal from './NotDefteriModal.jsx';
 import { efektCal } from '../ses/SesYoneticisi.js';
+import KarakterPortresi from '../bilesenler/KarakterPortresi.jsx';
 import './OyuncuListesi.css';
 
 const GRUP_RENGI = {
@@ -121,6 +122,14 @@ function Satir({ o, oyuncuId }) {
     <li
       className={`oyuncu-listesi-satir ${ayrilmis ? 'oyuncu-listesi-satir--ayrilmis' : ''} ${benim ? 'oyuncu-listesi-satir--ben' : ''}`}
     >
+      {/* v1.6 — Madde 5: Mini avatar (rol ifşa olmuşsa karakter, değilse jenerik) */}
+      <KarakterPortresi
+        karakter={rol?.karakter}
+        gorsel={rol?.gorsel}
+        grup={rol?.grup}
+        boyut={28}
+        className="oyuncu-listesi-avatar"
+      />
       <span className="oyuncu-listesi-isim">
         {o.isim}
         {benim && <span className="oyuncu-listesi-sen"> (sen)</span>}

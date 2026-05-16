@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { socket } from '../socket.js';
 import SesButonu from '../ses/SesButonu.jsx';
+import KarakterPortresi from '../bilesenler/KarakterPortresi.jsx';
 import './LobiEkrani.css';
 
 const GRUP_BILGI = {
@@ -11,14 +12,34 @@ const GRUP_BILGI = {
   gelenekci:  { ad: 'Gelenekçi',  renk: 'var(--gelenekci)',  sembol: '🔴' }
 };
 
+// Madde 5: Önerilen dağılım tablosu (statik — server'daki DENGE ile eşleşir)
+const DENGE_ONERILEN = {
+  4:  { ozgurlukcu: 2, tarafsiz: 1, gelenekci: 1 },
+  5:  { ozgurlukcu: 2, tarafsiz: 2, gelenekci: 1 },
+  6:  { ozgurlukcu: 2, tarafsiz: 2, gelenekci: 2 },
+  7:  { ozgurlukcu: 3, tarafsiz: 2, gelenekci: 2 },
+  8:  { ozgurlukcu: 3, tarafsiz: 3, gelenekci: 2 },
+  9:  { ozgurlukcu: 4, tarafsiz: 3, gelenekci: 2 },
+  10: { ozgurlukcu: 4, tarafsiz: 3, gelenekci: 3 },
+  11: { ozgurlukcu: 5, tarafsiz: 3, gelenekci: 3 },
+  12: { ozgurlukcu: 6, tarafsiz: 3, gelenekci: 3 }
+};
+const OYUNCU_SAYILARI = [4, 5, 6, 7, 8, 9, 10, 11, 12];
+
 export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
   const [durum, setDurum] = useState({
-    kod, players: [], oyuncuSayisi: 0, minOyuncu: 6, maxOyuncu: 12
+    kod, players: [], oyuncuSayisi: 0, minOyuncu: 4, maxOyuncu: 12, ayarlar: null
   });
   const [baslatHatasi, setBaslatHatasi] = useState('');
   const [botEkleHatasi, setBotEkleHatasi] = useState('');
   const [roller, setRoller] = useState([]);
   const [seciliRol, setSeciliRol] = useState(null); // popup'ta gösterilen rol
+  // v1.6 — Madde 1: Önerilen Dağılım ve Roller artık popup'ta açılır
+  const [dagilimPopupAcik, setDagilimPopupAcik] = useState(false);
+  const [rollerPopupAcik, setRollerPopupAcik] = useState(false);
+  // Madde 4: Host'un düzenlemekte olduğu dağılım (uygulamadan önce)
+  const [hostSecim, setHostSecim] = useState(null);
+  const [hostHata, setHostHata] = useState('');
 
   useEffect(() => {
     function odaDurumGuncelle(yeniDurum) { setDurum(yeniDurum); }
@@ -38,6 +59,68 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
   const benHostMu = !!benOyuncu?.hostMu;
   const yeterliOyuncu = durum.oyuncuSayisi >= durum.minOyuncu;
   const dolu = durum.oyuncuSayisi >= durum.maxOyuncu;
+
+  // Madde 4: Aktif dağılım — host ayarı varsa onu, yoksa önerilen
+  const aktifDagilim = durum.ayarlar?.dagilim
+    || DENGE_ONERILEN[durum.oyuncuSayisi]
+    || { ozgurlukcu: 0, tarafsiz: 0, gelenekci: 0 };
+
+  // Oyuncu sayısı veya server ayarı değişince host düzenlemesini senkronize et
+  useEffect(() => {
+    setHostSecim(null);
+    setHostHata('');
+  }, [durum.oyuncuSayisi, durum.ayarlar]);
+
+  // Host düzenleme modunda — gerçek aktif değer
+  const duzenlemeDagilim = hostSecim || aktifDagilim;
+  const hostToplam = duzenlemeDagilim.ozgurlukcu + duzenlemeDagilim.tarafsiz + duzenlemeDagilim.gelenekci;
+  const hostGecerli = hostToplam === durum.oyuncuSayisi && duzenlemeDagilim.gelenekci >= 1 && durum.oyuncuSayisi >= durum.minOyuncu;
+
+  // v1.6 — Madde 1 (rev): +/- bastığında otomatik dengele + anında server'a uygula.
+  // "Uygula" butonu kaldırıldı. Toplam korunur: hedef grubu artarsa başka gruptan
+  // otomatik düşürür (en yüksek olan, gelenekçi ≥ 1 korunarak). Azaltırsa diğer
+  // gruba ekler (en düşük olan).
+  function hostDegistir(grup, delta) {
+    setHostHata('');
+    const base = { ...(hostSecim || aktifDagilim) };
+    const yeniDeger = base[grup] + delta;
+
+    // Min sınırları: gelenekçi ≥ 1 (Kaan zorunlu), diğerleri ≥ 0
+    if (grup === 'gelenekci' && yeniDeger < 1) return;
+    if (yeniDeger < 0) return;
+
+    base[grup] = yeniDeger;
+
+    // Toplamı eski oyuncu sayısında tut — diğer iki grubu otomatik dengele
+    const diger = ['ozgurlukcu', 'tarafsiz', 'gelenekci'].filter(g => g !== grup);
+    if (delta > 0) {
+      // Bir grup arttı — başka birinden düş. En yüksekten başla; gelenekçi en son
+      // ve ancak >1 ise düşülebilir.
+      const sirali = diger.sort((a, b) => base[b] - base[a]);
+      for (const g of sirali) {
+        const altSinir = g === 'gelenekci' ? 1 : 0;
+        if (base[g] > altSinir) { base[g] -= 1; break; }
+      }
+    } else if (delta < 0) {
+      // Bir grup azaldı — başka birine ekle (en düşük olanı tercih et).
+      const sirali = diger.sort((a, b) => base[a] - base[b]);
+      base[sirali[0]] += 1;
+    }
+
+    setHostSecim(base);
+    socket.emit('lobi:ayar', { dagilim: base }, (cevap) => {
+      if (!cevap?.ok) setHostHata(cevap?.hata || 'Ayar uygulanamadı');
+    });
+  }
+
+  // "Önerileni Uygula" — server'a null gönder (server önerilen denge tablosuna döner)
+  function hostOnerileniUygula() {
+    setHostHata('');
+    setHostSecim(null);
+    socket.emit('lobi:ayar', { dagilim: null }, (cevap) => {
+      if (!cevap?.ok) setHostHata(cevap?.hata || 'Sıfırlanamadı');
+    });
+  }
 
   function odadanAyril() {
     socket.emit('oda:ayril');
@@ -156,38 +239,203 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
           </ul>
         </section>
 
-        {/* Madde 3: Roller galerisi — tıklayınca popup açılır */}
-        {roller.length > 0 && (
-          <section className="lobi-roller-bolum">
-            <h3 className="lobi-roller-baslik">Bu oyunda olabilecek roller</h3>
-            <p className="lobi-roller-altyazi">Birine tıkla → kart açılır</p>
-            <div className="lobi-roller-grid">
-              {roller.map(r => {
-                const grup = GRUP_BILGI[r.grup];
-                return (
-                  <button
-                    key={r.id}
-                    className="lobi-rol-kart"
-                    style={{ borderColor: grup?.renk }}
-                    onClick={() => setSeciliRol(r)}
-                  >
-                    <span className="lobi-rol-kart-grup" style={{ color: grup?.renk }}>
-                      {grup?.sembol}
-                    </span>
-                    <span className="lobi-rol-kart-ad">{r.ad}</span>
-                    <span className="lobi-rol-kart-karakter">{r.karakter}</span>
-                  </button>
-                );
-              })}
+        {/* v1.6 — Madde 1: Önerilen Dağılım ve Roller artık popup'tan açılır.
+            İki yan yana buton — sayfa kısalır, info ihtiyaca göre açılır. */}
+        <section className="lobi-info-bolum">
+          <button
+            type="button"
+            className="lobi-info-btn"
+            onClick={() => setDagilimPopupAcik(true)}
+          >
+            <span className="lobi-info-btn-ikon">📊</span>
+            <span className="lobi-info-btn-metin">
+              <span className="lobi-info-btn-baslik">Önerilen Dağılım</span>
+              <span className="lobi-info-btn-altyazi">{durum.oyuncuSayisi} kişiyle 🟢 🟡 🔴</span>
+            </span>
+          </button>
+          <button
+            type="button"
+            className="lobi-info-btn"
+            onClick={() => setRollerPopupAcik(true)}
+            disabled={roller.length === 0}
+          >
+            <span className="lobi-info-btn-ikon">🎭</span>
+            <span className="lobi-info-btn-metin">
+              <span className="lobi-info-btn-baslik">Roller</span>
+              <span className="lobi-info-btn-altyazi">{roller.length || '…'} rol — tıkla detay</span>
+            </span>
+          </button>
+        </section>
+
+        {/* Madde 4: Host'a özel dağılım ayarı paneli (A seçeneği — grup sayıları) */}
+        {benHostMu && durum.oyuncuSayisi >= durum.minOyuncu && (
+          <section className="lobi-host-ayar-bolum">
+            <h3 className="lobi-host-ayar-baslik">
+              Dağılımı Özelleştir <span className="lobi-host-ayar-rozet">host</span>
+            </h3>
+            <p className="lobi-host-ayar-altyazi">
+              Önerilenden farklı oynatmak istersen ayarla — toplam {durum.oyuncuSayisi} olmalı
+            </p>
+            <div className="lobi-host-ayar-satirlar">
+              {[
+                { key: 'ozgurlukcu', etiket: '🟢 Özgürlükçü' },
+                { key: 'tarafsiz',   etiket: '🟡 Tarafsız' },
+                { key: 'gelenekci',  etiket: '🔴 Gelenekçi' }
+              ].map(({ key, etiket }) => (
+                <div key={key} className="lobi-host-ayar-satir">
+                  <span className="lobi-host-ayar-etiket">{etiket}</span>
+                  <div className="lobi-host-ayar-sayac">
+                    <button
+                      type="button"
+                      className="lobi-host-ayar-btn"
+                      onClick={() => hostDegistir(key, -1)}
+                      disabled={duzenlemeDagilim[key] <= (key === 'gelenekci' ? 1 : 0)}
+                      aria-label="azalt"
+                    >−</button>
+                    <span className="lobi-host-ayar-deger">{duzenlemeDagilim[key]}</span>
+                    <button
+                      type="button"
+                      className="lobi-host-ayar-btn"
+                      onClick={() => hostDegistir(key, +1)}
+                      aria-label="arttır"
+                    >+</button>
+                  </div>
+                </div>
+              ))}
             </div>
+            <div className="lobi-host-ayar-altbar">
+              <span className="lobi-host-ayar-toplam ok">
+                Toplam: {hostToplam} / {durum.oyuncuSayisi}
+              </span>
+              <button
+                type="button"
+                className="lobi-host-ayar-sifirla"
+                onClick={hostOnerileniUygula}
+                title="Önerilen dağılıma dön"
+              >
+                Önerileni Uygula
+              </button>
+            </div>
+            {durum.ayarlar && (
+              <p className="lobi-host-ayar-aktif">Özel dağılım aktif</p>
+            )}
+            {hostHata && <p className="hata">{hostHata}</p>}
           </section>
         )}
+
       </div>
 
-      {/* Rol detay popup */}
+      {/* v1.6 — Madde 1: Önerilen Dağılım popup */}
+      {dagilimPopupAcik && (
+        <DagilimPopup
+          oyuncuSayisi={durum.oyuncuSayisi}
+          onKapat={() => setDagilimPopupAcik(false)}
+        />
+      )}
+
+      {/* v1.6 — Madde 1: Roller galerisi popup */}
+      {rollerPopupAcik && roller.length > 0 && (
+        <RollerPopup
+          roller={roller}
+          onRolSec={(r) => setSeciliRol(r)}
+          onKapat={() => setRollerPopupAcik(false)}
+        />
+      )}
+
+      {/* Rol detay popup — RollerPopup üstüne açılır */}
       {seciliRol && (
         <RolPopup rol={seciliRol} onKapat={() => setSeciliRol(null)} />
       )}
+    </div>
+  );
+}
+
+// v1.6 — Madde 1: Önerilen Dağılım popup'ı (mevcut tablo içeriği)
+function DagilimPopup({ oyuncuSayisi, onKapat }) {
+  useEffect(() => {
+    function esc(e) { if (e.key === 'Escape') onKapat(); }
+    window.addEventListener('keydown', esc);
+    return () => window.removeEventListener('keydown', esc);
+  }, [onKapat]);
+
+  return (
+    <div className="lobi-popup-arka" onClick={onKapat}>
+      <div className="lobi-popup-kart lobi-popup-kart--orta" onClick={e => e.stopPropagation()}>
+        <button className="lobi-popup-kapat" onClick={onKapat}>✕</button>
+        <div className="lobi-popup-bas">
+          <h2 className="lobi-popup-ad">📊 Önerilen Dağılım</h2>
+          <p className="lobi-popup-karakter">
+            Oyuncu sayısına göre dengeli dağılım — host isterse değiştirebilir
+          </p>
+        </div>
+        <div className="lobi-onerilen-tablo">
+          <div className="lobi-onerilen-satir lobi-onerilen-baslik-satir">
+            <span className="lobi-onerilen-sayi-bas">Kişi</span>
+            <span className="lobi-onerilen-grup ozg">🟢 Özg</span>
+            <span className="lobi-onerilen-grup tar">🟡 Tar</span>
+            <span className="lobi-onerilen-grup gel">🔴 Gel</span>
+          </div>
+          {OYUNCU_SAYILARI.map(sayi => {
+            const d = DENGE_ONERILEN[sayi];
+            const aktif = sayi === oyuncuSayisi;
+            return (
+              <div key={sayi} className={`lobi-onerilen-satir ${aktif ? 'aktif' : ''}`}>
+                <span className="lobi-onerilen-sayi">{sayi}</span>
+                <span className="lobi-onerilen-grup ozg">{d.ozgurlukcu}</span>
+                <span className="lobi-onerilen-grup tar">{d.tarafsiz}</span>
+                <span className="lobi-onerilen-grup gel">{d.gelenekci}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// v1.6 — Madde 1: Roller galerisi popup'ı (eski lobi içeriği)
+function RollerPopup({ roller, onRolSec, onKapat }) {
+  useEffect(() => {
+    function esc(e) { if (e.key === 'Escape') onKapat(); }
+    window.addEventListener('keydown', esc);
+    return () => window.removeEventListener('keydown', esc);
+  }, [onKapat]);
+
+  return (
+    <div className="lobi-popup-arka" onClick={onKapat}>
+      <div className="lobi-popup-kart lobi-popup-kart--orta" onClick={e => e.stopPropagation()}>
+        <button className="lobi-popup-kapat" onClick={onKapat}>✕</button>
+        <div className="lobi-popup-bas">
+          <h2 className="lobi-popup-ad">🎭 Roller</h2>
+          <p className="lobi-popup-karakter">Birine tıkla → detay kartı açılır</p>
+        </div>
+        <div className="lobi-roller-grid">
+          {roller.map(r => {
+            const grup = GRUP_BILGI[r.grup];
+            return (
+              <button
+                key={r.id}
+                className="lobi-rol-kart"
+                style={{ borderColor: grup?.renk }}
+                onClick={() => onRolSec(r)}
+              >
+                {/* v1.6 — Madde 5: Karakter portresi */}
+                <KarakterPortresi
+                  karakter={r.karakter}
+                  gorsel={r.gorsel}
+                  grup={r.grup}
+                  boyut={48}
+                />
+                <span className="lobi-rol-kart-grup" style={{ color: grup?.renk }}>
+                  {grup?.sembol}
+                </span>
+                <span className="lobi-rol-kart-ad">{r.ad}</span>
+                <span className="lobi-rol-kart-karakter">{r.karakter}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
@@ -210,6 +458,15 @@ function RolPopup({ rol, onKapat }) {
         <button className="lobi-popup-kapat" onClick={onKapat}>✕</button>
 
         <div className="lobi-popup-bas">
+          {/* v1.6 — Madde 5: Karakter portresi (büyük) */}
+          <div className="lobi-popup-portre-sarmal">
+            <KarakterPortresi
+              karakter={rol.karakter}
+              gorsel={rol.gorsel}
+              grup={rol.grup}
+              boyut={96}
+            />
+          </div>
           <p className="lobi-popup-grup" style={{ color: grup?.renk }}>
             {grup?.sembol} {grup?.ad}
           </p>

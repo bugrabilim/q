@@ -217,6 +217,30 @@
   line-height: 1.5;
 }
 
+/* v1.5 — Madde 2: Sabah otomatik devam sayacı */
+.sabah-sayac-yazi {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--derin);
+  font-weight: 500;
+}
+
+.sabah-sayac-rozet {
+  display: inline-block;
+  background: var(--gunes);
+  color: white;
+  font-family: var(--font-baslik);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+  min-width: 38px;
+  text-align: center;
+}
+
 .sabah-devam-btn {
   background: var(--deniz);
   color: white;

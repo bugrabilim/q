@@ -157,6 +157,15 @@
   text-decoration-color: rgba(38, 70, 83, 0.4);
 }
 
+/* v1.6 — Madde 5: Mini avatar (listede) */
+.oyuncu-listesi-avatar {
+  flex-shrink: 0;
+}
+
+.oyuncu-listesi-satir--ayrilmis .oyuncu-listesi-avatar {
+  filter: grayscale(0.4);
+}
+
 .oyuncu-listesi-isim {
   font-family: var(--font-baslik);
   font-weight: 600;

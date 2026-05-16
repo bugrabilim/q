@@ -6,6 +6,7 @@ import { socket } from '../socket.js';
 import SesButonu from '../ses/SesButonu.jsx';
 import { muzikCal, efektCal } from '../ses/SesYoneticisi.js';
 import { fazaMuzikEslestir } from '../ses/sesHaritasi.js';
+import KarakterPortresi from '../bilesenler/KarakterPortresi.jsx';
 import './BitisEkrani.css';
 
 const GRUP_AD = {
@@ -33,6 +34,17 @@ const GRUP_SIRA = {
   ozgurlukcu: 0,
   tarafsiz: 1,
   gelenekci: 2
+};
+
+// v1.5 — Madde 6 (b): Kazanan gruba göre partikül emojisi
+// Özgürlükçü: pride/doğa hissi → yapraklar
+// Gelenekçi: bayraksal → bayrakçıklar
+// Tarafsız tek başına: parıltılı yıldızlar
+const PARTIKUL_EMOJI = {
+  ozgurlukcu: '🍃',
+  gelenekci: '🚩',
+  tarafsiz: '⭐',
+  beraberlik: '·'
 };
 
 export default function BitisEkrani({ benimIsmim, oyuncuId, onAyril }) {
@@ -99,11 +111,34 @@ export default function BitisEkrani({ benimIsmim, oyuncuId, onAyril }) {
   // Madde 9: Kazanan grubuna göre arkaplan tonu
   const kazananRenk = GRUP_RENGI[kazananGrup] || 'var(--derin)';
 
+  const partikulEmoji = PARTIKUL_EMOJI[kazananGrup] || '·';
+  const partikulSayisi = kazananGrup === 'beraberlik' ? 0 : 14;
+
   return (
     <div
       className={`bitis-kapsayici bitis-kapsayici--${kazananGrup}`}
       style={{ '--kazanan-renk': kazananRenk }}
     >
+      {/* v1.5 — Madde 6 (b): Kazanan grup partikül efekti — CSS animasyon */}
+      {partikulSayisi > 0 && (
+        <div className="bitis-partikul-katman" aria-hidden="true">
+          {Array.from({ length: partikulSayisi }).map((_, i) => (
+            <span
+              key={i}
+              className="bitis-partikul"
+              style={{
+                left: `${(i * 7.3) % 100}%`,
+                animationDelay: `${(i * 0.6) % 8}s`,
+                animationDuration: `${8 + (i % 5) * 1.5}s`,
+                fontSize: `${14 + (i % 4) * 4}px`
+              }}
+            >
+              {partikulEmoji}
+            </span>
+          ))}
+        </div>
+      )}
+
       {/* Sağ üst — ses aç/kapat */}
       <div className="bitis-sag-ust">
         <SesButonu muzikFazi={fazaMuzikEslestir('bitis', kazananGrup)} />
@@ -148,6 +183,13 @@ export default function BitisEkrani({ benimIsmim, oyuncuId, onAyril }) {
         <ul className="bitis-tum-roller">
           {siraliRoller.map(o => (
             <li key={o.oyuncuId} className="bitis-tum-satir">
+              {/* v1.6 — Madde 5: Karakter portresi */}
+              <KarakterPortresi
+                karakter={o.rol.karakter}
+                gorsel={o.rol.gorsel}
+                grup={o.rol.grup}
+                boyut={36}
+              />
               <span
                 className="bitis-tum-renk-noktasi"
                 style={{ background: GRUP_RENGI[o.rol.grup] }}

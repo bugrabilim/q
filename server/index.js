@@ -28,6 +28,10 @@ const io = new Server(httpServer, {
 // Faz süreleri
 const SURE_BASVURU = Number(process.env.Q_BASVURU_MS || 10_000);
 const SURE_TANISMA = Number(process.env.Q_TANISMA_MS || 30_000);
+// v1.5 — Madde 1: Rol kartı max süre (otomatik tanışmaya geç)
+const SURE_ROL = Number(process.env.Q_ROL_MS || 30_000);
+// v1.5 — Madde 2: Sabah ekranı max süre (host basmasa da otomatik devam)
+const SURE_SABAH = Number(process.env.Q_SABAH_MS || 30_000);
 
 const rooms = {};
 
@@ -51,8 +55,9 @@ function lobiDurumu(oda) {
       bot: !!p.bot
     })),
     oyuncuSayisi: oda.players.length,
-    minOyuncu: 6,
-    maxOyuncu: 12
+    minOyuncu: 4,
+    maxOyuncu: 12,
+    ayarlar: oda.ayarlar || null
   };
 }
 
@@ -89,7 +94,14 @@ function oyuncuListesi(oda, kullaniciId) {
     if (rol) {
       const ifsa = oda.oyun?.aciklanmislar?.has(p.id) || p.koydeMi === false;
       if (benAyrilanmiyim || ifsa) {
-        rolBilgi = { id: rol.id, ad: rol.ad, grup: rol.grup };
+        // v1.6 — Madde 5: karakter + portre yolu da yollanır (avatar göstermek için)
+        rolBilgi = {
+          id: rol.id,
+          ad: rol.ad,
+          grup: rol.grup,
+          karakter: rol.karakter,
+          gorsel: rol.gorsel
+        };
       }
     }
     return {
@@ -198,7 +210,16 @@ const BOT_ISIMLERI = [
   'Kerem'
 ];
 
-// ─── Bot Konuşma Havuzları (Madde 13) ────────────────────────
+// v1.6 — Madde 3: Türkçe-aware lowercase. JS varsayılan toLowerCase() Unicode'a göre
+// `İ`'yi `i̇` (i + combining dot above) yapar; bu yüzden `İnci` bot ismi `inci` yazımıyla
+// eşleşmezdi. `toLocaleLowerCase('tr-TR')` doğru sonucu verir: `İ→i`, `I→ı`.
+function trKucult(s) {
+  try { return String(s || '').toLocaleLowerCase('tr-TR'); }
+  catch { return String(s || '').toLowerCase(); }
+}
+
+// ─── Bot Konuşma Havuzları (v1.6 — Madde 2: faz-bazlı genişletme) ────────────
+// Genel havuz — herhangi bir fazda fallback olarak kullanılır
 const BOT_KONUSMA = [
   'Burası gerçekten dinlendirici.',
   'Çay içecek sakin bir yer arıyordum.',
@@ -216,6 +237,81 @@ const BOT_KONUSMA = [
   'Şu an her şey karışık.'
 ];
 
+// Faz-bazlı havuzlar — botMesajGonder önce burayı kontrol eder, boşsa BOT_KONUSMA'ya düşer
+const BOT_KONUSMA_FAZ = {
+  tanisma: [
+    'Selam, ben de yeni geldim köye.',
+    'Tanıştığıma memnun oldum.',
+    'Merhaba arkadaşlar, ne hoş bir yer.',
+    'Şehirden geldim, biraz nefes alacağım sandım.',
+    'Hep böyle sessiz mi köy?',
+    'İlk gece olduğu için biraz tedirginim.',
+    'Birbirimizi yeni tanıyoruz, sabır.',
+    'Tanışmak güzel, umarım iyi geçer.',
+    'Kim olduğunu söylemek isteyen var mı?',
+    'İlk izlenimlerim karışık ama umutluyum.',
+    'Burada herkesin bir hikayesi var sanırım.',
+    'Köye geldim ama henüz yerleşemedim.',
+    'Birbirimize alışmamız zaman alacak.',
+    'Çay içip biraz tanışsak iyi olur.',
+    'Hayırlı olsun yeni başlangıçlar.'
+  ],
+  sabah: [
+    'Bu gece uyuyamadım açıkçası.',
+    'Sabah olduğuna sevindim.',
+    'Garip rüyalar gördüm gece.',
+    'Köyden biri eksildi, içim daraldı.',
+    'Geceden bu yana her şey değişti gibi.',
+    'Sabah olunca daha net düşünüyorum.',
+    'Günaydın — uzun bir gece geçti.',
+    'Olanları sindiremedim hâlâ.',
+    'Yarın daha dikkatli olmalıyız.',
+    'Birinin kaybı ağır geliyor.',
+    'Köy uyandı ama herkes değil.',
+    'Bu sabah herkes biraz daha şüpheli.'
+  ],
+  tartisma: [
+    'Konuşmamız lazım, zaman daralıyor.',
+    'Birisini öne sürmek zorundayız.',
+    'Bence en şüpheli olanı seçelim.',
+    'Kim ne diyor, dinleyelim önce.',
+    'Bana göre fazla sessiz olanlar şüpheli.',
+    'Fazla aktif olanlar da dikkatimi çekiyor.',
+    'Delil yok ama sezgilerim var.',
+    'Karar vermeden iyice tartışmalıyız.',
+    'Birinin kaybı ağırına gidiyor olmalı, konuşsun.',
+    'Bence bu işin altından çıkacağız.',
+    'Acele kararlar pahalıya patlar.',
+    'Suçlamak kolay, kanıtlamak zor.',
+    'Sessiz duranlar bence bir şey biliyor.',
+    'Geceyi anlatmayanlar var aramızda.',
+    'Oyumu vermeden bir kez daha düşüneceğim.',
+    'Köy kaybetmeden bir şey yapmalıyız.',
+    'Birbirimize güvenmemiz lazım.',
+    'Yanlış oy hepimize zarar verir.'
+  ],
+  oylama_tartisma: [
+    'Tekrar konuşmamız çok şey değiştirmez sanırım.',
+    'Aynı kişiyi seçersek yine sonuç çıkmaz.',
+    'Belki bu sefer farklı düşünmeliyiz.',
+    'Yine de bir karar lazım, geceyi bekleyemeyiz.',
+    'Son söz olarak hâlâ aynı kişiden şüpheleniyorum.',
+    'Belki yanılıyoruz, başka bir isim düşünelim.',
+    'Bu tartışma bizi bir yere götürmüyor.',
+    'Kim olursa olsun, karar verelim artık.',
+    'Sabırlı olmalıyız, hata yapmayalım.',
+    'Son şansımız, dikkatli kullanalım.'
+  ],
+  oylama_sonuc: [
+    'Bu kararla yaşamak zor olacak.',
+    'Umarım doğru kişiyi seçtik.',
+    'Köy bir kişi daha eksildi.',
+    'Geceyi nasıl geçireceğiz acaba?',
+    'Şimdi her şey daha da gergin.',
+    'Gece gelmeden toparlanalım.'
+  ]
+};
+
 const BOT_SUPHE = [
   '{X} bana garip geliyor.',
   '{X} biraz fazla sessiz, ne diyorsunuz?',
@@ -224,7 +320,19 @@ const BOT_SUPHE = [
   '{X}\'i izliyorum, garip bir şey yok.',
   '{X} hakkında bir fikrim yok henüz.',
   '{X} ile ilgili tedirginim.',
-  '{X}\'in söylediklerine güvenebilir miyiz?'
+  '{X}\'in söylediklerine güvenebilir miyiz?',
+  '{X} dün gece tuhaftı, fark eden oldu mu?',
+  '{X} çok hızlı suçluyor başkalarını.',
+  '{X} kendini gereğinden fazla savunuyor.',
+  '{X} hiç oy kullanmıyor gibi, neden?',
+  '{X} sürekli konuyu değiştiriyor.',
+  '{X} bana yalan söylüyor olabilir.',
+  '{X} fazla tarafsız davranıyor.',
+  '{X} ile göz göze gelemiyorum.',
+  '{X}\'in hikayesinde bir tutarsızlık var.',
+  '{X} aslında düşündüğümüzden tehlikeli olabilir.',
+  '{X}\'i bu turda dışlamayı düşünüyorum.',
+  '{X} bir grupla birlikte oynuyor sanki.'
 ];
 
 const BOT_CEVAP = [
@@ -242,7 +350,22 @@ const BOT_CEVAP = [
   'Eminim sen daha iyi biliyorsun.',
   'Belki haklısın.',
   'Bana mantıklı geldi.',
-  'Hiçbir fikrim yok.'
+  'Hiçbir fikrim yok.',
+  'Açıkçası bana da garip geldi.',
+  'Yorum yapmak için erken.',
+  'Düşüneceğim, geri dönerim.',
+  'Sen söylersen ben de katılırım.',
+  'Şu an kafam karışık.',
+  'Senin gibi düşünmüyorum sanırım.',
+  'Tam tersi düşünebilir miyiz?',
+  'Bu konuda emin değilim hiç.',
+  'Söylediklerin mantıklı ama yine de…',
+  'Bir kez daha düşünmen iyi olur.',
+  'Belki başka biri yardımcı olur.',
+  'Hadi konuyu değiştirelim biraz.',
+  'Şu an cevap vermek istemiyorum.',
+  'Bana göre değil bu iş.',
+  'Doğru olabilir ama kanıt yok.'
 ];
 
 const BOT_GECE_NOT = [
@@ -253,11 +376,30 @@ const BOT_GECE_NOT = [
   'Hiçbir şey görmedim.',
   'Bu gece dikkatli olmalıyım.',
   'Yarın daha çok konuşmalıyım.',
-  'Bir şeyler değişiyor gibi.'
+  'Bir şeyler değişiyor gibi.',
+  'Dışarıda ayak sesi duydum.',
+  'Pencereden birini görür gibi oldum.',
+  'Komşum geç saate kadar uyumadı sanırım.',
+  'İçim rahat değil bu gece.',
+  'Sabah olunca daha net konuşacağım.',
+  'Kafamda bir liste oluşmaya başladı.',
+  'Birinin yalan söylediğinden eminim artık.',
+  'Yarın hata yapma lüksüm yok.'
 ];
 
 // İzinli (botların yazabileceği) gündüz fazları
 const BOT_KONUSMA_FAZLARI = ['tanisma', 'sabah', 'tartisma', 'oylama_tartisma', 'oylama_sonuc'];
+
+// v1.6 — Madde 2: Faz-bazlı havuz seçici. Önce faz havuzundan dene, yoksa genel havuza düş.
+function fazHavuzuSec(oda) {
+  const fazHavuzu = BOT_KONUSMA_FAZ[oda.faz];
+  // Faz havuzu + genel havuz birleşik — faz havuzu varsa daha sık seçilir
+  if (fazHavuzu && fazHavuzu.length > 0) {
+    // %70 faz havuzu, %30 genel havuz (çeşitlilik için)
+    return Math.random() < 0.7 ? fazHavuzu : BOT_KONUSMA;
+  }
+  return BOT_KONUSMA;
+}
 
 // Bir bot için rastgele mesaj üret ve gönder
 function botMesajGonder(oda, bot) {
@@ -272,10 +414,12 @@ function botMesajGonder(oda, bot) {
       const hedef = baskalari[Math.floor(Math.random() * baskalari.length)];
       metin = BOT_SUPHE[Math.floor(Math.random() * BOT_SUPHE.length)].replace('{X}', hedef.isim);
     } else {
-      metin = BOT_KONUSMA[Math.floor(Math.random() * BOT_KONUSMA.length)];
+      const havuz = fazHavuzuSec(oda);
+      metin = havuz[Math.floor(Math.random() * havuz.length)];
     }
   } else {
-    metin = BOT_KONUSMA[Math.floor(Math.random() * BOT_KONUSMA.length)];
+    const havuz = fazHavuzuSec(oda);
+    metin = havuz[Math.floor(Math.random() * havuz.length)];
   }
   oyuncuMesaji(oda, bot, metin, 'koy');
 }
@@ -298,14 +442,14 @@ function botCevapVer(oda, gelenMesaj) {
   if (!BOT_KONUSMA_FAZLARI.includes(oda.faz)) return;
   if (gelenMesaj.kanal !== 'koy') return; // sadece köy kanalı
 
-  const metin = (gelenMesaj.metin || '').toLowerCase();
+  const metin = trKucult(gelenMesaj.metin);
   const soruVar = metin.includes('?');
 
-  // Bot ismi geçiyor mu?
+  // Bot ismi geçiyor mu? (Türkçe-aware — Madde 3)
   const aktifBotlar = oda.players.filter(p => p.bot && p.koydeMi !== false);
   if (aktifBotlar.length === 0) return;
 
-  let hedefBot = aktifBotlar.find(b => metin.includes(b.isim.toLowerCase()));
+  let hedefBot = aktifBotlar.find(b => metin.includes(trKucult(b.isim)));
 
   // Tetikleyici yok ise dur
   if (!hedefBot && !soruVar) return;
@@ -342,8 +486,8 @@ function botEkle(oda) {
   if (oda.players.length >= 12) return { ok: false, hata: 'Oda dolu' };
 
   // Kullanılmamış bir bot ismi bul
-  const kullanilanIsimler = new Set(oda.players.map(p => p.isim.toLowerCase()));
-  const uygunIsim = BOT_ISIMLERI.find(n => !kullanilanIsimler.has(n.toLowerCase()));
+  const kullanilanIsimler = new Set(oda.players.map(p => trKucult(p.isim)));
+  const uygunIsim = BOT_ISIMLERI.find(n => !kullanilanIsimler.has(trKucult(n)));
   if (!uygunIsim) return { ok: false, hata: 'Daha fazla bot ismi yok' };
 
   const botId = 'bot-' + (++botIdSayaci) + '-' + Math.random().toString(36).slice(2, 6);
@@ -355,6 +499,8 @@ function botEkle(oda) {
     bot: true
   });
 
+  // Madde 4: Oyuncu sayısı değişti — host'un özel ayarı geçersiz olabilir, sıfırla
+  oda.ayarlar = null;
   console.log(`[bot] ${uygunIsim} eklendi → ${oda.kod} (${oda.players.length}/12)`);
   return { ok: true, botId };
 }
@@ -363,6 +509,8 @@ function botSil(oda, botId) {
   const oyuncu = oyuncuyuBul(oda, botId);
   if (!oyuncu?.bot) return { ok: false, hata: 'Bot bulunamadı' };
   oda.players = oda.players.filter(p => p.id !== botId);
+  // Madde 4: Oyuncu sayısı değişti — host'un özel ayarı geçersiz olabilir, sıfırla
+  oda.ayarlar = null;
   console.log(`[bot] ${oyuncu.isim} silindi`);
   return { ok: true };
 }
@@ -407,7 +555,9 @@ function botlarHazirOlur(oda) {
 
 // ─── Oyun Başlatma ───────────────────────────────────────────
 function oyunuBaslat(oda) {
-  const dagilim = rolleriDagit(oda.players);
+  // Madde 4 (A) — host özel dağılım belirlediyse onu kullan, yoksa varsayılan denge
+  const ozelDenge = oda.ayarlar?.dagilim || null;
+  const dagilim = rolleriDagit(oda.players, ozelDenge);
 
   oda.faz = 'rol_dagitimi';
   oda.oyun = {
@@ -435,15 +585,22 @@ function oyunuBaslat(oda) {
           id: rol.id, ad: rol.ad, grup: rol.grup,
           karakter: rol.karakter, yas: rol.yas, meslek: rol.meslek,
           motivasyon: rol.motivasyon, geceAksiyonu: rol.geceAksiyonu,
-          kazanmaKosulu: rol.kazanmaKosulu
+          kazanmaKosulu: rol.kazanmaKosulu,
+          gorsel: rol.gorsel  // v1.6 — Madde 5: karakter portresi yolu
         }
       });
     }
   });
 
+  // v1.5 — Madde 1: Rol kartı için 30 sn max süre + sayaç
+  const sonZaman = Date.now() + SURE_ROL;
+  oda.fazSonZaman = sonZaman;
+
   io.to(oda.kod).emit('faz:degisti', {
     faz: 'rol_dagitimi',
-    oyuncuSayisi: oda.players.length
+    oyuncuSayisi: oda.players.length,
+    sure: SURE_ROL,
+    sonZaman
   });
 
   // Oyuncu listesini ilk kez yayınla (rol dağıtımından sonra)
@@ -457,6 +614,15 @@ function oyunuBaslat(oda) {
   }
 
   console.log(`[oyun] ${oda.kod} — Roller dağıtıldı (${oda.players.length} oyuncu)`);
+
+  // v1.5 — Madde 1: 30 sn sonra hâlâ rol_dagitimi fazındaysak tanışmaya zorla geç
+  const tRol = setTimeout(() => {
+    if (oda.faz === 'rol_dagitimi') {
+      console.log(`[oyun] ${oda.kod} — Rol kartı süresi doldu, tanışmaya geçiliyor`);
+      tanismaBasla(oda);
+    }
+  }, SURE_ROL);
+  oda.oyun.fazTimerleri.push(tRol);
 
   // Botlar otomatik onaylasın
   botlarRolleriOnayla(oda);
@@ -692,6 +858,12 @@ function geceyiCoz(oda) {
   oda.faz = 'sabah';
   oda.altFaz = null;
 
+  // v1.5 — Madde 2: Sabah max 30 sn — host basmasa da otomatik devam
+  oda.oyun.fazTimerleri.forEach(t => clearTimeout(t));
+  oda.oyun.fazTimerleri = [];
+  const sabahSonZaman = Date.now() + SURE_SABAH;
+  oda.fazSonZaman = sabahSonZaman;
+
   // Kişisel sabah mesajları — her oyuncuya ayrı ayrı
   // Aynı zamanda state'e kaydet ki yenileme yapınca tekrar verebilelim
   if (!oda.oyun.sabahKisisel) oda.oyun.sabahKisisel = new Map();
@@ -718,8 +890,14 @@ function geceyiCoz(oda) {
     faz: 'sabah',
     geceTuru: oda.oyun.geceTuru,
     herkeseSabah: sonuc.herkeseSabah,
-    ayrilanlar
+    ayrilanlar,
+    sure: SURE_SABAH,
+    sonZaman: sabahSonZaman
   });
+
+  // v1.5 — Madde 2: 30 sn sonra hâlâ sabah'taysak otomatik devam (host'u beklemeden)
+  const tSabah = setTimeout(() => sabahOtomatikDevam(oda), SURE_SABAH);
+  oda.oyun.fazTimerleri.push(tSabah);
 
   console.log(`[oyun] ${oda.kod} — Sabah ${oda.oyun.geceTuru}: ${sonuc.etkiler.ayrilanlar.size} ayrılan, ${sonuc.herkeseSabah.length} genel mesaj`);
 
@@ -735,6 +913,18 @@ function geceyiCoz(oda) {
       }
       setTimeout(() => bitiseBasla(oda, erkenKazanan), 2000);
     }
+  }
+}
+
+// v1.5 — Madde 2: Sabah süresi dolunca otomatik devam (host olmasa bile)
+function sabahOtomatikDevam(oda) {
+  if (oda.faz !== 'sabah') return;
+  console.log(`[oyun] ${oda.kod} — Sabah süresi doldu, otomatik devam`);
+  const kazanan = kazananGrupBul(oda);
+  if (kazanan) {
+    bitiseBasla(oda, kazanan);
+  } else {
+    tartismayaBasla(oda);
   }
 }
 
@@ -1399,7 +1589,7 @@ function bitiseBasla(oda, kazananGrup) {
       isim: oyuncu.isim,
       bot: !!oyuncu.bot,
       koydeMi: oyuncu.koydeMi !== false,
-      rol: { id: rol.id, ad: rol.ad, grup: rol.grup, karakter: rol.karakter }
+      rol: { id: rol.id, ad: rol.ad, grup: rol.grup, karakter: rol.karakter, gorsel: rol.gorsel }
     });
   }
 
@@ -1495,7 +1685,8 @@ const ROLLER_OZETI = ROLLER.map(r => ({
   meslek: r.meslek,
   motivasyon: r.motivasyon,
   geceAksiyonu: r.geceAksiyonu,
-  kazanmaKosulu: r.kazanmaKosulu
+  kazanmaKosulu: r.kazanmaKosulu,
+  gorsel: r.gorsel  // v1.6 — Madde 5: karakter portresi yolu
 }));
 
 // ─── Socket Bağlantıları ─────────────────────────────────────
@@ -1536,10 +1727,12 @@ io.on('connection', (socket) => {
     if (oda.faz !== 'lobi') return callback({ ok: false, hata: 'Oyun başladı, katılınamaz' });
     if (oda.players.length >= 12) return callback({ ok: false, hata: 'Oda dolu (max 12)' });
     const temizIsim = isim.trim().slice(0, 20);
-    if (oda.players.some(p => p.isim.toLowerCase() === temizIsim.toLowerCase())) {
+    if (oda.players.some(p => trKucult(p.isim) === trKucult(temizIsim))) {
       return callback({ ok: false, hata: 'Bu isimde biri zaten odada' });
     }
     oda.players.push({ id: oyuncuId, isim: temizIsim, hostMu: false, baglantiVar: true });
+    // Madde 4: Oyuncu sayısı değişti — host'un özel ayarı geçersiz olabilir, sıfırla
+    oda.ayarlar = null;
     if (!oda.aktifOyuncular) oda.aktifOyuncular = function() { return this.players.filter(p => p.baglantiVar !== false); };
     socket.join(temizKod);
     mevcutOda = temizKod;
@@ -1591,6 +1784,8 @@ io.on('connection', (socket) => {
 
     // Lobi senaryosu: oyuncuyu listeden tamamen sil (eski davranış)
     oda.players = oda.players.filter(p => p.id !== oyuncuId);
+    // Madde 4: Oyuncu sayısı değişti — host'un özel ayarı geçersiz olabilir, sıfırla
+    oda.ayarlar = null;
     if (oda.players.length === 0 || oda.players.every(p => p.bot)) {
       // Tüm gerçek oyuncular gittiyse odayı kapat
       oda.oyun?.fazTimerleri?.forEach(t => clearTimeout(t));
@@ -1636,13 +1831,48 @@ io.on('connection', (socket) => {
     callback?.({ ok: true, durum: lobiDurumu(oda) });
   });
 
+  // Madde 4 (A) — Host özel grup dağılımı belirleyebilir (roller gizli kalır)
+  // dagilim: { ozgurlukcu, tarafsiz, gelenekci } veya null (önerilene dön)
+  // Toplam oyuncu sayısı ile eşleşmeli; gelenekci >= 1 (Kaan zorunlu).
+  socket.on('lobi:ayar', ({ dagilim }, callback) => {
+    if (!mevcutOda || !rooms[mevcutOda]) return callback?.({ ok: false, hata: 'Oda yok' });
+    const oda = rooms[mevcutOda];
+    const oyuncu = oyuncuyuBul(oda, oyuncuId);
+    if (!oyuncu?.hostMu) return callback?.({ ok: false, hata: 'Sadece host ayar yapabilir' });
+    if (oda.faz !== 'lobi') return callback?.({ ok: false, hata: 'Oyun zaten başladı' });
+
+    if (dagilim === null || dagilim === undefined) {
+      oda.ayarlar = null;
+      lobiyiYayinla(oda.kod);
+      return callback?.({ ok: true });
+    }
+
+    const ozg = Number(dagilim.ozgurlukcu);
+    const tar = Number(dagilim.tarafsiz);
+    const gel = Number(dagilim.gelenekci);
+    if ([ozg, tar, gel].some(n => !Number.isInteger(n) || n < 0)) {
+      return callback?.({ ok: false, hata: 'Geçersiz sayı' });
+    }
+    if (gel < 1) {
+      return callback?.({ ok: false, hata: 'En az 1 gelenekçi olmalı (Kaan zorunlu)' });
+    }
+    const toplam = ozg + tar + gel;
+    if (toplam !== oda.players.length) {
+      return callback?.({ ok: false, hata: `Toplam ${oda.players.length} olmalı (şu an ${toplam})` });
+    }
+
+    oda.ayarlar = { dagilim: { ozgurlukcu: ozg, tarafsiz: tar, gelenekci: gel } };
+    lobiyiYayinla(oda.kod);
+    callback?.({ ok: true });
+  });
+
   socket.on('oyun:baslat', (_, callback) => {
     if (!mevcutOda || !rooms[mevcutOda]) return callback?.({ ok: false, hata: 'Oda bulunamadı' });
     const oda = rooms[mevcutOda];
     const oyuncu = oyuncuyuBul(oda, oyuncuId);
     if (!oyuncu?.hostMu) return callback?.({ ok: false, hata: 'Sadece host başlatabilir' });
     if (oda.faz !== 'lobi') return callback?.({ ok: false, hata: 'Oyun zaten başlamış' });
-    if (oda.players.length < 6) return callback?.({ ok: false, hata: 'En az 6 oyuncu gerekli' });
+    if (oda.players.length < 4) return callback?.({ ok: false, hata: 'En az 4 oyuncu gerekli' });
     if (oda.players.length > 12) return callback?.({ ok: false, hata: 'En fazla 12 oyuncu' });
     try {
       oyunuBaslat(oda);
@@ -1908,7 +2138,8 @@ io.on('connection', (socket) => {
       herkeseSabah: oda.oyun.sabahHerkese || null,
       hostMu: oyuncu?.hostMu || false,
       chat: chatGecmisi(oda, oyuncuId),
-      oyuncular: oyuncuListesi(oda, oyuncuId)
+      oyuncular: oyuncuListesi(oda, oyuncuId),
+      sonZaman: oda.fazSonZaman || null
     });
   });
 

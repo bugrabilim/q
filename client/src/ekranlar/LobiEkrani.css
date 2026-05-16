@@ -224,6 +224,337 @@
   border-bottom: 1px solid rgba(42, 157, 143, 0.15);
 }
 
+/* v1.6 — Madde 1: Önerilen Dağılım + Roller info butonları (popup açar) */
+.lobi-info-bolum {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 6px 0;
+}
+
+.lobi-info-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: white;
+  border: 1px solid var(--deniz-acik);
+  border-radius: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease, background 0.15s ease;
+  box-shadow: var(--golge-yumusak);
+}
+
+.lobi-info-btn:hover:not(:disabled) {
+  border-color: var(--deniz);
+  background: #FBFEFD;
+  box-shadow: var(--golge-orta);
+  transform: translateY(-1px);
+}
+
+.lobi-info-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.lobi-info-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.lobi-info-btn-ikon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.lobi-info-btn-metin {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.lobi-info-btn-baslik {
+  font-family: var(--font-baslik);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--derin);
+}
+
+.lobi-info-btn-altyazi {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: rgba(38, 70, 83, 0.6);
+  font-style: italic;
+}
+
+/* Mobilde butonlar alt alta (alan dar) */
+@media (max-width: 480px) {
+  .lobi-info-bolum {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Popup kart — Madde 1'in popup'ları için biraz daha geniş varyant */
+.lobi-popup-kart--orta {
+  max-width: 520px;
+}
+
+/* Roller detay popup'ı (RolPopup) — info popup'larının ÜSTÜNDE kalsın */
+.lobi-popup-kart:not(.lobi-popup-kart--orta) {
+  /* default: detay popup en üstte */
+}
+
+/* Madde 5: Önerilen dağılım tablosu */
+.lobi-onerilen-bolum {
+  flex-shrink: 0;
+  padding: 14px 0 4px;
+  border-top: 1px solid rgba(42, 157, 143, 0.15);
+}
+
+.lobi-onerilen-baslik {
+  font-family: var(--font-baslik);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--derin);
+}
+
+.lobi-onerilen-altyazi {
+  font-family: var(--font-alinti);
+  font-style: italic;
+  font-size: 12px;
+  color: rgba(38, 70, 83, 0.55);
+  margin: 2px 0 10px;
+}
+
+.lobi-onerilen-tablo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lobi-onerilen-satir {
+  display: grid;
+  grid-template-columns: 44px 1fr 1fr 1fr;
+  align-items: center;
+  padding: 7px 12px;
+  background: white;
+  border-radius: 8px;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--derin);
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.lobi-onerilen-baslik-satir {
+  background: transparent;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(38, 70, 83, 0.55);
+  padding: 4px 12px 2px;
+}
+
+.lobi-onerilen-satir.aktif {
+  border-color: var(--deniz);
+  background: #F0FAFB;
+  box-shadow: var(--golge-yumusak);
+  font-weight: 600;
+}
+
+.lobi-onerilen-sayi,
+.lobi-onerilen-sayi-bas {
+  font-weight: 600;
+  color: var(--deniz);
+}
+
+.lobi-onerilen-grup {
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Madde 4: Host'a özel dağılım ayarı paneli */
+.lobi-host-ayar-bolum {
+  flex-shrink: 0;
+  padding: 14px 14px 12px;
+  background: #FBFEFD;
+  border: 1px solid var(--deniz-acik);
+  border-radius: 12px;
+  margin-top: 6px;
+}
+
+.lobi-host-ayar-baslik {
+  font-family: var(--font-baslik);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--derin);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lobi-host-ayar-rozet {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--derin);
+  color: white;
+}
+
+.lobi-host-ayar-altyazi {
+  font-family: var(--font-alinti);
+  font-style: italic;
+  font-size: 12px;
+  color: rgba(38, 70, 83, 0.6);
+  margin: 4px 0 12px;
+}
+
+.lobi-host-ayar-satirlar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lobi-host-ayar-satir {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid rgba(42, 157, 143, 0.15);
+}
+
+.lobi-host-ayar-etiket {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--derin);
+  font-weight: 500;
+}
+
+.lobi-host-ayar-sayac {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lobi-host-ayar-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--deniz);
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, opacity 0.15s ease;
+  user-select: none;
+}
+
+.lobi-host-ayar-btn:hover:not(:disabled) {
+  background: var(--derin);
+}
+
+.lobi-host-ayar-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.lobi-host-ayar-deger {
+  font-family: var(--font-baslik);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--derin);
+  min-width: 22px;
+  text-align: center;
+}
+
+.lobi-host-ayar-altbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.lobi-host-ayar-toplam {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.lobi-host-ayar-toplam.ok {
+  color: var(--ozgurlukcu);
+}
+
+.lobi-host-ayar-toplam.hata {
+  color: var(--gelenekci);
+}
+
+.lobi-host-ayar-butonlar {
+  display: flex;
+  gap: 8px;
+}
+
+.lobi-host-ayar-sifirla {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 12px;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--deniz);
+  border: 1px solid var(--deniz-acik);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.lobi-host-ayar-sifirla:hover {
+  background: var(--deniz-acik);
+}
+
+.lobi-host-ayar-uygula {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 8px;
+  background: var(--deniz);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.lobi-host-ayar-uygula:hover:not(:disabled) {
+  background: var(--derin);
+}
+
+.lobi-host-ayar-uygula:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.lobi-host-ayar-aktif {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--gunes);
+  font-weight: 600;
+  margin-top: 8px;
+  text-align: center;
+}
+
 /* Madde 3: Roller galerisi (lobide) */
 .lobi-roller-bolum {
   flex-shrink: 0;
@@ -256,15 +587,22 @@
 .lobi-rol-kart {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
+  align-items: center;
+  gap: 4px;
   padding: 10px 12px;
   background: white;
   border: 2px solid rgba(42, 157, 143, 0.2);
   border-radius: 10px;
   cursor: pointer;
   transition: transform 0.1s ease, box-shadow 0.15s ease, background 0.15s ease;
-  text-align: left;
+  text-align: center;
+}
+
+/* v1.6 — Madde 5: Popup'ta büyük portre */
+.lobi-popup-portre-sarmal {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
 }
 
 .lobi-rol-kart:hover {

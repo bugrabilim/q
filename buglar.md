@@ -36,3 +36,20 @@ T6/T7 sırasında bulunan hatalar burada izlenir. Format için ajan-plani.md →
   1. Master Bölüm 11 ("Kimse Gitmezse") satırları güncellendi — ek tartışma hakkı 1 ile sınırlı, sonra direkt geceye.
   2. `server/index.js`'te `oda.oyun.tekrarTartismaYapildi` flag'ı eklendi. İki ayrılma noktasında (1. oylama eşitlik + 2. oylama %51 yok) kontrol edilir: flag set ise direkt `geceyeBasla(oda)`, değilse flag set + `tekrarTartismayaBasla(oda)`.
   3. `geceyeBasla()` başında flag sıfırlanır — her yeni gün için temiz "1 ek tartışma" hakkı.
+
+---
+
+### Bug #3 — Mobilde ses ayarları slider'ları tepki vermiyor
+- **Faz/ekran:** Ses Ayarları Modal'ı (⚙️ ile açılır)
+- **Tarih:** 2026-05-14
+- **Sürüm:** v1.4
+- **Adımlar:** Mobilde lobi veya oyun ekranında ⚙️ ikonuna bas → 3 slider görünür (Ana Ses / Müzik / Efekt). Slider thumb'ı parmakla sürüklemeye çalış.
+- **Beklenen:** Slider parmak hareketine göre değer değişsin, çalan müziğin sesi anında uygulansın (masaüstünde böyle çalışıyor).
+- **Gerçekleşen:** Mobilde slider tepki vermiyor — değer değişmiyor.
+- **Öncelik:** Düşük — Buğra "önemli değil" dedi. V1.5'e bırakıldı.
+- **Durum:** Açık
+- **Olası sebep + düzeltme planı:**
+  1. `.ses-ayar-slider` track yüksekliği 4px — mobil için fazla ince, dokunma hedefi yetersiz. Çözüm: mobilde track'i ~10px, thumb'ı ~24px yap.
+  2. `.ses-ayar-slider` üzerine `touch-action: pan-x` eklemek — tarayıcı yatay sürüklemeyi slider gesture'i olarak işlesin, parent modal'a kaçmasın.
+  3. Modal kart'taki `onClick={e.stopPropagation()}` sadece click event'i yakalıyor; mobil için `onTouchEnd` da stopPropagation almalı.
+- **Dosyalar:** `client/src/ses/SesAyarlariModal.jsx` + `client/src/ses/SesAyarlariModal.css`

@@ -7,6 +7,31 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
+  position: relative;
+}
+
+/* v1.6 — Madde 5: Karakter portresi sarmalı (rol kartı üstünde) */
+.rol-kart-portre-sarmal {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+/* v1.5 — Madde 1: Rol kartı sayaç (30 sn) */
+.rol-sayac {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  background: var(--derin);
+  color: white;
+  font-family: var(--font-baslik);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  box-shadow: var(--golge-yumusak);
+  z-index: 100;
+  letter-spacing: 0.02em;
 }
 
 .rol-yukleniyor {

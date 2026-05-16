@@ -1,9 +1,10 @@
 // q — Rol Dağıtıcı
 // Belge Bölüm 7, 8: 12 rol havuzundan oyuncu sayısına göre alt küme seçimi
 // Kurallar:
-//   - Denge tablosu (6-12): grup başına rol sayısı sabit
+//   - Denge tablosu (4-12): grup başına rol sayısı sabit
 //   - Kaan (Homofobik) her oyunda zorunlu
 //   - Tekil rol kuralı (Femboy/Ladyboy gibi) — prototipte ladyboy tek var, sorun değil
+//   - Host override (Madde 4): oda.ayarlar.dagilim verilirse onu kullanır, yoksa DENGE[sayi]
 
 const { ROLLER, DENGE, GRUP } = require('./roller.js');
 
@@ -38,14 +39,24 @@ function gruptanSec(grupId, sayi) {
 /**
  * Oyuncu listesi için rol dağıt.
  * @param {Array<{id, isim}>} oyuncular
+ * @param {Object} [ozelDenge] — host'un seçtiği özel dağılım (Madde 4 A seçeneği)
  * @returns {Map<oyuncuId, rol>} — her oyuncu ID'sine rol eşlemesi
  */
-function rolleriDagit(oyuncular) {
+function rolleriDagit(oyuncular, ozelDenge) {
   const sayi = oyuncular.length;
-  const denge = DENGE[sayi];
+  const denge = ozelDenge || DENGE[sayi];
 
   if (!denge) {
-    throw new Error(`${sayi} oyuncu için denge tanımlı değil (6-12 arası olmalı)`);
+    throw new Error(`${sayi} oyuncu için denge tanımlı değil (4-12 arası olmalı)`);
+  }
+
+  // Özel denge validasyonu: toplam oyuncu sayısıyla uyumlu, Kaan zorunlu (gel ≥ 1)
+  const toplam = (denge.ozgurlukcu || 0) + (denge.tarafsiz || 0) + (denge.gelenekci || 0);
+  if (toplam !== sayi) {
+    throw new Error(`Dağılım toplamı (${toplam}) oyuncu sayısıyla (${sayi}) uyuşmuyor`);
+  }
+  if ((denge.gelenekci || 0) < 1) {
+    throw new Error('En az 1 gelenekçi olmalı (Kaan zorunlu)');
   }
 
   // 1) Her gruptan rolleri seç

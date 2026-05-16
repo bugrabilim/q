@@ -6,7 +6,49 @@
   align-items: center;
   justify-content: center;
   padding: 24px 16px;
-  background: linear-gradient(180deg, var(--gokyuzu) 0%, #D4ECF5 100%);
+  /* v1.5 — Madde 6 (a): Hareketli açılış gradient'i — gokyuzu↔deniz-acik arası yavaş döngü */
+  background: linear-gradient(180deg, var(--gokyuzu) 0%, #D4ECF5 50%, var(--deniz-acik) 100%);
+  background-size: 100% 200%;
+  background-position: 0% 0%;
+  animation: acilis-gradient 18s ease-in-out infinite alternate;
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes acilis-gradient {
+  0%   { background-position: 0% 0%; }
+  100% { background-position: 0% 100%; }
+}
+
+/* Hafif bulut/parıltı katmanı — pseudo-element ile, performans dostu */
+.acilis::before {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(
+    ellipse at 30% 30%,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0) 50%
+  ), radial-gradient(
+    ellipse at 70% 70%,
+    rgba(244, 162, 97, 0.18) 0%,
+    rgba(244, 162, 97, 0) 50%
+  );
+  animation: acilis-bulut 30s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes acilis-bulut {
+  0%   { transform: translate(0, 0); }
+  50%  { transform: translate(-5%, -3%); }
+  100% { transform: translate(4%, 2%); }
+}
+
+/* Hareket azaltma tercihine saygı (erişilebilirlik) */
+@media (prefers-reduced-motion: reduce) {
+  .acilis { animation: none; }
+  .acilis::before { animation: none; }
 }
 
 .acilis-icerik {
@@ -15,6 +57,9 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  /* v1.5 — Madde 6: animasyonlu arka plan katmanının üstünde dursun */
+  position: relative;
+  z-index: 1;
 }
 
 .acilis-baslik {

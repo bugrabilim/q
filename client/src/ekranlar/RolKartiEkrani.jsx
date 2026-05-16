@@ -9,6 +9,7 @@
 
 import { useEffect, useState } from 'react';
 import { socket } from '../socket.js';
+import KarakterPortresi from '../bilesenler/KarakterPortresi.jsx';
 import './RolKartiEkrani.css';
 
 const GRUP_BILGI = {
@@ -17,14 +18,28 @@ const GRUP_BILGI = {
   gelenekci:  { ad: 'Gelenekçi',  renk: 'var(--gelenekci)',  sembol: '🔴' }
 };
 
-export default function RolKartiEkrani({ benimIsmim, rol: rolProp = null }) {
+export default function RolKartiEkrani({ benimIsmim, rol: rolProp = null, sonZaman = null }) {
   const [rol, setRol] = useState(rolProp);
   const [onayli, setOnayli] = useState(false);
   const [onayDurumu, setOnayDurumu] = useState({ onayli: 0, toplam: 0 });
+  // v1.5 — Madde 1: 30 sn otomatik geçiş sayacı
+  const [kalanSn, setKalanSn] = useState(null);
 
   useEffect(() => {
     if (rolProp) setRol(rolProp); // prop sonradan da gelse güncelle
   }, [rolProp]);
+
+  // Sayaç tik tik düşsün
+  useEffect(() => {
+    if (!sonZaman) { setKalanSn(null); return; }
+    function guncelle() {
+      const fark = Math.max(0, Math.round((sonZaman - Date.now()) / 1000));
+      setKalanSn(fark);
+    }
+    guncelle();
+    const id = setInterval(guncelle, 500);
+    return () => clearInterval(id);
+  }, [sonZaman]);
 
   useEffect(() => {
     function rolKart({ rol }) {
@@ -64,6 +79,11 @@ export default function RolKartiEkrani({ benimIsmim, rol: rolProp = null }) {
 
   return (
     <div className="rol-ekran">
+      {kalanSn !== null && (
+        <div className="rol-sayac" aria-live="polite">
+          {kalanSn}s
+        </div>
+      )}
       <div className="rol-icerik">
         {/* Üst: kim olduğun */}
         <div className="rol-ust">
@@ -77,6 +97,15 @@ export default function RolKartiEkrani({ benimIsmim, rol: rolProp = null }) {
           style={{ borderColor: grup.renk }}
         >
           <header className="rol-kart-bas">
+            {/* v1.6 — Madde 5: Büyük karakter portresi */}
+            <div className="rol-kart-portre-sarmal">
+              <KarakterPortresi
+                karakter={rol.karakter}
+                gorsel={rol.gorsel}
+                grup={rol.grup}
+                boyut={108}
+              />
+            </div>
             <p className="rol-grup" style={{ color: grup.renk }}>
               {grup.sembol} {grup.ad}
             </p>

@@ -531,7 +531,13 @@ function ayrilanAciklamalari(ctx) {
     aciklamalar.push({
       oyuncuId: id,
       isim: oyuncu?.isim || '?',
-      rol: rol ? { ad: rol.ad, grup: rol.grup, sembol: GRUP_SEMBOL[rol.grup] } : null,
+      rol: rol ? {
+        ad: rol.ad,
+        grup: rol.grup,
+        sembol: GRUP_SEMBOL[rol.grup],
+        karakter: rol.karakter,    // v1.6 — Madde 5: portre için
+        gorsel: rol.gorsel
+      } : null,
       not: not.trim()
     });
   }

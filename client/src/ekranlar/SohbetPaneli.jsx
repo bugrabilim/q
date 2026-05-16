@@ -6,8 +6,21 @@ import { socket } from '../socket.js';
 import { efektCal } from '../ses/SesYoneticisi.js';
 import './SohbetPaneli.css';
 
+// v1.6 — Madde 4: Türkçe-aware mention tespiti (bildirim sesi için)
+function bendenBahsediyorMu(metin, benimIsmim) {
+  if (!benimIsmim) return false;
+  try {
+    const m = String(metin || '').toLocaleLowerCase('tr-TR');
+    const i = String(benimIsmim).toLocaleLowerCase('tr-TR');
+    return i.length > 0 && m.includes(i);
+  } catch {
+    return false;
+  }
+}
+
 export default function SohbetPaneli({
   oyuncuId,
+  benimIsmim = '',
   faz,                  // 'tanisma' | 'gece' | 'sabah' | 'tartisma' | 'oylama_1' | 'savunma' | 'oylama_2' | 'oylama_tartisma' | 'oylama_sonuc' | 'ayrilan'
   benimRolumId,
   fobikUye = false,     // Kaan/Necmi/Azra ise true
@@ -17,8 +30,6 @@ export default function SohbetPaneli({
   const [mesajlar, setMesajlar] = useState([]);
   const [taslak, setTaslak] = useState('');
   const chatBitisRef = useRef(null);
-  // Bildirim ses efekti için son çalma anı (2 sn cooldown — bot kalabalığında spam olmasın)
-  const sonBildirimRef = useRef(0);
 
   // Mount + faz değişiminde mesaj geçmişini kaynaklara göre topla
   useEffect(() => {
@@ -31,19 +42,20 @@ export default function SohbetPaneli({
   }, [faz]);
 
   // Yeni mesaj geldiğinde ekle (server zaten bize görünür olanı yolluyor)
+  // v1.6 — Madde 4: Bildirim sesi yalnızca beni tag'leyen mesajlarda çalar.
+  //                Diğer mesajlar (bot olsun, gerçek olsun) sessizdir.
   useEffect(() => {
     function chatMesaj(mesaj) {
       setMesajlar(prev => [...prev, mesaj]);
-      // Bildirim — kendi mesajım değilse + 2 sn'de bir
-      const simdi = Date.now();
-      if (mesaj?.oyuncuId !== oyuncuId && simdi - sonBildirimRef.current > 2000) {
-        sonBildirimRef.current = simdi;
+      if (mesaj?.oyuncuId === oyuncuId) return;                  // kendi mesajım — sessiz
+      if (mesaj?.sistem || mesaj?.kanal === 'sistem') return;    // sistem mesajı — sessiz
+      if (bendenBahsediyorMu(mesaj?.metin, benimIsmim)) {
         efektCal('bildirim');
       }
     }
     socket.on('chat:mesaj', chatMesaj);
     return () => socket.off('chat:mesaj', chatMesaj);
-  }, [oyuncuId]);
+  }, [oyuncuId, benimIsmim]);
 
   // Otomatik scroll
   useEffect(() => {

@@ -5,6 +5,7 @@
 import { useEffect, useState } from 'react';
 import { socket } from '../socket.js';
 import { efektCal } from '../ses/SesYoneticisi.js';
+import KarakterPortresi from '../bilesenler/KarakterPortresi.jsx';
 import './SabahEkrani.css';
 
 const GRUP_RENGI = {
@@ -19,11 +20,14 @@ const GRUP_AD = {
   gelenekci: 'Gelenekçi'
 };
 
-export default function SabahEkrani({ benimIsmim, oyuncuId, onAyril, benimRolumId }) {
+export default function SabahEkrani({ benimIsmim, oyuncuId, onAyril, benimRolumId, sonZaman: sonZamanProp = null }) {
   const [benimSabah, setBenimSabah] = useState(null);
   const [herkeseSabah, setHerkeseSabah] = useState(null);
   const [hostMu, setHostMu] = useState(false);
   const [devamGonderildi, setDevamGonderildi] = useState(false);
+  // v1.5 — Madde 2: 30 sn otomatik geçiş sayacı
+  const [sonZaman, setSonZaman] = useState(sonZamanProp);
+  const [kalanSn, setKalanSn] = useState(null);
 
   // Mount: hem state'i sunucudan iste hem de event'leri dinle (yenileme dostu)
   useEffect(() => {
@@ -32,6 +36,7 @@ export default function SabahEkrani({ benimIsmim, oyuncuId, onAyril, benimRolumI
       if (cevap.benimSabah) setBenimSabah(cevap.benimSabah);
       if (cevap.herkeseSabah) setHerkeseSabah(cevap.herkeseSabah);
       if (typeof cevap.hostMu === 'boolean') setHostMu(cevap.hostMu);
+      if (cevap.sonZaman) setSonZaman(cevap.sonZaman);
     });
 
     function kisiselGeldi(paket) {
@@ -46,6 +51,7 @@ export default function SabahEkrani({ benimIsmim, oyuncuId, onAyril, benimRolumI
           herkeseSabah: paket.herkeseSabah,
           ayrilanlar: paket.ayrilanlar
         });
+        if (paket.sonZaman) setSonZaman(paket.sonZaman);
       }
     }
     socket.on('faz:degisti', fazDegisti);
@@ -55,6 +61,18 @@ export default function SabahEkrani({ benimIsmim, oyuncuId, onAyril, benimRolumI
       socket.off('faz:degisti', fazDegisti);
     };
   }, []);
+
+  // Sayaç tik tik düşsün
+  useEffect(() => {
+    if (!sonZaman) { setKalanSn(null); return; }
+    function guncelle() {
+      const fark = Math.max(0, Math.round((sonZaman - Date.now()) / 1000));
+      setKalanSn(fark);
+    }
+    guncelle();
+    const id = setInterval(guncelle, 500);
+    return () => clearInterval(id);
+  }, [sonZaman]);
 
   function devamEt() {
     if (devamGonderildi) return;
@@ -103,6 +121,13 @@ export default function SabahEkrani({ benimIsmim, oyuncuId, onAyril, benimRolumI
           {herkeseSabah.ayrilanlar.map(ayrilan => (
             <div key={ayrilan.oyuncuId} className="sabah-ayrilan-kart">
               <div className="sabah-ayrilan-baslik">
+                {/* v1.6 — Madde 5: Ayrılanın portresi (dramatik) */}
+                <KarakterPortresi
+                  karakter={ayrilan.rol?.karakter}
+                  gorsel={ayrilan.rol?.gorsel}
+                  grup={ayrilan.rol?.grup}
+                  boyut={52}
+                />
                 <span className="sabah-ayrilan-isim">{ayrilan.isim}</span>
                 {ayrilan.rol && (
                   <span
@@ -158,8 +183,14 @@ export default function SabahEkrani({ benimIsmim, oyuncuId, onAyril, benimRolumI
 
       {/* Devam butonu — host bastığında tartışmaya (veya bitişe) geçilir */}
       <div className="sabah-devam-bolum">
+        {kalanSn !== null && (
+          <p className="sabah-sayac-yazi">
+            <span className="sabah-sayac-rozet">{kalanSn}s</span>
+            sonra otomatik devam
+          </p>
+        )}
         <p className="sabah-devam-not">
-          Hazır olan herkesi bekleyince host devam edecek.
+          {hostMu ? 'Hazır olunca devam et — yoksa süre dolunca otomatik geçilir.' : 'Host devam edecek — veya süre dolunca otomatik geçilir.'}
         </p>
         {hostMu ? (
           <button

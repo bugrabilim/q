@@ -8,6 +8,22 @@
   background: var(--gokyuzu);
   overflow: hidden;
   position: relative;
+  /* v1.5 — Madde 6 (c): Gündüz↔gece arka plan crossfade'i (faz değişiminde 2 sn) */
+  transition: background-color 2s ease, background 2s ease;
+}
+
+/* Gece fazı — derin lacivert arka plan; CSS transition ile crossfade olur */
+.oyun-duzeni[data-faz="gece"] {
+  background: var(--gece);
+}
+
+/* Diğer "karanlık tonlu" fazlar (savunma) için yumuşak ara renk */
+.oyun-duzeni[data-faz="savunma"] {
+  background: #213A4F;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oyun-duzeni { transition: none; }
 }
 
 /* Sağ üst sabit "Oyundan Çık" butonu (Madde 2) */

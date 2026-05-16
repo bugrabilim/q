@@ -26,6 +26,8 @@ export default function App() {
   // Sunucudan gelen alt-faz bilgisi (oylama_sonuc, savunma vb.) — sohbet/sunucu durumu için
   const [serverFaz, setServerFaz] = useState(null);
   const [savunulanId, setSavunulanId] = useState(null);
+  // v1.5 — Madde 1/2: rol_dagitimi ve sabah ekranları için faz son zamanı (otomatik geçiş sayacı)
+  const [fazSonZaman, setFazSonZaman] = useState(null);
   // Ayrılan ekranındayken gelen faz:degisti'yi yok saymak için ref
   const fazRef = useRef('acilis');
 
@@ -39,6 +41,8 @@ export default function App() {
       const yeniFaz = d.faz;
       // Server alt-fazını her zaman güncelle (sohbet/oyuncu listesi/savunulan için)
       setServerFaz(yeniFaz);
+      // v1.5: rol_dagitimi ve sabah için faz son zamanı (otomatik geçiş sayacı)
+      setFazSonZaman(d.sonZaman || null);
       if (yeniFaz === 'savunma' && d.savunulanId) setSavunulanId(d.savunulanId);
       // Ayrılan ekranındaysak ana faz yönlendirmelerini atla (bitiş/lobi hariç)
       if (fazRef.current === 'ayrilan' && yeniFaz !== 'bitis' && yeniFaz !== 'lobi') return;
@@ -103,7 +107,7 @@ export default function App() {
     <LobiEkrani kod={oturum.kod} oyuncuId={oturum.oyuncuId} benimIsmim={oturum.benimIsmim} onAyril={onAyril} />
   );
 
-  if (faz === 'rol') return <RolKartiEkrani benimIsmim={oturum.benimIsmim} rol={benimRolum} />;
+  if (faz === 'rol') return <RolKartiEkrani benimIsmim={oturum.benimIsmim} rol={benimRolum} sonZaman={fazSonZaman} />;
 
   if (faz === 'bitis') return (
     <BitisEkrani benimIsmim={oturum.benimIsmim} oyuncuId={oturum.oyuncuId} onAyril={onAyril} />
@@ -115,6 +119,7 @@ export default function App() {
     <OyunDuzeni
       oyuncuId={oturum.oyuncuId}
       benimRolum={benimRolum}
+      benimIsmim={oturum.benimIsmim}
       faz={serverFaz || faz}
       ayrildimMi={ayrildim}
       savunulanId={savunulanId}
@@ -133,7 +138,7 @@ export default function App() {
   );
 
   if (faz === 'sabah') return ortakDuzen(
-    <SabahEkrani benimIsmim={oturum.benimIsmim} oyuncuId={oturum.oyuncuId} onAyril={onAyril} benimRolumId={benimRolum?.id} />
+    <SabahEkrani benimIsmim={oturum.benimIsmim} oyuncuId={oturum.oyuncuId} onAyril={onAyril} benimRolumId={benimRolum?.id} sonZaman={fazSonZaman} />
   );
 
   if (faz === 'tartisma') return ortakDuzen(

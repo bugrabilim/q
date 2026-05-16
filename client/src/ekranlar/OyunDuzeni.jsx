@@ -7,7 +7,7 @@ import { socket } from '../socket.js';
 import OyuncuListesi from './OyuncuListesi.jsx';
 import RolKartPaneli from './RolKartPaneli.jsx';
 import SohbetPaneli from './SohbetPaneli.jsx';
-import SesButonu from '../ses/SesButonu.jsx';
+import AyarlarMenusu from '../ses/AyarlarMenusu.jsx';
 import { fazaMuzikEslestir } from '../ses/sesHaritasi.js';
 import './OyunDuzeni.css';
 
@@ -17,6 +17,7 @@ const FOBIK_ROL_IDLERI = ['homofobik', 'muhafazakar', 'erkek_dusmani'];
 export default function OyunDuzeni({
   oyuncuId,
   benimRolum,
+  benimIsmim,
   faz,
   ayrildimMi = false,
   savunulanId = null,
@@ -38,24 +39,21 @@ export default function OyunDuzeni({
 
   const fobikUye = !!benimRolum && FOBIK_ROL_IDLERI.includes(benimRolum.id);
 
-  function cikisYap() {
-    if (window.confirm('Oyundan çıkmak istediğinden emin misin? Geri dönüş yok.')) {
-      socket.emit('oda:ayril');
-      onAyril?.();
-    }
+  // v1.5 — Madde 7: Onay AyarlarMenusu içinde alınıyor, burada sadece çıkış akışı
+  function cikisYapOnayli() {
+    socket.emit('oda:ayril');
+    onAyril?.();
   }
 
   return (
-    <div className="oyun-duzeni" data-mobil-sekme={mobilSekme}>
-      {/* Sağ üst köşe — ses aç/kapat + oyundan çık.
-          v1.3 — 📓 Not Defteri butonu OyuncuListesi başlığına taşındı (Master §13). */}
+    <div className="oyun-duzeni" data-mobil-sekme={mobilSekme} data-faz={faz}>
+      {/* v1.5 — Madde 7: Tek "Ayarlar" menüsü altında ses aç/kapa + ses ayarları + oyundan çık.
+          Mobilde sadece "Köy/Rol" sekmesinde görünür (CSS ile gizleniyor). */}
       <div className="oyun-duzeni-sag-ust">
-        <SesButonu muzikFazi={fazaMuzikEslestir(faz)} />
-        {onAyril && (
-          <button className="oyun-duzeni-cikis" onClick={cikisYap} title="Oyundan çık">
-            ✕ Oyundan Çık
-          </button>
-        )}
+        <AyarlarMenusu
+          muzikFazi={fazaMuzikEslestir(faz)}
+          onAyril={onAyril ? cikisYapOnayli : null}
+        />
       </div>
 
       {/* Sol kolon — oyuncu listesi + rol kartı */}
@@ -73,6 +71,7 @@ export default function OyunDuzeni({
       <aside className={`oyun-duzeni-sag ${mobilSekme === 'sag' ? 'oyun-duzeni-aktif' : ''}`}>
         <SohbetPaneli
           oyuncuId={oyuncuId}
+          benimIsmim={benimIsmim}
           faz={faz}
           benimRolumId={benimRolum?.id}
           fobikUye={fobikUye}
