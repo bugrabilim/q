@@ -26,7 +26,7 @@ const io = new Server(httpServer, {
 });
 
 // Faz süreleri
-const SURE_BASVURU = Number(process.env.Q_BASVURU_MS || 10_000);
+const SURE_BASVURU = Number(process.env.Q_BASVURU_MS || 5_000);
 const SURE_TANISMA = Number(process.env.Q_TANISMA_MS || 30_000);
 // v1.5 — Madde 1: Rol kartı max süre (otomatik tanışmaya geç)
 const SURE_ROL = Number(process.env.Q_ROL_MS || 30_000);
@@ -43,7 +43,30 @@ function odaKoduUret() {
   throw new Error('Oda kodu üretilemedi');
 }
 
+// v1.7 — Kimlik açıklama adedi default'u (host lobide 0-3 seçer; default 1 = mevcut davranış)
+const KIMLIK_ACIKLAMA_DEFAULT = 1;
+
+// Yardımcı: oda.ayarlar yapısını garanti et (her zaman obje)
+function ayarlariNormalize(oda) {
+  if (!oda.ayarlar || typeof oda.ayarlar !== 'object') {
+    oda.ayarlar = { dagilim: null, kimlikAciklamaAdedi: KIMLIK_ACIKLAMA_DEFAULT };
+  } else {
+    if (oda.ayarlar.dagilim === undefined) oda.ayarlar.dagilim = null;
+    if (!Number.isInteger(oda.ayarlar.kimlikAciklamaAdedi)) {
+      oda.ayarlar.kimlikAciklamaAdedi = KIMLIK_ACIKLAMA_DEFAULT;
+    }
+  }
+  return oda.ayarlar;
+}
+
+// Oyuncu sayısı değişince özel dağılım geçersiz olur; ancak kimlikAciklamaAdedi korunur
+function ozelDagilimiSifirla(oda) {
+  const ayarlar = ayarlariNormalize(oda);
+  ayarlar.dagilim = null;
+}
+
 function lobiDurumu(oda) {
+  const ayarlar = ayarlariNormalize(oda);
   return {
     kod: oda.kod,
     faz: oda.faz,
@@ -57,7 +80,7 @@ function lobiDurumu(oda) {
     oyuncuSayisi: oda.players.length,
     minOyuncu: 4,
     maxOyuncu: 12,
-    ayarlar: oda.ayarlar || null
+    ayarlar
   };
 }
 
@@ -499,8 +522,9 @@ function botEkle(oda) {
     bot: true
   });
 
-  // Madde 4: Oyuncu sayısı değişti — host'un özel ayarı geçersiz olabilir, sıfırla
-  oda.ayarlar = null;
+  // Madde 4: Oyuncu sayısı değişti — host'un özel dağılımı geçersiz olabilir, sıfırla
+  // (kimlikAciklamaAdedi korunur)
+  ozelDagilimiSifirla(oda);
   console.log(`[bot] ${uygunIsim} eklendi → ${oda.kod} (${oda.players.length}/12)`);
   return { ok: true, botId };
 }
@@ -509,8 +533,8 @@ function botSil(oda, botId) {
   const oyuncu = oyuncuyuBul(oda, botId);
   if (!oyuncu?.bot) return { ok: false, hata: 'Bot bulunamadı' };
   oda.players = oda.players.filter(p => p.id !== botId);
-  // Madde 4: Oyuncu sayısı değişti — host'un özel ayarı geçersiz olabilir, sıfırla
-  oda.ayarlar = null;
+  // Madde 4: Oyuncu sayısı değişti — host'un özel dağılımı geçersiz olabilir, sıfırla
+  ozelDagilimiSifirla(oda);
   console.log(`[bot] ${oyuncu.isim} silindi`);
   return { ok: true };
 }
@@ -649,13 +673,15 @@ function tanismaBasla(oda) {
   const sonZaman = Date.now() + SURE_BASVURU;
   oda.fazSonZaman = sonZaman;
 
+  const ayarlarBilgi = ayarlariNormalize(oda);
   io.to(oda.kod).emit('faz:degisti', {
     faz: 'tanisma',
     altFaz: 'basvuru',
     sure: SURE_BASVURU,
     sonZaman,
     aciklanmislar: aciklananKimlikler(oda),
-    chat: oda.oyun.chat
+    chat: oda.oyun.chat,
+    kimlikAciklamaAdedi: ayarlarBilgi.kimlikAciklamaAdedi
   });
 
   sistemMesaji(oda, 'Köyde sabah oldu. Tanışma vakti — kimliğini açıklamak isteyen başvurabilir.');
@@ -674,17 +700,43 @@ function basvuruKapat(oda) {
   const basvuranIdleri = [...oda.oyun.basvuranlar];
   const basvuranIsimleri = basvuranIdleri.map(id => oyuncuyuBul(oda, id)?.isim).filter(Boolean);
 
-  if (basvuranIdleri.length > 0) {
-    sistemMesaji(oda, `Başvuranlar: ${basvuranIsimleri.join(', ')}`);
+  // v1.7 — Host lobide kaç kişinin açıklanacağını seçer (0-3, default 1)
+  const ayarlar = ayarlariNormalize(oda);
+  const maxAcikla = Math.max(0, Math.min(3, ayarlar.kimlikAciklamaAdedi ?? KIMLIK_ACIKLAMA_DEFAULT));
+  const acilacakSayi = Math.min(maxAcikla, basvuranIdleri.length);
 
-    const secilenId = basvuranIdleri[Math.floor(Math.random() * basvuranIdleri.length)];
+  if (acilacakSayi === 0) {
+    if (basvuranIdleri.length > 0 && maxAcikla === 0) {
+      sistemMesaji(oda, 'Bu turda kimlik açıklanmıyor. Köy sessizce kahvaltıya oturdu.');
+    } else {
+      sistemMesaji(oda, 'Kimse kimliğini açmadı. Köy sessizce kahvaltıya oturdu.');
+    }
+    setTimeout(() => serbesteSec(oda), 800);
+    return;
+  }
+
+  sistemMesaji(oda, `Başvuranlar: ${basvuranIsimleri.join(', ')}`);
+
+  // Rastgele N kişi seç (Fisher-Yates karıştırma → ilk N)
+  const havuz = [...basvuranIdleri];
+  for (let i = havuz.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [havuz[i], havuz[j]] = [havuz[j], havuz[i]];
+  }
+  const secilenler = havuz.slice(0, acilacakSayi);
+
+  secilenler.forEach((secilenId, idx) => {
     const secilen = oyuncuyuBul(oda, secilenId);
     const rol = oda.oyun.roller.get(secilenId);
+    if (!secilen || !rol) return;
 
     oda.oyun.aciklanmislar.add(secilenId);
 
-    setTimeout(() => sistemMesaji(oda, `Köy meydanına çıkıyor: ${secilen.isim}`), 600);
+    // Her açıklamayı sırayla geciktirerek sahnele
+    const t1 = 600 + idx * 1800;
+    const t2 = 1600 + idx * 1800;
 
+    setTimeout(() => sistemMesaji(oda, `Köy meydanına çıkıyor: ${secilen.isim}`), t1);
     setTimeout(() => {
       sistemMesaji(oda, `${secilen.isim}: "${rol.ad}'im."`);
       io.to(oda.kod).emit('kimlik:aciklandi', {
@@ -694,14 +746,11 @@ function basvuruKapat(oda) {
       });
       // Liste güncellensin (kimlik ifşa olduğu için rol artık herkes için görünür)
       oyuncuListesiYayinla(oda);
-    }, 1600);
+    }, t2);
+  });
 
-    setTimeout(() => serbesteSec(oda), 2400);
-
-  } else {
-    sistemMesaji(oda, 'Kimse kimliğini açmadı. Köy sessizce kahvaltıya oturdu.');
-    setTimeout(() => serbesteSec(oda), 800);
-  }
+  const toplamGecikme = 1600 + (secilenler.length - 1) * 1800 + 800;
+  setTimeout(() => serbesteSec(oda), toplamGecikme);
 }
 
 function serbesteSec(oda) {
@@ -1731,8 +1780,9 @@ io.on('connection', (socket) => {
       return callback({ ok: false, hata: 'Bu isimde biri zaten odada' });
     }
     oda.players.push({ id: oyuncuId, isim: temizIsim, hostMu: false, baglantiVar: true });
-    // Madde 4: Oyuncu sayısı değişti — host'un özel ayarı geçersiz olabilir, sıfırla
-    oda.ayarlar = null;
+    // Madde 4: Oyuncu sayısı değişti — host'un özel dağılımı geçersiz olabilir, sıfırla
+    // (kimlikAciklamaAdedi korunur)
+    ozelDagilimiSifirla(oda);
     if (!oda.aktifOyuncular) oda.aktifOyuncular = function() { return this.players.filter(p => p.baglantiVar !== false); };
     socket.join(temizKod);
     mevcutOda = temizKod;
@@ -1784,8 +1834,9 @@ io.on('connection', (socket) => {
 
     // Lobi senaryosu: oyuncuyu listeden tamamen sil (eski davranış)
     oda.players = oda.players.filter(p => p.id !== oyuncuId);
-    // Madde 4: Oyuncu sayısı değişti — host'un özel ayarı geçersiz olabilir, sıfırla
-    oda.ayarlar = null;
+    // Madde 4: Oyuncu sayısı değişti — host'un özel dağılımı geçersiz olabilir, sıfırla
+    // (kimlikAciklamaAdedi korunur)
+    ozelDagilimiSifirla(oda);
     if (oda.players.length === 0 || oda.players.every(p => p.bot)) {
       // Tüm gerçek oyuncular gittiyse odayı kapat
       oda.oyun?.fazTimerleri?.forEach(t => clearTimeout(t));
@@ -1834,34 +1885,51 @@ io.on('connection', (socket) => {
   // Madde 4 (A) — Host özel grup dağılımı belirleyebilir (roller gizli kalır)
   // dagilim: { ozgurlukcu, tarafsiz, gelenekci } veya null (önerilene dön)
   // Toplam oyuncu sayısı ile eşleşmeli; gelenekci >= 1 (Kaan zorunlu).
-  socket.on('lobi:ayar', ({ dagilim }, callback) => {
+  // v1.7 — Host ayrıca Tanışma'da kaç kişinin kimlik açıklayacağını seçer (0-3)
+  socket.on('lobi:ayar', (payload, callback) => {
     if (!mevcutOda || !rooms[mevcutOda]) return callback?.({ ok: false, hata: 'Oda yok' });
     const oda = rooms[mevcutOda];
     const oyuncu = oyuncuyuBul(oda, oyuncuId);
     if (!oyuncu?.hostMu) return callback?.({ ok: false, hata: 'Sadece host ayar yapabilir' });
     if (oda.faz !== 'lobi') return callback?.({ ok: false, hata: 'Oyun zaten başladı' });
 
-    if (dagilim === null || dagilim === undefined) {
-      oda.ayarlar = null;
-      lobiyiYayinla(oda.kod);
-      return callback?.({ ok: true });
+    const ayarlar = ayarlariNormalize(oda);
+    const p = payload || {};
+    const dagilimVar = Object.prototype.hasOwnProperty.call(p, 'dagilim');
+    const kimlikVar = Object.prototype.hasOwnProperty.call(p, 'kimlikAciklamaAdedi');
+
+    // ─ Dağılım (eski davranış korunur) ─
+    if (dagilimVar) {
+      const dagilim = p.dagilim;
+      if (dagilim === null || dagilim === undefined) {
+        ayarlar.dagilim = null;
+      } else {
+        const ozg = Number(dagilim.ozgurlukcu);
+        const tar = Number(dagilim.tarafsiz);
+        const gel = Number(dagilim.gelenekci);
+        if ([ozg, tar, gel].some(n => !Number.isInteger(n) || n < 0)) {
+          return callback?.({ ok: false, hata: 'Geçersiz sayı' });
+        }
+        if (gel < 1) {
+          return callback?.({ ok: false, hata: 'En az 1 gelenekçi olmalı (Kaan zorunlu)' });
+        }
+        const toplam = ozg + tar + gel;
+        if (toplam !== oda.players.length) {
+          return callback?.({ ok: false, hata: `Toplam ${oda.players.length} olmalı (şu an ${toplam})` });
+        }
+        ayarlar.dagilim = { ozgurlukcu: ozg, tarafsiz: tar, gelenekci: gel };
+      }
     }
 
-    const ozg = Number(dagilim.ozgurlukcu);
-    const tar = Number(dagilim.tarafsiz);
-    const gel = Number(dagilim.gelenekci);
-    if ([ozg, tar, gel].some(n => !Number.isInteger(n) || n < 0)) {
-      return callback?.({ ok: false, hata: 'Geçersiz sayı' });
-    }
-    if (gel < 1) {
-      return callback?.({ ok: false, hata: 'En az 1 gelenekçi olmalı (Kaan zorunlu)' });
-    }
-    const toplam = ozg + tar + gel;
-    if (toplam !== oda.players.length) {
-      return callback?.({ ok: false, hata: `Toplam ${oda.players.length} olmalı (şu an ${toplam})` });
+    // ─ Kimlik açıklama adedi (v1.7) ─
+    if (kimlikVar) {
+      const n = Number(p.kimlikAciklamaAdedi);
+      if (!Number.isInteger(n) || n < 0 || n > 3) {
+        return callback?.({ ok: false, hata: 'Kimlik açıklama adedi 0-3 arası olmalı' });
+      }
+      ayarlar.kimlikAciklamaAdedi = n;
     }
 
-    oda.ayarlar = { dagilim: { ozgurlukcu: ozg, tarafsiz: tar, gelenekci: gel } };
     lobiyiYayinla(oda.kod);
     callback?.({ ok: true });
   });
@@ -1897,6 +1965,7 @@ io.on('connection', (socket) => {
     if (!mevcutOda || !rooms[mevcutOda]) return callback?.({ ok: false });
     const oda = rooms[mevcutOda];
     if (oda.faz !== 'tanisma') return callback?.({ ok: false });
+    const ayarlarBilgi = ayarlariNormalize(oda);
     callback?.({
       ok: true,
       altFaz: oda.altFaz,
@@ -1905,7 +1974,8 @@ io.on('connection', (socket) => {
       chat: chatGecmisi(oda, oyuncuId),
       basvuruSayisi: oda.oyun.basvuranlar.size,
       basvurdumMu: oda.oyun.basvuranlar.has(oyuncuId),
-      oyuncular: oyuncuListesi(oda, oyuncuId)
+      oyuncular: oyuncuListesi(oda, oyuncuId),
+      kimlikAciklamaAdedi: ayarlarBilgi.kimlikAciklamaAdedi
     });
   });
 

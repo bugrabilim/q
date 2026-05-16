@@ -42,7 +42,12 @@ export default function SesAyarlariModal({ onKapat }) {
 
   return (
     <div className="ses-ayar-arka" onClick={onKapat}>
-      <div className="ses-ayar-kart" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="ses-ayar-kart"
+        onClick={(e) => e.stopPropagation()}
+        onTouchStart={(e) => e.stopPropagation()}
+        onTouchEnd={(e) => e.stopPropagation()}
+      >
         <button className="ses-ayar-kapat" onClick={onKapat} aria-label="Kapat">
           ✕
         </button>

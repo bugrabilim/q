@@ -376,6 +376,90 @@
   font-weight: 500;
 }
 
+/* v1.7 — Kimlik açıklama adedi seçici (host + read-only) */
+.lobi-kimlik-ayar-bolum {
+  flex-shrink: 0;
+  padding: 12px 14px;
+  background: #FBFEFD;
+  border: 1px solid var(--deniz-acik);
+  border-radius: 12px;
+  margin-top: 6px;
+}
+
+.lobi-kimlik-ayar-bas {
+  margin-bottom: 10px;
+}
+
+.lobi-kimlik-ayar-baslik {
+  font-family: var(--font-baslik);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--derin);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.lobi-kimlik-ayar-altyazi {
+  font-family: var(--font-alinti);
+  font-style: italic;
+  font-size: 12px;
+  color: rgba(38, 70, 83, 0.6);
+  margin: 4px 0 0;
+}
+
+.lobi-kimlik-ayar-secenekler {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+}
+
+.lobi-kimlik-ayar-sec {
+  flex: 1;
+  min-width: 0;
+  max-width: 64px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--deniz-acik);
+  background: white;
+  color: var(--derin);
+  font-family: var(--font-baslik);
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  user-select: none;
+}
+
+.lobi-kimlik-ayar-sec:hover:not(:disabled):not(.aktif) {
+  background: var(--deniz-acik);
+  border-color: var(--deniz);
+}
+
+.lobi-kimlik-ayar-sec.aktif {
+  background: var(--deniz);
+  color: white;
+  border-color: var(--derin);
+}
+
+.lobi-kimlik-ayar-sec:disabled {
+  cursor: default;
+  opacity: 0.85;
+}
+
+.lobi-kimlik-ayar-sec:disabled:not(.aktif) {
+  opacity: 0.5;
+}
+
+.lobi-kimlik-ayar-not {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: rgba(38, 70, 83, 0.7);
+  margin: 8px 0 0;
+  text-align: center;
+}
+
 /* Madde 4: Host'a özel dağılım ayarı paneli */
 .lobi-host-ayar-bolum {
   flex-shrink: 0;

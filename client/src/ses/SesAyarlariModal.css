@@ -73,13 +73,18 @@
 
 .ses-ayar-slider {
   width: 100%;
-  height: 4px;
+  height: 6px;
   -webkit-appearance: none;
+  -moz-appearance: none;
   appearance: none;
   background: var(--deniz-acik);
   border-radius: 999px;
   outline: none;
   cursor: pointer;
+  /* Mobilde yatay sürüklemeyi tarayıcıya devretme — slider parmağa cevap versin */
+  touch-action: pan-x;
+  /* iOS Safari: temas vurgusu yerine kendi state'imizi göstereceğiz */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .ses-ayar-slider::-webkit-slider-thumb {
@@ -90,6 +95,7 @@
   border-radius: 999px;
   background: var(--deniz);
   cursor: pointer;
+  border: none;
   box-shadow: 0 2px 4px rgba(38, 70, 83, 0.25);
   transition: transform 0.1s ease;
 }
@@ -106,6 +112,48 @@
   border: none;
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(38, 70, 83, 0.25);
+}
+
+.ses-ayar-slider::-ms-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--deniz);
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(38, 70, 83, 0.25);
+}
+
+.ses-ayar-slider::-ms-track {
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+  height: 6px;
+}
+
+/* Mobil — parmakla rahat sürükleme için track ve thumb büyür */
+@media (hover: none) and (pointer: coarse) {
+  .ses-ayar-slider {
+    height: 10px;
+    /* Dokunma hedefi daha geniş — track ince görünse de tıklama alanı büyük olsun */
+    padding: 10px 0;
+    background-clip: content-box;
+  }
+  .ses-ayar-slider::-webkit-slider-thumb {
+    width: 24px;
+    height: 24px;
+  }
+  .ses-ayar-slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+  }
+  .ses-ayar-slider::-ms-thumb {
+    width: 24px;
+    height: 24px;
+  }
+  .ses-ayar-satir {
+    margin-bottom: 18px;
+  }
 }
 
 .ses-ayar-bilgi {

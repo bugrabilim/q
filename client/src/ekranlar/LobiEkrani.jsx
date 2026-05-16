@@ -65,6 +65,11 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
     || DENGE_ONERILEN[durum.oyuncuSayisi]
     || { ozgurlukcu: 0, tarafsiz: 0, gelenekci: 0 };
 
+  // v1.7 — Tanışma'da kaç kişi kimlik açıklasın (host seçer; 0-3; default 1)
+  const kimlikAciklamaAdedi = Number.isInteger(durum.ayarlar?.kimlikAciklamaAdedi)
+    ? durum.ayarlar.kimlikAciklamaAdedi
+    : 1;
+
   // Oyuncu sayısı veya server ayarı değişince host düzenlemesini senkronize et
   useEffect(() => {
     setHostSecim(null);
@@ -109,6 +114,16 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
 
     setHostSecim(base);
     socket.emit('lobi:ayar', { dagilim: base }, (cevap) => {
+      if (!cevap?.ok) setHostHata(cevap?.hata || 'Ayar uygulanamadı');
+    });
+  }
+
+  // v1.7 — Host: Tanışma'da kimlik açıklayacak kişi sayısını seç
+  function hostKimlikAcAdediSec(yeniDeger) {
+    setHostHata('');
+    if (!Number.isInteger(yeniDeger) || yeniDeger < 0 || yeniDeger > 3) return;
+    if (yeniDeger === kimlikAciklamaAdedi) return;
+    socket.emit('lobi:ayar', { kimlikAciklamaAdedi: yeniDeger }, (cevap) => {
       if (!cevap?.ok) setHostHata(cevap?.hata || 'Ayar uygulanamadı');
     });
   }
@@ -265,6 +280,47 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
               <span className="lobi-info-btn-altyazi">{roller.length || '…'} rol — tıkla detay</span>
             </span>
           </button>
+        </section>
+
+        {/* v1.7 — Kimlik açıklama adedi (host seçer · diğerleri read-only görür) */}
+        <section className="lobi-kimlik-ayar-bolum">
+          <div className="lobi-kimlik-ayar-bas">
+            <h3 className="lobi-kimlik-ayar-baslik">
+              Kimlik açıklayacak kişi sayısı
+              {benHostMu && <span className="lobi-host-ayar-rozet">host</span>}
+            </h3>
+            <p className="lobi-kimlik-ayar-altyazi">
+              Tanışma fazında başvuranlardan en fazla kaç kişinin kimliği açılsın
+            </p>
+          </div>
+          <div className="lobi-kimlik-ayar-secenekler" role="radiogroup" aria-label="Kimlik açıklama adedi">
+            {[0, 1, 2, 3].map(n => {
+              const aktif = n === kimlikAciklamaAdedi;
+              return (
+                <button
+                  type="button"
+                  key={n}
+                  role="radio"
+                  aria-checked={aktif}
+                  className={`lobi-kimlik-ayar-sec ${aktif ? 'aktif' : ''}`}
+                  onClick={() => benHostMu && hostKimlikAcAdediSec(n)}
+                  disabled={!benHostMu}
+                  title={
+                    n === 0
+                      ? 'Hiç kimlik açıklanmaz'
+                      : `En fazla ${n} kişi kimliğini açıklar`
+                  }
+                >
+                  {n}
+                </button>
+              );
+            })}
+          </div>
+          {!benHostMu && (
+            <p className="lobi-kimlik-ayar-not">
+              Host bu sayıyı belirler — şu an: {kimlikAciklamaAdedi === 0 ? 'kimse açıklamaz' : `en fazla ${kimlikAciklamaAdedi} kişi`}
+            </p>
+          )}
         </section>
 
         {/* Madde 4: Host'a özel dağılım ayarı paneli (A seçeneği — grup sayıları) */}

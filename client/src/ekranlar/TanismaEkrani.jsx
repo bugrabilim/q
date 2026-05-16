@@ -24,6 +24,8 @@ export default function TanismaEkrani({ benimIsmim, oyuncuId }) {
   const [hazirDurumu, setHazirDurumu] = useState({ hazir: 0, toplam: 0 });
 
   const [aciklananlar, setAciklananlar] = useState({});
+  // v1.7 — Host'un lobide seçtiği "kimlik açıklayacak max kişi sayısı" (0-3, default 1)
+  const [kimlikAciklamaAdedi, setKimlikAciklamaAdedi] = useState(1);
 
   // Mount: durumu sun
   useEffect(() => {
@@ -34,6 +36,7 @@ export default function TanismaEkrani({ benimIsmim, oyuncuId }) {
       if (cevap.aciklanmislar) setAciklananlar(cevap.aciklanmislar);
       if (typeof cevap.basvuruSayisi === 'number') setBasvuruSayisi(cevap.basvuruSayisi);
       if (typeof cevap.basvurdumMu === 'boolean') setBasvurdumMu(cevap.basvurdumMu);
+      if (Number.isInteger(cevap.kimlikAciklamaAdedi)) setKimlikAciklamaAdedi(cevap.kimlikAciklamaAdedi);
     });
   }, []);
 
@@ -43,6 +46,7 @@ export default function TanismaEkrani({ benimIsmim, oyuncuId }) {
       if (d.altFaz) setAltFaz(d.altFaz);
       if (d.sonZaman) setSonZaman(d.sonZaman);
       if (d.aciklanmislar) setAciklananlar(d.aciklanmislar);
+      if (Number.isInteger(d.kimlikAciklamaAdedi)) setKimlikAciklamaAdedi(d.kimlikAciklamaAdedi);
     }
     function altFazDegisti(d) {
       setAltFaz(d.altFaz);
@@ -132,6 +136,7 @@ export default function TanismaEkrani({ benimIsmim, oyuncuId }) {
         <BasvuruBanner
           basvurdumMu={basvurdumMu}
           basvuruSayisi={basvuruSayisi}
+          maxAcikla={kimlikAciklamaAdedi}
           onTikla={basvur}
         />
       ) : (
@@ -166,18 +171,27 @@ export default function TanismaEkrani({ benimIsmim, oyuncuId }) {
   );
 }
 
-function BasvuruBanner({ basvurdumMu, basvuruSayisi, onTikla }) {
+function BasvuruBanner({ basvurdumMu, basvuruSayisi, maxAcikla, onTikla }) {
+  // v1.7 — Host 0 seçtiyse banner farklı görünür (başvuru anlamsız)
+  const adetEtiketi = maxAcikla === 0
+    ? 'Bu turda kimlik açıklanmıyor'
+    : `Bu turda en fazla ${maxAcikla} kişi açıklanacak`;
+
   return (
     <div className="banner banner-basvuru">
       <div className="banner-metin">
-        <p className="banner-baslik">Kimliğini açmak ister misin?</p>
-        {basvuruSayisi > 0 && (
-          <p className="banner-altyazi">{basvuruSayisi} kişi başvurdu</p>
-        )}
+        <p className="banner-baslik">
+          {maxAcikla === 0 ? 'Kimlik açıklama kapalı' : 'Kimliğini açmak ister misin?'}
+        </p>
+        <p className="banner-altyazi">
+          {adetEtiketi}
+          {basvuruSayisi > 0 && ` · ${basvuruSayisi} başvuru`}
+        </p>
       </div>
       <button
         className={`banner-btn ${basvurdumMu ? 'banner-btn-aktif' : ''}`}
         onClick={onTikla}
+        disabled={maxAcikla === 0}
       >
         {basvurdumMu ? 'Geri çek' : 'Başvur'}
       </button>

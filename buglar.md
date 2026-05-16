@@ -47,9 +47,10 @@ T6/T7 sırasında bulunan hatalar burada izlenir. Format için ajan-plani.md →
 - **Beklenen:** Slider parmak hareketine göre değer değişsin, çalan müziğin sesi anında uygulansın (masaüstünde böyle çalışıyor).
 - **Gerçekleşen:** Mobilde slider tepki vermiyor — değer değişmiyor.
 - **Öncelik:** Düşük — Buğra "önemli değil" dedi. V1.5'e bırakıldı.
-- **Durum:** Açık
-- **Olası sebep + düzeltme planı:**
-  1. `.ses-ayar-slider` track yüksekliği 4px — mobil için fazla ince, dokunma hedefi yetersiz. Çözüm: mobilde track'i ~10px, thumb'ı ~24px yap.
-  2. `.ses-ayar-slider` üzerine `touch-action: pan-x` eklemek — tarayıcı yatay sürüklemeyi slider gesture'i olarak işlesin, parent modal'a kaçmasın.
-  3. Modal kart'taki `onClick={e.stopPropagation()}` sadece click event'i yakalıyor; mobil için `onTouchEnd` da stopPropagation almalı.
+- **Durum:** Düzeltildi (2026-05-16, v1.7)
+- **Düzeltme:**
+  1. `.ses-ayar-slider` üzerine `touch-action: pan-x` ve `-webkit-tap-highlight-color` eklendi.
+  2. `@media (hover: none) and (pointer: coarse)` bloğunda track 10px, thumb 24px, dikey 10px padding ile geniş dokunma hedefi.
+  3. Modal kart `<div>` sarmalayıcısına `onTouchStart` + `onTouchEnd` stopPropagation eklendi (mobilde slider dokunuşu arka plana sızıp modalı kapatmıyor).
+  4. `::-ms-thumb` + `::-ms-track` tamamlandı, tüm tarayıcılarda tutarlı.
 - **Dosyalar:** `client/src/ses/SesAyarlariModal.jsx` + `client/src/ses/SesAyarlariModal.css`
