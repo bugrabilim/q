@@ -73,13 +73,23 @@ export default function App() {
         gidFazRef.current('ayrilan');
       }
     }
+    // v1.8 — Host bizi odadan çıkardı: açılışa dön + uyarı
+    function odadanCikarildi({ hata } = {}) {
+      window.alert(hata || 'Host odadan çıkardı');
+      setOturum(null);
+      setBenimRolum(null);
+      setAyrilmaBilgisi(null);
+      gidFazRef.current('acilis');
+    }
     socket.on('faz:degisti', fazDegisti);
     socket.on('rol:kart', rolKartGeldi);
     socket.on('oyuncu:ayrildi', oyuncuAyrildi);
+    socket.on('oda:cikarildi', odadanCikarildi);
     return () => {
       socket.off('faz:degisti', fazDegisti);
       socket.off('rol:kart', rolKartGeldi);
       socket.off('oyuncu:ayrildi', oyuncuAyrildi);
+      socket.off('oda:cikarildi', odadanCikarildi);
     };
   }, []);
 

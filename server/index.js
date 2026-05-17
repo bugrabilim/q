@@ -2293,6 +2293,7 @@ io.on('connection', (socket) => {
       kod, faz: 'lobi', oyun: null,
       players: [{ id: oyuncuId, isim: temizIsim, hostMu: true, baglantiVar: true }],
       olusturuldu: Date.now(),
+      engellenenler: new Set(), // v1.8 — Host'un çıkardığı oyuncuların lowercase isimleri (oda kapanana kadar kalıcı)
       aktifOyuncular() { return this.players.filter(p => p.baglantiVar !== false); }
     };
     socket.join(kod);
@@ -2310,6 +2311,10 @@ io.on('connection', (socket) => {
     if (oda.faz !== 'lobi') return callback({ ok: false, hata: 'Oyun başladı, katılınamaz' });
     if (oda.players.length >= 99) return callback({ ok: false, hata: 'Oda dolu (max 99)' });
     const temizIsim = isim.trim().slice(0, 20);
+    // v1.8 — Host bu kişiyi çıkardıysa engellenenler set'ine bakar
+    if (oda.engellenenler?.has(trKucult(temizIsim))) {
+      return callback({ ok: false, hata: 'Host bu odadan çıkardı' });
+    }
     if (oda.players.some(p => trKucult(p.isim) === trKucult(temizIsim))) {
       return callback({ ok: false, hata: 'Bu isimde biri zaten odada' });
     }
@@ -2397,6 +2402,37 @@ io.on('connection', (socket) => {
     const sonuc = botEkle(oda);
     callback?.(sonuc);
     if (sonuc.ok) lobiyiYayinla(oda.kod);
+  });
+
+  // v1.8 — Host gerçek oyuncuyu lobide odadan çıkarır + engellenenler set'ine ekler
+  socket.on('lobi:oyuncuCikar', ({ hedefOyuncuId }, callback) => {
+    if (!mevcutOda || !rooms[mevcutOda]) return callback?.({ ok: false, hata: 'Oda yok' });
+    const oda = rooms[mevcutOda];
+    const benim = oyuncuyuBul(oda, oyuncuId);
+    if (!benim?.hostMu) return callback?.({ ok: false, hata: 'Sadece host çıkarabilir' });
+    if (oda.faz !== 'lobi') return callback?.({ ok: false, hata: 'Sadece lobide çıkarılabilir' });
+    if (hedefOyuncuId === oyuncuId) return callback?.({ ok: false, hata: 'Kendini çıkaramazsın' });
+
+    const hedef = oyuncuyuBul(oda, hedefOyuncuId);
+    if (!hedef) return callback?.({ ok: false, hata: 'Oyuncu bulunamadı' });
+    if (hedef.bot) return callback?.({ ok: false, hata: 'Bot için "bot:sil" kullan' });
+
+    // Engellenenler set'ine ekle (isim lowercase + Türkçe-aware)
+    if (!oda.engellenenler) oda.engellenenler = new Set();
+    oda.engellenenler.add(trKucult(hedef.isim));
+
+    // Oyuncuyu odadan çıkar
+    const hedefSocket = io.sockets.sockets.get(hedef.id);
+    if (hedefSocket) {
+      hedefSocket.emit('oda:cikarildi', { hata: 'Host odadan çıkardı' });
+      hedefSocket.leave(mevcutOda);
+    }
+    oda.players = oda.players.filter(p => p.id !== hedefOyuncuId);
+    ozelDagilimiSifirla(oda);
+
+    console.log(`[oda] ${mevcutOda} — Host ${benim.isim} oyuncu ${hedef.isim}'i çıkardı`);
+    callback?.({ ok: true });
+    lobiyiYayinla(mevcutOda);
   });
 
   socket.on('bot:sil', ({ botId }) => {

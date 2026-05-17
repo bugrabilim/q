@@ -283,6 +283,14 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
     socket.emit('bot:sil', { botId });
   }
 
+  // v1.8 — Host gerçek oyuncuyu odadan çıkarır
+  function oyuncuCikar(hedefId, hedefIsim) {
+    if (!window.confirm(`${hedefIsim} adlı oyuncuyu odadan çıkarmak istediğine emin misin? Bu oyuncu odaya tekrar giremez.`)) return;
+    socket.emit('lobi:oyuncuCikar', { hedefOyuncuId: hedefId }, (cevap) => {
+      if (!cevap?.ok) setHostHata(cevap?.hata || 'Çıkarılamadı');
+    });
+  }
+
   function koduPanoyaKopyala() {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(durum.kod).catch(() => {});
@@ -368,6 +376,16 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
                       className="bot-sil-btn"
                       onClick={() => botSil(p.id)}
                       title="Test botu (host'a özel: kaldır)"
+                    >
+                      ×
+                    </button>
+                  )}
+                  {/* v1.8 — Host gerçek oyuncuyu çıkarabilir (kendisi hariç) */}
+                  {!p.bot && benHostMu && p.id !== oyuncuId && (
+                    <button
+                      className="bot-sil-btn"
+                      onClick={() => oyuncuCikar(p.id, p.isim)}
+                      title="Bu oyuncuyu odadan çıkar (geri giremez)"
                     >
                       ×
                     </button>
