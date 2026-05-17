@@ -644,7 +644,7 @@ function RollerPopup({ roller, onRolSec, onKapat }) {
           <p className="lobi-popup-karakter">Birine tıkla → detay kartı açılır</p>
         </div>
         <div className="lobi-roller-bolumler">
-          {['ozgurlukcu', 'outsider', 'tarafsiz', 'gelenekci', 'kaoscu'].map(grupId => {
+          {['ozgurlukcu', 'tarafsiz', 'gelenekci', 'outsider', 'kaoscu'].map(grupId => {
             const grupRolleri = roller.filter(r => r.grup === grupId);
             if (grupRolleri.length === 0) return null;
             const grup = GRUP_BILGI[grupId];
