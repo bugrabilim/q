@@ -123,12 +123,12 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
   const yeterliOyuncu = durum.oyuncuSayisi >= durum.minOyuncu;
   const dolu = durum.oyuncuSayisi >= durum.maxOyuncu;
 
-  // Madde 4: Aktif dağılım — host ayarı varsa onu, yoksa önerilen
+  // Madde 4: Aktif dağılım — host ayarı varsa onu, yoksa önerilen (dagilimHesapla)
   // V1: 5 grup (ozg + tar + gel + outsider + kaoscu). Eski oyunlarda outsider/kaoscu eksik
   // olabilir; defaultlarla normalize edilir.
   const aktifDagilimHam = durum.ayarlar?.dagilim
-    || DENGE_ONERILEN[durum.oyuncuSayisi]
-    || { ozgurlukcu: 0, tarafsiz: 0, gelenekci: 0 };
+    || dagilimHesapla(durum.oyuncuSayisi)
+    || { ozgurlukcu: 0, tarafsiz: 0, gelenekci: 0, outsider: 0, kaoscu: 0 };
   const aktifDagilim = {
     ozgurlukcu: aktifDagilimHam.ozgurlukcu || 0,
     tarafsiz:   aktifDagilimHam.tarafsiz   || 0,
