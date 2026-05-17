@@ -1984,10 +1984,83 @@ function bitiseBasla(oda, kazananGrup) {
     });
   }
 
-  // Tarafsız bireysel kazananlar — prototipte koşul "oyun sonuna kalmak"
-  const tarafsizKazananlar = tumRoller
-    .filter(r => r.rol.grup === 'tarafsiz' && r.koydeMi)
-    .map(r => ({ oyuncuId: r.oyuncuId, isim: r.isim, rolAd: r.rol.ad }));
+  // Tarafsız bireysel kazananlar — V1: her rolün kendi koşulu var
+  // (faz1-mekanik-kararlar.md Tarafsız tablosu). State'i olan roller için
+  // spesifik kontrol; state altyapısı henüz tam olmayan roller için fallback
+  // olarak "köyde kalmak" döner. Mazoşist ayrı listede tutulduğundan atlanır.
+  const tarafsizKazananlar = [];
+  for (const [oyuncuId, rolObj] of oda.oyun.roller) {
+    if (rolObj.grup !== 'tarafsiz') continue;
+    const oyuncu = oda.players.find(p => p.id === oyuncuId);
+    if (!oyuncu) continue;
+    const koydeMi = oyuncu.koydeMi !== false;
+    const rolId = rolObj.id;
+    let kazandiMi = false;
+
+    switch (rolId) {
+      case 'mazosist':
+        // Ayrı listede (mazosistBireyKazanan) — burada işlenmez.
+        continue;
+
+      case 'sugar_baby':
+        // 4 farklı oyuncudan hediye almış olmalı.
+        kazandiMi = (oda.oyun.sbHediyeAlinanlar?.get(oyuncuId)?.size ?? 0) >= 4;
+        break;
+
+      case 'capkin':
+        // 3 farklı hedefe başarılı tavla atmış olmalı.
+        kazandiMi = (oda.oyun.capkinTavlananlar?.get(oyuncuId)?.size ?? 0) >= 3;
+        break;
+
+      case 'copcatan': {
+        // En az 2 farklı eşleştirme + her iki tarafı da oyun sonuna kadar köyde.
+        const eslesmeler = oda.oyun.coplatanEslesmeleri?.get(oyuncuId) || [];
+        const oyundaKalanlar = eslesmeler.filter(es => {
+          const a = oda.players.find(p => p.id === es.a);
+          const b = oda.players.find(p => p.id === es.b);
+          return a && b && a.koydeMi !== false && b.koydeMi !== false;
+        });
+        kazandiMi = oyundaKalanlar.length >= 2;
+        break;
+      }
+
+      case 'lovebuddy': {
+        // En az 1 karşılıklı bağ + bağ kurulan hedef köyde kalsın.
+        const bagliCiftler = oda.oyun.lbBagliCiftler || new Set();
+        let varMi = false;
+        for (const anahtar of bagliCiftler) {
+          const [lbId, hedefId] = String(anahtar).split(':');
+          if (lbId !== oyuncuId) continue;
+          const hedef = oda.players.find(p => p.id === hedefId);
+          if (hedef && hedef.koydeMi !== false) {
+            varMi = true;
+            break;
+          }
+        }
+        kazandiMi = varMi;
+        break;
+      }
+
+      // ─── State altyapısı henüz tam olmayan roller: fallback "köyde kalmak"
+      // (faz1-mekanik-kararlar.md koşulları ileride state'lerle değiştirilecek)
+      case 'hetero_erkek':       // 3 farklı gece çay + ≥1 ziyaretçi (heAksiyon yok)
+      case 'hetero_kadin':       // 2 erkek + 2 kadın hedef (bkHedefler yok)
+      case 'aseksuel':           // 3 farklı oyuncunun aksiyon tipi (özel set yok)
+      case 'fetisist':           // 3 farklı doğru tespit (fetisistDogruTespit yok)
+      case 'sugar_daddy':        // 2 kez yatırım → oy ile ayrılma (sdYatirimSonuc yok)
+      case 'koca_kari':          // 3 farklı "aynı grup" eşleşmesi (kkAyniGrupEslesmeleri yok)
+      case 'poliamorist':        // 3 farklı oyuncunun rolünü doğru (poliDogruTahmin yok)
+      case 'fuckbuddy':          // 2 gece bilgi + 1 Gelenekçi işaret (fbBilgi/fbGelIsaret yok)
+      case 'situationship':      // 3 gece üst üste aynı hedef (sitArdisikHedef yok)
+      default:
+        kazandiMi = koydeMi;
+        break;
+    }
+
+    if (kazandiMi) {
+      tarafsizKazananlar.push({ oyuncuId, isim: oyuncu.isim, rolAd: rolObj.ad });
+    }
+  }
 
   // Outsider (Bastırmış / Murat) bireysel kazanma — Özgürlükçü zaferi + Murat köyde kalmalı
   const muratBireyKazanan = tumRoller
