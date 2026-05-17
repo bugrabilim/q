@@ -15,7 +15,41 @@ import './RolKartiEkrani.css';
 const GRUP_BILGI = {
   ozgurlukcu: { ad: 'Özgürlükçü', renk: 'var(--ozgurlukcu)', sembol: '🟢' },
   tarafsiz:   { ad: 'Tarafsız',   renk: 'var(--tarafsiz)',   sembol: '🟡' },
-  gelenekci:  { ad: 'Gelenekçi',  renk: 'var(--gelenekci)',  sembol: '🔴' }
+  gelenekci:  { ad: 'Gelenekçi',  renk: 'var(--gelenekci)',  sembol: '🔴' },
+  outsider:   { ad: 'Outsider',   renk: 'var(--outsider, #9AA0A6)', sembol: '⚪' },
+  kaoscu:     { ad: 'Kaosçu',     renk: 'var(--kaoscu, #1A1A1A)',   sembol: '⚫' }
+};
+
+// v1.8 — Grup bazlı "Ne yapmak istiyorsun?" niyet metinleri (Lobi RolPopup ile aynı)
+const GRUP_NIYETLERI = {
+  ozgurlukcu: 'Gelenekçileri köyden uzaklaştırıp kim olduğunla özgürce yaşamak.',
+  outsider:   'Köyde kalıp Özgürlükçüler kazansın istiyorsun — ama farkında olmadan onları zayıflatıyorsun.',
+  tarafsiz:   'Kendi bireysel hedefini tamamlamak — "Nasıl kazanırsın?" altında ne aradığın yazılı.',
+  gelenekci:  'Özgürlükçüleri köyden uzaklaştırıp eski düzeni kurmak.',
+  kaoscu:     'Kendi kaos hedefini sessizce gerçekleştirmek — "Nasıl kazanırsın?" altında yazılı.'
+};
+
+// v1.8 — Karakter burçları (Lobi RolPopup ile aynı)
+const ROL_BURCLARI = {
+  gay: { sembol: '♎', ad: 'Terazi' }, lezbiyen: { sembol: '♍', ad: 'Başak' },
+  biseksuel: { sembol: '♊', ad: 'İkizler' }, transseksuel: { sembol: '♋', ad: 'Yengeç' },
+  interseksuel: { sembol: '♒', ad: 'Kova' }, panseksuel: { sembol: '♐', ad: 'Yay' },
+  non_binary: { sembol: '♓', ad: 'Balık' }, crossdresser: { sembol: '♈', ad: 'Koç' },
+  drag_queen: { sembol: '♌', ad: 'Aslan' }, femboy: { sembol: '♉', ad: 'Boğa' },
+  ladyboy: { sembol: '♏', ad: 'Akrep' }, bastirmis: { sembol: '♑', ad: 'Oğlak' },
+  hetero_erkek: { sembol: '♌', ad: 'Aslan' }, hetero_kadin: { sembol: '♊', ad: 'İkizler' },
+  aseksuel: { sembol: '♒', ad: 'Kova' }, copcatan: { sembol: '♎', ad: 'Terazi' },
+  fetisist: { sembol: '♍', ad: 'Başak' }, sugar_baby: { sembol: '♓', ad: 'Balık' },
+  sugar_daddy: { sembol: '♑', ad: 'Oğlak' }, capkin: { sembol: '♐', ad: 'Yay' },
+  mazosist: { sembol: '♏', ad: 'Akrep' }, koca_kari: { sembol: '♉', ad: 'Boğa' },
+  poliamorist: { sembol: '♊', ad: 'İkizler' }, fuckbuddy: { sembol: '♈', ad: 'Koç' },
+  lovebuddy: { sembol: '♋', ad: 'Yengeç' }, situationship: { sembol: '♓', ad: 'Balık' },
+  homofobik: { sembol: '♉', ad: 'Boğa' }, transfobik: { sembol: '♑', ad: 'Oğlak' },
+  bifobik: { sembol: '♏', ad: 'Akrep' }, erkek_dusmani: { sembol: '♈', ad: 'Koç' },
+  muhafazakar: { sembol: '♑', ad: 'Oğlak' }, dinci: { sembol: '♍', ad: 'Başak' },
+  nb_karsiti: { sembol: '♍', ad: 'Başak' }, cinsiyetci: { sembol: '♌', ad: 'Aslan' },
+  kaoscu_narsist: { sembol: '♌', ad: 'Aslan' }, sadist: { sembol: '♏', ad: 'Akrep' },
+  sinir_tanimaz: { sembol: '♐', ad: 'Yay' }, zorba: { sembol: '♈', ad: 'Koç' }
 };
 
 export default function RolKartiEkrani({ benimIsmim, rol: rolProp = null, sonZaman = null }) {
@@ -76,6 +110,7 @@ export default function RolKartiEkrani({ benimIsmim, rol: rolProp = null, sonZam
   }
 
   const grup = GRUP_BILGI[rol.grup];
+  const burc = ROL_BURCLARI[rol.id];
 
   return (
     <div className="rol-ekran">
@@ -91,13 +126,9 @@ export default function RolKartiEkrani({ benimIsmim, rol: rolProp = null, sonZam
           <p className="rol-ipucu">ama bu köyde…</p>
         </div>
 
-        {/* Ana kart */}
-        <article
-          className="rol-kart"
-          style={{ borderColor: grup.renk }}
-        >
+        {/* Ana kart — v1.8 ortak tasarım (Lobi RolPopup ile aynı) */}
+        <article className="rol-kart" style={{ borderColor: grup.renk }}>
           <header className="rol-kart-bas">
-            {/* v1.6 — Madde 5: Büyük karakter portresi */}
             <div className="rol-kart-portre-sarmal">
               <KarakterPortresi
                 karakter={rol.karakter}
@@ -110,27 +141,33 @@ export default function RolKartiEkrani({ benimIsmim, rol: rolProp = null, sonZam
               {grup.sembol} {grup.ad}
             </p>
             <h1 className="rol-ad">{rol.ad}</h1>
-            <p className="rol-karakter">
-              <span className="rol-karakter-isim">{rol.karakter}</span>
-              <span className="rol-karakter-ayrac"> · </span>
-              <span>{rol.yas}</span>
-              <span className="rol-karakter-ayrac"> · </span>
-              <span>{rol.meslek}</span>
-            </p>
           </header>
 
+          {/* Karakterin Hikayesi (3 alt grup: Kim? / Neden? / Ne yapmak istiyorsun?) */}
           <div className="rol-bolum">
-            <h2 className="rol-bolum-baslik">Köye Gelişin</h2>
+            <h2 className="rol-bolum-baslik">Karakterin Hikayesi</h2>
+
+            <p className="rol-bolum-altbaslik">Kim?</p>
+            <p className="rol-bolum-metin">
+              <strong>{rol.karakter}</strong> · {rol.yas} · {rol.meslek}
+              {burc && <> · <span className="rol-burc">{burc.sembol} {burc.ad}</span></>}
+            </p>
+
+            <p className="rol-bolum-altbaslik rol-altbaslik-ikinci">Neden bu köye geldin?</p>
             <p className="rol-bolum-metin rol-motivasyon">{rol.motivasyon}</p>
+
+            <p className="rol-bolum-altbaslik rol-altbaslik-ikinci">Ne yapmak istiyorsun?</p>
+            <p className="rol-bolum-metin">{GRUP_NIYETLERI[rol.grup] || '—'}</p>
           </div>
 
+          {/* Oyundaki Görevin (2 alt grup: Ne yaparsın? / Nasıl kazanırsın?) */}
           <div className="rol-bolum">
-            <h2 className="rol-bolum-baslik">Gece Aksiyonu</h2>
-            <p className="rol-bolum-metin">{rol.geceAksiyonu}</p>
-          </div>
+            <h2 className="rol-bolum-baslik">Oyundaki Görevin</h2>
 
-          <div className="rol-bolum rol-kazanma">
-            <h2 className="rol-bolum-baslik">Kazanmak İçin</h2>
+            <p className="rol-bolum-altbaslik">Ne yaparsın?</p>
+            <p className="rol-bolum-metin">{rol.geceAksiyonu}</p>
+
+            <p className="rol-bolum-altbaslik rol-altbaslik-ikinci">Nasıl kazanırsın?</p>
             <p className="rol-bolum-metin">{rol.kazanmaKosulu}</p>
           </div>
         </article>

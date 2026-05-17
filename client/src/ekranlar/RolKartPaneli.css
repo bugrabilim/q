@@ -78,14 +78,31 @@
   margin-top: 10px;
 }
 
+/* v1.8 — Lobi RolPopup ile aynı tasarım (Hikaye/Oyun bölümleri + alt başlıklar) */
 .rol-kart-paneli-bolum-baslik {
+  font-family: var(--font-baslik, 'Lora', serif);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--deniz);
+  margin: 0 0 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(42, 157, 143, 0.18);
+}
+
+.rol-kart-paneli-bolum-altbaslik {
   font-family: var(--font-ui);
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.6px;
-  color: var(--deniz);
-  margin-bottom: 3px;
+  color: var(--derin);
+  opacity: 0.65;
+  margin: 0 0 3px;
+}
+
+.rol-kart-paneli-altbaslik-ikinci {
+  margin-top: 10px;
 }
 
 .rol-kart-paneli-bolum-metin {
@@ -93,6 +110,7 @@
   font-size: 13px;
   line-height: 1.5;
   color: var(--derin);
+  margin: 0 0 4px;
 }
 
 .rol-kart-paneli-motivasyon {
@@ -102,12 +120,9 @@
   color: rgba(38, 70, 83, 0.85);
 }
 
-.rol-kart-paneli-kazanma {
-  margin-top: 12px;
-  padding: 8px 12px;
-  background: rgba(42, 157, 143, 0.08);
-  border-radius: 8px;
-  border-left: 3px solid var(--deniz);
+.rol-kart-paneli-burc {
+  font-weight: 600;
+  color: var(--deniz);
 }
 
 .rol-kart-paneli-bos {
