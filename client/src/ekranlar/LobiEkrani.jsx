@@ -625,7 +625,51 @@ function dagilimHesapla(n) {
   return { ozgurlukcu: ozg, tarafsiz: tar, gelenekci: gel, outsider, kaoscu };
 }
 
-// v1.8 — DagilimPopup kaldırıldı (yerine DagilimInline yukarıda)
+// v1.8 — Önerilen Dağılım inline panel (lobide sürekli açık)
+function DagilimInline({ oyuncuSayisi }) {
+  const [secilen, setSecilen] = useState(() => oyuncuSayisi >= 4 ? oyuncuSayisi : 4);
+
+  useEffect(() => {
+    if (oyuncuSayisi >= 4) setSecilen(oyuncuSayisi);
+  }, [oyuncuSayisi]);
+
+  function girisDegis(e) {
+    const ham = e.target.value.replace(/\D/g, '').slice(0, 3);
+    if (ham === '') { setSecilen(''); return; }
+    setSecilen(Number(ham));
+  }
+
+  const dagilim = dagilimHesapla(secilen);
+  const gecerli = !!dagilim;
+
+  return (
+    <section className="lobi-onerilen-inline">
+      <h3 className="lobi-onerilen-inline-baslik">📊 Önerilen Dağılım</h3>
+      <div className="lobi-onerilen-sorgu">
+        <label className="lobi-onerilen-sorgu-etiket" htmlFor="lobi-onerilen-input">
+          Oyuncu sayısı
+        </label>
+        <input
+          id="lobi-onerilen-input"
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          className="lobi-onerilen-sorgu-input"
+          value={secilen}
+          onChange={girisDegis}
+          placeholder="örn. 8"
+        />
+        <div className="lobi-onerilen-sorgu-sonuc">
+          <span className="lobi-onerilen-grup ozg" title="Özgürlükçü">🟢 {gecerli ? dagilim.ozgurlukcu : '—'}</span>
+          <span className="lobi-onerilen-grup tar" title="Tarafsız">🟡 {gecerli ? dagilim.tarafsiz : '—'}</span>
+          <span className="lobi-onerilen-grup gel" title="Gelenekçi">🔴 {gecerli ? dagilim.gelenekci : '—'}</span>
+          <span className="lobi-onerilen-grup outsider" title="Outsider">⚪ {gecerli ? dagilim.outsider : '—'}</span>
+          <span className="lobi-onerilen-grup kaoscu" title="Kaosçu">⚫ {gecerli ? dagilim.kaoscu : '—'}</span>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 // v1.6 — Madde 1: Roller galerisi popup'ı (eski lobi içeriği)
 function RollerPopup({ roller, onRolSec, onKapat }) {
