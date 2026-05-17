@@ -455,6 +455,36 @@
   cursor: not-allowed;
 }
 
+/* v1.8 — Önerilen Dağılım inline (lobide sürekli açık) */
+.lobi-onerilen-inline {
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: 8px;
+}
+
+.lobi-onerilen-inline-baslik {
+  font-family: var(--font-baslik);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--derin);
+  margin: 0 0 10px;
+}
+
+.lobi-info-bolum--tek {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+/* v1.8 — Hata uyarı satırı */
+.bilgi-uyari {
+  background: rgba(244, 162, 97, 0.15);
+  border-left: 3px solid var(--gunes);
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: var(--derin);
+  font-weight: 500;
+}
+
 /* v1.8 — Önerilen dağılım: oyuncu sayısı yaz, yanında dağılımı gör */
 .lobi-onerilen-sorgu {
   display: flex;

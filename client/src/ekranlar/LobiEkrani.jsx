@@ -91,7 +91,7 @@ const OYUNCU_SAYILARI = [4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
   const [durum, setDurum] = useState({
-    kod, players: [], oyuncuSayisi: 0, minOyuncu: 4, maxOyuncu: 12, ayarlar: null
+    kod, players: [], oyuncuSayisi: 0, minOyuncu: 4, maxOyuncu: 99, ayarlar: null
   });
   const [baslatHatasi, setBaslatHatasi] = useState('');
   const [botEkleHatasi, setBotEkleHatasi] = useState('');
@@ -316,7 +316,7 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
           {benHostMu ? (
             <button
               className="btn btn-birincil"
-              disabled={!yeterliOyuncu}
+              disabled={!yeterliOyuncu || !hostGecerli}
               onClick={oyunuBaslat}
             >
               Oyunu Başlat
@@ -330,6 +330,13 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
           {!yeterliOyuncu && (
             <p className="bilgi">
               En az {durum.minOyuncu} oyuncu gerekli — {durum.minOyuncu - durum.oyuncuSayisi} kişi daha bekleniyor
+            </p>
+          )}
+
+          {/* v1.8 — Dağılım toplamı oyuncu sayısıyla eşleşmezse uyarı (host için) */}
+          {benHostMu && yeterliOyuncu && !hostGecerli && (
+            <p className="bilgi bilgi-uyari">
+              ⚠️ Önce dağılım toplamını oyuncu sayısıyla eşleştir — aşağıdaki "Dağılımı Özelleştir" panelinden ayarla.
             </p>
           )}
           {botEkleHatasi && <p className="hata">{botEkleHatasi}</p>}
@@ -377,20 +384,9 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
           </ul>
         </section>
 
-        {/* v1.6 — Madde 1: Önerilen Dağılım ve Roller artık popup'tan açılır.
-            İki yan yana buton — sayfa kısalır, info ihtiyaca göre açılır. */}
-        <section className="lobi-info-bolum">
-          <button
-            type="button"
-            className="lobi-info-btn"
-            onClick={() => setDagilimPopupAcik(true)}
-          >
-            <span className="lobi-info-btn-ikon">📊</span>
-            <span className="lobi-info-btn-metin">
-              <span className="lobi-info-btn-baslik">Önerilen Dağılım</span>
-              <span className="lobi-info-btn-altyazi">{durum.oyuncuSayisi} kişiyle 🟢 🟡 🔴 ⚪ ⚫</span>
-            </span>
-          </button>
+        {/* v1.8 — Önerilen Dağılım artık inline (popup değil). Roller butonu kaldı. */}
+        <DagilimInline oyuncuSayisi={durum.oyuncuSayisi} />
+        <section className="lobi-info-bolum lobi-info-bolum--tek">
           <button
             type="button"
             className="lobi-info-btn"
@@ -500,8 +496,8 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
           </div>
         </section>
 
-        {/* Madde 4: Host'a özel dağılım ayarı paneli (A seçeneği — grup sayıları) */}
-        {benHostMu && durum.oyuncuSayisi >= durum.minOyuncu && (
+        {/* v1.8 — Host'a özel dağılım ayarı paneli (sabit açık — sadece host görür) */}
+        {benHostMu && (
           <section className="lobi-host-ayar-bolum">
             <h3 className="lobi-host-ayar-baslik">
               Dağılımı Özelleştir <span className="lobi-host-ayar-rozet">host</span>
@@ -573,13 +569,7 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
 
       </div>
 
-      {/* v1.6 — Madde 1: Önerilen Dağılım popup */}
-      {dagilimPopupAcik && (
-        <DagilimPopup
-          oyuncuSayisi={durum.oyuncuSayisi}
-          onKapat={() => setDagilimPopupAcik(false)}
-        />
-      )}
+      {/* v1.8 — Önerilen Dağılım popup yerine inline (yukarıda DagilimInline) */}
 
       {/* v1.6 — Madde 1: Roller galerisi popup */}
       {rollerPopupAcik && roller.length > 0 && (
@@ -599,78 +589,25 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
 }
 
 // v1.8 — Önerilen Dağılım popup'ı: oyuncu sayısı yaz, yandaki dağılımı gör
-// v1.8 — 16+ oyuncu için generic dağılım formülü (tablo dışı sayılar)
+// v1.8 — Tek kaynak dağılım formülü (4'ten sınırsız oyuncu sayısına kadar)
+// Outsider 7+, Kaosçu 10+ (1) / 13+ (2). Kalan: gelenekçi ~25%, özgürlükçü ~45%, tarafsız kalan.
 function dagilimHesapla(n) {
   if (!Number.isInteger(n) || n < 4) return null;
-  if (DENGE_ONERILEN[n]) return DENGE_ONERILEN[n];
-  // 16+ için: gelenekçi ~25% (min 3), özgürlükçü ~45%, tarafsız kalan
-  const gel = Math.max(3, Math.round(n * 0.25));
-  let ozg = Math.max(2, Math.round(n * 0.45));
-  let tar = n - ozg - gel;
-  if (tar < 1) { ozg -= (1 - tar); tar = 1; }
-  return { ozgurlukcu: ozg, tarafsiz: tar, gelenekci: gel, outsider: 0, kaoscu: 0 };
-}
-
-function DagilimPopup({ oyuncuSayisi, onKapat }) {
-  const [secilen, setSecilen] = useState(() => oyuncuSayisi >= 4 ? oyuncuSayisi : 4);
-
-  useEffect(() => {
-    function esc(e) { if (e.key === 'Escape') onKapat(); }
-    window.addEventListener('keydown', esc);
-    return () => window.removeEventListener('keydown', esc);
-  }, [onKapat]);
-
-  function girisDegis(e) {
-    const ham = e.target.value.replace(/\D/g, '').slice(0, 3);
-    if (ham === '') { setSecilen(''); return; }
-    setSecilen(Number(ham));
+  const outsider = n >= 7 ? 1 : 0;
+  const kaoscu = n >= 13 ? 2 : (n >= 10 ? 1 : 0);
+  const kalan = n - outsider - kaoscu;
+  let gel = Math.max(1, Math.round(kalan * 0.25));
+  let ozg = Math.max(2, Math.round(kalan * 0.45));
+  let tar = kalan - ozg - gel;
+  if (tar < 1) {
+    // Yuvarlatma: tar'ı ozg'den eksilt
+    ozg -= (1 - tar);
+    tar = 1;
   }
-
-  const dagilim = dagilimHesapla(secilen);
-  const gecerli = !!dagilim;
-
-  return (
-    <div className="lobi-popup-arka" onClick={onKapat}>
-      <div className="lobi-popup-kart lobi-popup-kart--orta" onClick={e => e.stopPropagation()}>
-        <button className="lobi-popup-kapat" onClick={onKapat}>✕</button>
-        <div className="lobi-popup-bas">
-          <h2 className="lobi-popup-ad">📊 Önerilen Dağılım</h2>
-          <p className="lobi-popup-karakter">
-            Oyuncu sayısını gir, dengeli dağılımı gör (en az 4 kişi, üst sınır yok)
-          </p>
-        </div>
-        <div className="lobi-onerilen-sorgu">
-          <label className="lobi-onerilen-sorgu-etiket" htmlFor="lobi-onerilen-input">
-            Oyuncu sayısı
-          </label>
-          <input
-            id="lobi-onerilen-input"
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            className="lobi-onerilen-sorgu-input"
-            value={secilen}
-            onChange={girisDegis}
-            placeholder="örn. 8"
-            autoFocus
-          />
-          {/* v1.8 — Sıra: yeşil → sarı → kırmızı → beyaz → siyah · sayılar dinamik */}
-          <div className="lobi-onerilen-sorgu-sonuc">
-            <span className="lobi-onerilen-grup ozg" title="Özgürlükçü">🟢 {gecerli ? dagilim.ozgurlukcu : '—'}</span>
-            <span className="lobi-onerilen-grup tar" title="Tarafsız">🟡 {gecerli ? dagilim.tarafsiz : '—'}</span>
-            <span className="lobi-onerilen-grup gel" title="Gelenekçi">🔴 {gecerli ? dagilim.gelenekci : '—'}</span>
-            <span className="lobi-onerilen-grup outsider" title="Outsider">⚪ {gecerli ? (dagilim.outsider || 0) : '—'}</span>
-            <span className="lobi-onerilen-grup kaoscu" title="Kaosçu">⚫ {gecerli ? (dagilim.kaoscu || 0) : '—'}</span>
-          </div>
-        </div>
-        <p className="lobi-onerilen-aciklama">
-          V1'de <strong>⚪ Outsider</strong> ve <strong>⚫ Kaosçu</strong> opsiyonel — önerilen dağılımda 0,
-          host panelinden açılır. Aynı karakterden birden fazla oyuncu olabilir.
-        </p>
-      </div>
-    </div>
-  );
+  return { ozgurlukcu: ozg, tarafsiz: tar, gelenekci: gel, outsider, kaoscu };
 }
+
+// v1.8 — DagilimPopup kaldırıldı (yerine DagilimInline yukarıda)
 
 // v1.6 — Madde 1: Roller galerisi popup'ı (eski lobi içeriği)
 function RollerPopup({ roller, onRolSec, onKapat }) {

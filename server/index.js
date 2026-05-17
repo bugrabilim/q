@@ -109,7 +109,7 @@ function lobiDurumu(oda) {
     })),
     oyuncuSayisi: oda.players.length,
     minOyuncu: 4,
-    maxOyuncu: 12,
+    maxOyuncu: 99,
     ayarlar
   };
 }
@@ -2308,7 +2308,7 @@ io.on('connection', (socket) => {
     if (!isim || !isim.trim()) return callback({ ok: false, hata: 'İsim boş olamaz' });
     const oda = rooms[temizKod];
     if (oda.faz !== 'lobi') return callback({ ok: false, hata: 'Oyun başladı, katılınamaz' });
-    if (oda.players.length >= 12) return callback({ ok: false, hata: 'Oda dolu (max 12)' });
+    if (oda.players.length >= 99) return callback({ ok: false, hata: 'Oda dolu (max 99)' });
     const temizIsim = isim.trim().slice(0, 20);
     if (oda.players.some(p => trKucult(p.isim) === trKucult(temizIsim))) {
       return callback({ ok: false, hata: 'Bu isimde biri zaten odada' });
