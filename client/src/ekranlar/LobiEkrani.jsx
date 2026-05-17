@@ -604,15 +604,15 @@ function DagilimPopup({ oyuncuSayisi, onKapat }) {
             placeholder="örn. 8"
             autoFocus
           />
-          {gecerli ? (
-            <div className="lobi-onerilen-sorgu-sonuc">
-              <span className="lobi-onerilen-grup ozg" title="Özgürlükçü">🟢 {dagilim.ozgurlukcu}</span>
-              <span className="lobi-onerilen-grup outsider" title="Outsider">⚪ {dagilim.outsider || 0}</span>
-              <span className="lobi-onerilen-grup tar" title="Tarafsız">🟡 {dagilim.tarafsiz}</span>
-              <span className="lobi-onerilen-grup gel" title="Gelenekçi">🔴 {dagilim.gelenekci}</span>
-              <span className="lobi-onerilen-grup kaoscu" title="Kaosçu">⚫ {dagilim.kaoscu || 0}</span>
-            </div>
-          ) : (
+          {/* v1.8 — Renkler sabit, sayılar dinamik (geçersizde "—") */}
+          <div className="lobi-onerilen-sorgu-sonuc">
+            <span className="lobi-onerilen-grup ozg" title="Özgürlükçü">🟢 {gecerli ? dagilim.ozgurlukcu : '—'}</span>
+            <span className="lobi-onerilen-grup outsider" title="Outsider">⚪ {gecerli ? (dagilim.outsider || 0) : '—'}</span>
+            <span className="lobi-onerilen-grup tar" title="Tarafsız">🟡 {gecerli ? dagilim.tarafsiz : '—'}</span>
+            <span className="lobi-onerilen-grup gel" title="Gelenekçi">🔴 {gecerli ? dagilim.gelenekci : '—'}</span>
+            <span className="lobi-onerilen-grup kaoscu" title="Kaosçu">⚫ {gecerli ? (dagilim.kaoscu || 0) : '—'}</span>
+          </div>
+          {!gecerli && (
             <p className="lobi-onerilen-sorgu-uyari">
               {secilen === '' ? 'Sayı gir' : 'En az 4 kişi'}
             </p>
