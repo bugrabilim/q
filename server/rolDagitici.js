@@ -19,11 +19,9 @@ function karistir(dizi) {
 }
 
 // Belirli bir gruptan N tane rastgele rol seç (zorunlu olanlar önce).
-// Tekil grup kuralı (roller.js → r.tekil): Aynı tekil etiket (örn. 'heterolar',
-// 'sugar', 'buddy', 'boylar', 'fobikler-homo') taşıyan rollerden en fazla 1 tanesi
-// seçilir. HE ile HK aynı oyunda bulunamaz. Zorunlu roller bu kuralın dışındadır
-// (zaten önceden eklenmiş kabul edilir) — zorunlu bir rolün tekil grubu kullanılmış
-// olarak işaretlenir, böylece o gruptan başka rol gelmez.
+// v1.8 — Tekil kural kaldırıldı; aynı rolden birden fazla oyuncu olabilir.
+// Zorunlu roller (örn. Kaan) hâlâ en az 1 kez dağıtılır; geri kalanlar havuzdan
+// rastgele (tekrar serbest) seçilir.
 function gruptanSec(grupId, sayi) {
   const havuz = ROLLER.filter(r => r.grup === grupId);
   const zorunlular = havuz.filter(r => r.zorunlu);
@@ -34,31 +32,16 @@ function gruptanSec(grupId, sayi) {
   }
 
   const secilen = [...zorunlular];
-  // Zorunlu rollerden gelen tekil etiketler — bunlardan bir daha çekme
-  const kullanilanTekilGruplar = new Set();
-  for (const r of zorunlular) {
-    if (r.tekil) kullanilanTekilGruplar.add(r.tekil);
-  }
-
-  const karistirilmis = karistir(digerleri);
   const eksik = sayi - zorunlular.length;
 
-  for (const aday of karistirilmis) {
-    if (secilen.length - zorunlular.length >= eksik) break;
-    if (aday.tekil && kullanilanTekilGruplar.has(aday.tekil)) {
-      // Aynı tekil gruptan başka rol seçildi — atla
-      continue;
-    }
-    secilen.push(aday);
-    if (aday.tekil) kullanilanTekilGruplar.add(aday.tekil);
+  if (eksik > 0 && digerleri.length === 0) {
+    throw new Error(`${grupId} grubunda dağıtılacak ek rol yok`);
   }
 
-  // Tekil kuralları yüzünden hedef sayıya ulaşılamadıysa açıkça hata ver
-  if (secilen.length < sayi) {
-    throw new Error(
-      `${grupId} grubunda ${sayi} rol için yeterli uygun aday yok ` +
-      `(tekil kural kısıtlamasıyla ${secilen.length} seçilebildi)`
-    );
+  // Aynı rol birden fazla seçilebilir — havuzdan rastgele çek, geri koy.
+  for (let i = 0; i < eksik; i++) {
+    const aday = digerleri[Math.floor(Math.random() * digerleri.length)];
+    secilen.push(aday);
   }
 
   return secilen;
