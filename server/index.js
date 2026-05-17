@@ -2419,9 +2419,7 @@ io.on('connection', (socket) => {
         if ([ozg, tar, gel, outsider, kaoscu].some(n => !Number.isInteger(n) || n < 0)) {
           return callback?.({ ok: false, hata: 'Geçersiz sayı' });
         }
-        if (gel < 1) {
-          return callback?.({ ok: false, hata: 'En az 1 gelenekçi olmalı (Kaan zorunlu)' });
-        }
+        // v1.8 — Kaan zorunluluğu kaldırıldı; gelenekçi 0 olabilir
         if (outsider > 1) {
           return callback?.({ ok: false, hata: 'Outsider en fazla 1 olabilir' });
         }

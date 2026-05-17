@@ -164,7 +164,7 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
     duzenlemeDagilim.kaoscu;
   const hostGecerli =
     hostToplam === durum.oyuncuSayisi &&
-    duzenlemeDagilim.gelenekci >= 1 &&
+    duzenlemeDagilim.gelenekci >= 0 &&
     duzenlemeDagilim.outsider >= 0 && duzenlemeDagilim.outsider <= OUTSIDER_MAX &&
     duzenlemeDagilim.kaoscu >= 0 && duzenlemeDagilim.kaoscu <= KAOSCU_MAX &&
     durum.oyuncuSayisi >= durum.minOyuncu;
@@ -180,7 +180,7 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
     const yeniDeger = base[grup] + delta;
 
     // Min/max sınırları
-    if (grup === 'gelenekci' && yeniDeger < 1) return;
+    if (grup === 'gelenekci' && yeniDeger < 0) return;
     if (grup === 'outsider' && (yeniDeger < 0 || yeniDeger > OUTSIDER_MAX)) return;
     if (grup === 'kaoscu' && (yeniDeger < 0 || yeniDeger > KAOSCU_MAX)) return;
     if (yeniDeger < 0) return;
@@ -199,7 +199,7 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
       const sirali = diger.sort((a, b) => base[b] - base[a]);
       let dusuldu = false;
       for (const g of sirali) {
-        const altSinir = g === 'gelenekci' ? 1 : 0;
+        const altSinir = 0;
         if (base[g] > altSinir) { base[g] -= 1; dusuldu = true; break; }
       }
       // Karşıdan düşülecek alan yoksa (örn. herkes alt sınırda) — değişikliği geri al
@@ -463,7 +463,7 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
               {[
                 { key: 'ozgurlukcu', etiket: '🟢 Özgürlükçü', altSinir: 0, ustSinir: null, satirClass: 'ozg' },
                 { key: 'tarafsiz',   etiket: '🟡 Tarafsız',   altSinir: 0, ustSinir: null, satirClass: 'tar' },
-                { key: 'gelenekci',  etiket: '🔴 Gelenekçi',  altSinir: 1, ustSinir: null, satirClass: 'gel' },
+                { key: 'gelenekci',  etiket: '🔴 Gelenekçi',  altSinir: 0, ustSinir: null, satirClass: 'gel' },
                 { key: 'outsider',   etiket: '⚪ Outsider',   altSinir: 0, ustSinir: OUTSIDER_MAX, satirClass: 'outsider' },
                 { key: 'kaoscu',     etiket: '⚫ Kaosçu',     altSinir: 0, ustSinir: KAOSCU_MAX,  satirClass: 'kaoscu' }
               ].map(({ key, etiket, altSinir, ustSinir, satirClass }) => (

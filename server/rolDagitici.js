@@ -23,12 +23,16 @@ function karistir(dizi) {
 // Zorunlu roller (örn. Kaan) hâlâ en az 1 kez dağıtılır; geri kalanlar havuzdan
 // rastgele (tekrar serbest) seçilir.
 function gruptanSec(grupId, sayi) {
+  if (sayi <= 0) return [];
+
   const havuz = ROLLER.filter(r => r.grup === grupId);
   const zorunlular = havuz.filter(r => r.zorunlu);
   const digerleri = havuz.filter(r => !r.zorunlu);
 
+  // v1.8 — Eğer talep edilen sayı zorunlu sayısından azsa, zorunlular kısaltılır
+  // (Kaan zorunluluğu artık host iste/istemez seçenekli; gelenekçi 0 olabilir)
   if (zorunlular.length > sayi) {
-    throw new Error(`${grupId} grubunda ${zorunlular.length} zorunlu rol var ama sadece ${sayi} yer var`);
+    zorunlular.length = sayi;
   }
 
   const secilen = [...zorunlular];
