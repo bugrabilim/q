@@ -14,6 +14,15 @@ const GRUP_BILGI = {
   kaoscu:     { ad: 'Kaosçu',     renk: 'var(--kaoscu, #1A1A1A)',   sembol: '⚫' }
 };
 
+// v1.8 — Grup bazlı "Ne yapmak istiyorsun?" niyet metinleri
+const GRUP_NIYETLERI = {
+  ozgurlukcu: 'Gelenekçileri köyden uzaklaştırıp kim olduğunla özgürce yaşamak.',
+  outsider:   'Köyde kalıp Özgürlükçüler kazansın istiyorsun — ama farkında olmadan onları zayıflatıyorsun.',
+  tarafsiz:   'Kendi bireysel hedefini tamamlamak — "Nasıl kazanırsın?" altında ne aradığın yazılı.',
+  gelenekci:  'Özgürlükçüleri köyden uzaklaştırıp eski düzeni kurmak.',
+  kaoscu:     'Kendi kaos hedefini sessizce gerçekleştirmek — "Nasıl kazanırsın?" altında yazılı.'
+};
+
 // v1.8 — Karakter burçları (tematik atama; kişilik + meslek + hikaye uyumu)
 const ROL_BURCLARI = {
   // Özgürlükçüler
@@ -723,25 +732,33 @@ function RolPopup({ rol, onKapat }) {
             {grup?.sembol} {grup?.ad}
           </p>
           <h2 className="lobi-popup-ad">{rol.ad}</h2>
-          <p className="lobi-popup-karakter">
+        </div>
+
+        {/* v1.8 — Karakterin Hikayesi (3 alt grup: kim, neden geldin, ne yapmak istiyorsun) */}
+        <div className="lobi-popup-bolum">
+          <p className="lobi-popup-bolum-baslik">Karakterin Hikayesi</p>
+
+          <p className="lobi-popup-bolum-altbaslik">Kim?</p>
+          <p className="lobi-popup-bolum-metin lobi-popup-karakter-satir">
             <strong>{rol.karakter}</strong> · {rol.yas} · {rol.meslek}
             {burc && <> · <span className="lobi-popup-burc">{burc.sembol} {burc.ad}</span></>}
           </p>
-        </div>
 
-        {/* v1.8 — Hikaye bölümü (karakter/iç dünya) */}
-        <div className="lobi-popup-bolum">
-          <p className="lobi-popup-bolum-baslik">Hikaye</p>
-          <p className="lobi-popup-bolum-altbaslik">Neden bu köye geldin, ne yapmak istiyorsun?</p>
+          <p className="lobi-popup-bolum-altbaslik lobi-popup-altbaslik-ikinci">Neden bu köye geldin?</p>
           <p className="lobi-popup-bolum-metin lobi-popup-motivasyon">{rol.motivasyon}</p>
+
+          <p className="lobi-popup-bolum-altbaslik lobi-popup-altbaslik-ikinci">Ne yapmak istiyorsun?</p>
+          <p className="lobi-popup-bolum-metin">{GRUP_NIYETLERI[rol.grup] || '—'}</p>
         </div>
 
-        {/* v1.8 — Oyun bölümü (gece aksiyonu + kazanma birleşik) */}
+        {/* v1.8 — Oyundaki Görevin (2 alt grup: ne yaparsın, nasıl kazanırsın) */}
         <div className="lobi-popup-bolum">
-          <p className="lobi-popup-bolum-baslik">Oyun</p>
-          <p className="lobi-popup-bolum-altbaslik">Gece aksiyonu</p>
+          <p className="lobi-popup-bolum-baslik">Oyundaki Görevin</p>
+
+          <p className="lobi-popup-bolum-altbaslik">Ne yaparsın?</p>
           <p className="lobi-popup-bolum-metin">{rol.geceAksiyonu}</p>
-          <p className="lobi-popup-bolum-altbaslik lobi-popup-altbaslik-ikinci">Kazanmak için</p>
+
+          <p className="lobi-popup-bolum-altbaslik lobi-popup-altbaslik-ikinci">Nasıl kazanırsın?</p>
           <p className="lobi-popup-bolum-metin">{rol.kazanmaKosulu}</p>
         </div>
       </div>
