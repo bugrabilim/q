@@ -14,6 +14,53 @@ const GRUP_BILGI = {
   kaoscu:     { ad: 'Kaosçu',     renk: 'var(--kaoscu, #1A1A1A)',   sembol: '⚫' }
 };
 
+// v1.8 — Karakter burçları (tematik atama; kişilik + meslek + hikaye uyumu)
+const ROL_BURCLARI = {
+  // Özgürlükçüler
+  gay:           { sembol: '♎', ad: 'Terazi' },
+  lezbiyen:      { sembol: '♍', ad: 'Başak' },
+  biseksuel:     { sembol: '♊', ad: 'İkizler' },
+  transseksuel:  { sembol: '♋', ad: 'Yengeç' },
+  interseksuel:  { sembol: '♒', ad: 'Kova' },
+  panseksuel:    { sembol: '♐', ad: 'Yay' },
+  non_binary:    { sembol: '♓', ad: 'Balık' },
+  crossdresser:  { sembol: '♈', ad: 'Koç' },
+  drag_queen:    { sembol: '♌', ad: 'Aslan' },
+  femboy:        { sembol: '♉', ad: 'Boğa' },
+  ladyboy:       { sembol: '♏', ad: 'Akrep' },
+  // Outsider
+  bastirmis:     { sembol: '♑', ad: 'Oğlak' },
+  // Tarafsızlar
+  hetero_erkek:  { sembol: '♌', ad: 'Aslan' },
+  hetero_kadin:  { sembol: '♊', ad: 'İkizler' },
+  aseksuel:      { sembol: '♒', ad: 'Kova' },
+  copcatan:      { sembol: '♎', ad: 'Terazi' },
+  fetisist:      { sembol: '♍', ad: 'Başak' },
+  sugar_baby:    { sembol: '♓', ad: 'Balık' },
+  sugar_daddy:   { sembol: '♑', ad: 'Oğlak' },
+  capkin:        { sembol: '♐', ad: 'Yay' },
+  mazosist:      { sembol: '♏', ad: 'Akrep' },
+  koca_kari:     { sembol: '♉', ad: 'Boğa' },
+  poliamorist:   { sembol: '♊', ad: 'İkizler' },
+  fuckbuddy:     { sembol: '♈', ad: 'Koç' },
+  lovebuddy:     { sembol: '♋', ad: 'Yengeç' },
+  situationship: { sembol: '♓', ad: 'Balık' },
+  // Gelenekçiler
+  homofobik:     { sembol: '♉', ad: 'Boğa' },
+  transfobik:    { sembol: '♑', ad: 'Oğlak' },
+  bifobik:       { sembol: '♏', ad: 'Akrep' },
+  erkek_dusmani: { sembol: '♈', ad: 'Koç' },
+  muhafazakar:   { sembol: '♑', ad: 'Oğlak' },
+  dinci:         { sembol: '♍', ad: 'Başak' },
+  nb_karsiti:    { sembol: '♍', ad: 'Başak' },
+  cinsiyetci:    { sembol: '♌', ad: 'Aslan' },
+  // Kaosçular
+  kaoscu_narsist:{ sembol: '♌', ad: 'Aslan' },
+  sadist:        { sembol: '♏', ad: 'Akrep' },
+  sinir_tanimaz: { sembol: '♐', ad: 'Yay' },
+  zorba:         { sembol: '♈', ad: 'Koç' }
+};
+
 // V1 — Outsider/Kaosçu üst sınırları (host paneli için)
 const OUTSIDER_MAX = 1;
 const KAOSCU_MAX = 3;
@@ -572,6 +619,7 @@ function RollerPopup({ roller, onRolSec, onKapat }) {
 
 function RolPopup({ rol, onKapat }) {
   const grup = GRUP_BILGI[rol.grup];
+  const burc = ROL_BURCLARI[rol.id];
 
   // Escape ile kapama
   useEffect(() => {
@@ -588,7 +636,6 @@ function RolPopup({ rol, onKapat }) {
         <button className="lobi-popup-kapat" onClick={onKapat}>✕</button>
 
         <div className="lobi-popup-bas">
-          {/* v1.6 — Madde 5: Karakter portresi (büyük) */}
           <div className="lobi-popup-portre-sarmal">
             <KarakterPortresi
               karakter={rol.karakter}
@@ -603,21 +650,23 @@ function RolPopup({ rol, onKapat }) {
           <h2 className="lobi-popup-ad">{rol.ad}</h2>
           <p className="lobi-popup-karakter">
             <strong>{rol.karakter}</strong> · {rol.yas} · {rol.meslek}
+            {burc && <> · <span className="lobi-popup-burc">{burc.sembol} {burc.ad}</span></>}
           </p>
         </div>
 
+        {/* v1.8 — Hikaye bölümü (karakter/iç dünya) */}
         <div className="lobi-popup-bolum">
-          <p className="lobi-popup-bolum-baslik">Köye Gelişin</p>
+          <p className="lobi-popup-bolum-baslik">Hikaye</p>
+          <p className="lobi-popup-bolum-altbaslik">Neden bu köye geldin, ne yapmak istiyorsun?</p>
           <p className="lobi-popup-bolum-metin lobi-popup-motivasyon">{rol.motivasyon}</p>
         </div>
 
+        {/* v1.8 — Oyun bölümü (gece aksiyonu + kazanma birleşik) */}
         <div className="lobi-popup-bolum">
-          <p className="lobi-popup-bolum-baslik">Gece Aksiyonu</p>
+          <p className="lobi-popup-bolum-baslik">Oyun</p>
+          <p className="lobi-popup-bolum-altbaslik">Gece aksiyonu</p>
           <p className="lobi-popup-bolum-metin">{rol.geceAksiyonu}</p>
-        </div>
-
-        <div className="lobi-popup-bolum lobi-popup-kazanma">
-          <p className="lobi-popup-bolum-baslik">Kazanmak İçin</p>
+          <p className="lobi-popup-bolum-altbaslik lobi-popup-altbaslik-ikinci">Kazanmak için</p>
           <p className="lobi-popup-bolum-metin">{rol.kazanmaKosulu}</p>
         </div>
       </div>

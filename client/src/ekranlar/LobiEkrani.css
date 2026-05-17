@@ -910,13 +910,30 @@
 }
 
 .lobi-popup-bolum-baslik {
+  font-family: var(--font-baslik);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--deniz);
+  margin: 0 0 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(42, 157, 143, 0.18);
+}
+
+/* v1.8 — Hikaye/Oyun bölümleri için alt başlık (gri, daha küçük) */
+.lobi-popup-bolum-altbaslik {
   font-family: var(--font-ui);
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.6px;
-  color: var(--deniz);
-  margin-bottom: 4px;
+  color: var(--derin);
+  opacity: 0.65;
+  margin: 0 0 4px;
+}
+
+.lobi-popup-altbaslik-ikinci {
+  margin-top: 12px;
 }
 
 .lobi-popup-bolum-metin {
@@ -924,6 +941,7 @@
   font-size: 14px;
   line-height: 1.55;
   color: var(--derin);
+  margin: 0 0 6px;
 }
 
 .lobi-popup-motivasyon {
@@ -931,12 +949,10 @@
   font-style: italic;
 }
 
-.lobi-popup-kazanma {
-  margin-top: 14px;
-  padding: 10px 12px;
-  background: rgba(42, 157, 143, 0.08);
-  border-radius: 8px;
-  border-left: 3px solid var(--deniz);
+/* v1.8 — Karakter satırındaki burç vurgusu */
+.lobi-popup-burc {
+  font-weight: 600;
+  color: var(--deniz);
 }
 
 .bilgi {
