@@ -684,11 +684,7 @@ function RollerPopup({ roller, onRolSec, onKapat }) {
                         grup={r.grup}
                         boyut={48}
                       />
-                      <span className="lobi-rol-kart-grup" style={{ color: grup?.renk }}>
-                        {grup?.sembol}
-                      </span>
                       <span className="lobi-rol-kart-ad">{r.ad}</span>
-                      <span className="lobi-rol-kart-karakter">{r.karakter}</span>
                     </button>
                   ))}
                 </div>
