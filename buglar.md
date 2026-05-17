@@ -65,7 +65,7 @@ T6/T7 sırasında bulunan hatalar burada izlenir. Format için ajan-plani.md →
 - **Beklenen:** Master Bölüm 20: Parçalar crossfade ile rotasyon, faz boyunca süreklilik.
 - **Gerçekleşen:** Sıradaki parça bittiğinde kuyruk duruyor.
 - **Öncelik:** Yüksek — atmosfer kaybı
-- **Durum:** Açık
+- **Durum:** Düzeltildi (2026-05-16, v1.7.1)
 - **Olası sebep:** `SesYoneticisi.js` rotasyon listesi tüketildiğinde resetlenmiyor; `onend` callback sonsuz döngü garanti etmiyor.
 - **Dosyalar:** `client/src/ses/SesYoneticisi.js`
 
@@ -78,7 +78,7 @@ T6/T7 sırasında bulunan hatalar burada izlenir. Format için ajan-plani.md →
 - **Adımlar:** Lobiden oyuna geçtikten sonra rol kartı ekranı max 30 sn bekliyor.
 - **Beklenen:** Max 10 sn (Buğra talebi).
 - **Öncelik:** Orta — UX hızlandırma
-- **Durum:** Açık
+- **Durum:** Düzeltildi (2026-05-16, v1.7.1)
 - **Düzeltme:** `SURE_ROL = 10_000` (`server/index.js`); master Bölüm 11 Faz 3 ve Bölüm 12 ekran özeti güncelle.
 - **Dosyalar:** `server/index.js`, `q-master-belge12.md`
 
@@ -91,7 +91,7 @@ T6/T7 sırasında bulunan hatalar burada izlenir. Format için ajan-plani.md →
 - **Adımlar:** Masaüstü ekranında oyun aç → sağ üstte ⚙️ butonu ile sohbet panelinin "Köy Meydanı" başlığı çakışıyor.
 - **Beklenen:** Ayarlar butonu sohbet panelinin başlığıyla çakışmasın.
 - **Öncelik:** Orta — UI
-- **Durum:** Açık
+- **Durum:** Düzeltildi (2026-05-16, v1.7.1)
 - **Düzeltme:** `OyunDuzeni.css` sağ üst pozisyonu / `SesButonu` z-index ve top değeri ayarlanmalı.
 - **Dosyalar:** `client/src/ekranlar/OyunDuzeni.css`, `client/src/ses/SesButonu.css`, `client/src/ekranlar/SohbetPaneli.css`
 
@@ -104,7 +104,7 @@ T6/T7 sırasında bulunan hatalar burada izlenir. Format için ajan-plani.md →
 - **Adımlar:** Az gerçek oyuncuyla oyun → tüm gerçek oyuncular "Hazır" basıyor → botlar kendi gecikmelerini bekliyor → faz uzun sürüyor.
 - **Beklenen:** Tüm gerçek oyuncular hazır basınca botlar gecikmesiz "Hazır" emit etsin → faz erken bitsin.
 - **Öncelik:** Orta — UX hızlandırma
-- **Durum:** Açık
+- **Durum:** Düzeltildi (2026-05-16, v1.7.1)
 - **Düzeltme:** `server/index.js` bot otomasyon kontrolünde her "hazır" geldiğinde "gerçek oyuncuların hepsi hazır mı?" kontrolü; öyleyse kalan botları anında hazır işaretle.
 - **Dosyalar:** `server/index.js`
 
@@ -117,6 +117,6 @@ T6/T7 sırasında bulunan hatalar burada izlenir. Format için ajan-plani.md →
 - **Adımlar:** Oyun bittiğinde "X Kazandı" yeşil/kırmızı zemin görünür → sağ üst ⚙️ + 🔊 butonları zeminin arkasında kalıyor, tıklanamıyor.
 - **Beklenen:** Butonlar üstte ve tıklanabilir.
 - **Öncelik:** Orta — UI
-- **Durum:** Açık
+- **Durum:** Düzeltildi (2026-05-16, v1.7.1)
 - **Düzeltme:** `BitisEkrani.css` kazanan gradient banner z-index düşürülmeli veya butonların container'ı yükseltilmeli.
 - **Dosyalar:** `client/src/ekranlar/BitisEkrani.css`, `client/src/ses/SesButonu.css`

@@ -33,6 +33,9 @@ export default function OylamaEkrani({ benimIsmim, oyuncuId, onFazDegisti, benim
   // Oylama Sonucu (yeni — Madde 2)
   const [oylamaSonucu, setOylamaSonucu] = useState(null);
 
+  // V1 Kaosçu — Hakan baskı: bu oyuncuya yasaklı hedef (sadece 1. oylama, sadece bu oyuncuya özel)
+  const [hakanYasakliId, setHakanYasakliId] = useState(null);
+
   // Mount: sunucudan güncel durumu al
   useEffect(() => {
     socket.emit('oylama:durumIste', null, (cevap) => {
@@ -47,6 +50,8 @@ export default function OylamaEkrani({ benimIsmim, oyuncuId, onFazDegisti, benim
       if (typeof cevap.katilabilirMiyim === 'boolean') setKatilabilirMiyim(cevap.katilabilirMiyim);
       if (cevap.benimOyum2) setBenimOyum2(cevap.benimOyum2);
       if (typeof cevap.hazirMiyim === 'boolean') setHazirMiyim(cevap.hazirMiyim);
+      // V1 Kaosçu — Hakan yasak (sadece bu oyuncuya özel)
+      setHakanYasakliId(cevap.hakanYasakliId || null);
     });
 
     // Mount'ta oylama_sonuc fazındaysak ayrı durum iste
@@ -81,6 +86,12 @@ export default function OylamaEkrani({ benimIsmim, oyuncuId, onFazDegisti, benim
         setSonuc1(null);
         setSonuc2(null);
         setHazirMiyim(false);
+        // V1 Kaosçu — Hakan yasak yeni 1. oylama başında temizlenir; özel
+        // 'oylama:hakanYasakliOy' event'i geldiğinde tekrar dolar.
+        setHakanYasakliId(null);
+      } else {
+        // 1. oylama dışı her fazda yasak temizlenir
+        setHakanYasakliId(null);
       }
       if (d.faz === 'savunma') {
         setSavunulanId(d.savunulanId);
@@ -140,6 +151,11 @@ export default function OylamaEkrani({ benimIsmim, oyuncuId, onFazDegisti, benim
       setHazirDurumu(d);
     }
 
+    // V1 Kaosçu — Hakan baskı: sadece baskılanan oyuncuya gelen kişisel event
+    function hakanYasakliOyGeldi(d) {
+      setHakanYasakliId(d?.yasakliId || null);
+    }
+
     socket.on('faz:degisti', fazDegisti);
     socket.on('oylama:guncellendi', oylamaGuncellendi);
     socket.on('oylama:1Sonuc', oylama1Sonuc);
@@ -148,6 +164,7 @@ export default function OylamaEkrani({ benimIsmim, oyuncuId, onFazDegisti, benim
     socket.on('savunma:hazirDurumu', savunmaHazir);
     socket.on('tartisma:hazirDurumu', tartismaHazirDurumu);
     socket.on('oylama_sonuc:hazirDurumu', oylamaSonucHazirDurumu);
+    socket.on('oylama:hakanYasakliOy', hakanYasakliOyGeldi);
 
     return () => {
       socket.off('faz:degisti', fazDegisti);
@@ -158,6 +175,7 @@ export default function OylamaEkrani({ benimIsmim, oyuncuId, onFazDegisti, benim
       socket.off('savunma:hazirDurumu', savunmaHazir);
       socket.off('tartisma:hazirDurumu', tartismaHazirDurumu);
       socket.off('oylama_sonuc:hazirDurumu', oylamaSonucHazirDurumu);
+      socket.off('oylama:hakanYasakliOy', hakanYasakliOyGeldi);
     };
   }, [oyuncuId, onFazDegisti]);
 
@@ -250,6 +268,7 @@ export default function OylamaEkrani({ benimIsmim, oyuncuId, onFazDegisti, benim
           oylarAnlik={oylarAnlik}
           sonuc={sonuc1}
           onOyVer={oyVer}
+          hakanYasakliId={hakanYasakliId}
         />
       )}
 
@@ -302,8 +321,13 @@ export default function OylamaEkrani({ benimIsmim, oyuncuId, onFazDegisti, benim
     </div>
   );
 }
-function BirInciOylama({ kalanSn, koydekiler, benimId, benimOyum, oylarAnlik, sonuc, onOyVer }) {
+function BirInciOylama({ kalanSn, koydekiler, benimId, benimOyum, oylarAnlik, sonuc, onOyVer, hakanYasakliId }) {
   const { sayimlar, kullananlar } = oylarAnlik;
+
+  // V1 Kaosçu — Hakan baskı: bu oyuncu baskı altındaysa yasaklı hedef ismini bul
+  const yasakliIsim = hakanYasakliId
+    ? (koydekiler.find(p => p.id === hakanYasakliId)?.isim || null)
+    : null;
 
   return (
     <div className="oylama-bolum">
@@ -324,22 +348,35 @@ function BirInciOylama({ kalanSn, koydekiler, benimId, benimOyum, oylarAnlik, so
         )}
       </div>
 
+      {/* V1 Kaosçu — Hakan baskı uyarısı (sadece baskılanan oyuncuya görünür) */}
+      {yasakliIsim && (
+        <div className="oylama-benim-oy-badge" style={{ background: 'rgba(180, 60, 60, 0.18)', color: '#ffb3b3' }}>
+          ⚠️ Baskı altındasın — bu turda <strong>{yasakliIsim}</strong> oyuncusuna oy veremezsin.
+        </div>
+      )}
+
       <div className="oylama-liste">
         {koydekiler.map(p => {
           const benim = p.id === benimId;
+          const yasakli = hakanYasakliId === p.id;
           const oyAldim = sayimlar[p.id] || 0;
           const seciliMi = benimOyum === p.id;
+          const disabled = benim || yasakli;
+          let baslik = '';
+          if (benim) baslik = 'Kendine oy veremezsin';
+          else if (yasakli) baslik = 'Bu kişiye oy veremezsin (baskı altındasın).';
           return (
             <button
               key={p.id}
-              className={`oylama-kart ${seciliMi ? 'oylama-kart-secili' : ''} ${benim ? 'oylama-kart-ben' : ''}`}
-              onClick={() => !benim && onOyVer(p.id)}
-              disabled={benim}
-              title={benim ? 'Kendine oy veremezsin' : ''}
+              className={`oylama-kart ${seciliMi ? 'oylama-kart-secili' : ''} ${benim ? 'oylama-kart-ben' : ''} ${yasakli ? 'oylama-kart-yasakli' : ''}`}
+              onClick={() => !disabled && onOyVer(p.id)}
+              disabled={disabled}
+              title={baslik}
             >
               <div className="oylama-kart-isim">
                 {p.isim}
                 {benim && <span className="oylama-ben-etiketi">(sen)</span>}
+                {yasakli && <span className="oylama-ben-etiketi">🚫 baskı</span>}
               </div>
               <div className="oylama-kart-sag">
                 {oyAldim > 0 && (

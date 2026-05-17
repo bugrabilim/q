@@ -37,10 +37,34 @@ function gruptanSec(grupId, sayi) {
 }
 
 /**
+ * Murat (Bastırmış / Outsider) için oyundaki Özgürlükçü rollerinden rastgele
+ * birini "sahte rol" olarak seçer. Murat oyun boyunca bu sahte rolün
+ * arayüzüyle oynar; gerçek rolü server'da bastirmis olarak kalır.
+ *
+ * Belge §9 / faz1-mekanik-kararlar.md Karar 2 (Murat C):
+ *   "Oyun başında, oyundaki Özgürlükçü havuzundan rastgele bir rol seçilir;
+ *    Murat'a rol kartında o rol gösterilir."
+ *
+ * Kenar durum: Oyunda hiç Özgürlükçü yoksa null döner; çağrı tarafı bunu
+ * yakalamalı (V1'de host kontrolünden geçer, ama güvenlik için).
+ *
+ * @param {Array<rol>} tumRoller — Bastırmış DAHİL tüm dağıtılan rol objeleri
+ * @returns {Object|null} — Sahte rol objesi veya null
+ */
+function muratSahteRolSec(tumRoller) {
+  const ozgurlukcuRolleri = tumRoller.filter(r => r.grup === GRUP.OZGURLUKCU);
+  if (ozgurlukcuRolleri.length === 0) return null;
+  const sira = Math.floor(Math.random() * ozgurlukcuRolleri.length);
+  return ozgurlukcuRolleri[sira];
+}
+
+/**
  * Oyuncu listesi için rol dağıt.
  * @param {Array<{id, isim}>} oyuncular
  * @param {Object} [ozelDenge] — host'un seçtiği özel dağılım (Madde 4 A seçeneği)
- * @returns {Map<oyuncuId, rol>} — her oyuncu ID'sine rol eşlemesi
+ * @returns {{dagilim: Map<oyuncuId, rol>, sahteRoller: Map<oyuncuId, rol>}}
+ *   - dagilim: her oyuncu ID'sine GERÇEK rol eşlemesi (Murat için bastirmis)
+ *   - sahteRoller: sadece Outsider'lar için sahte (gösterilen) rol eşlemesi
  */
 function rolleriDagit(oyuncular, ozelDenge) {
   const sayi = oyuncular.length;
@@ -83,7 +107,19 @@ function rolleriDagit(oyuncular, ozelDenge) {
     dagilim.set(karistirilmisOyuncular[i].id, karistirilmisRoller[i]);
   }
 
-  return dagilim;
+  // 3) Outsider (Bastırmış / Murat) için sahte rol ata
+  // Kenar durum: oyunda Özgürlükçü yoksa sahteRoller boş kalır.
+  // Bu durumda Murat client'a "Bastırmış" gerçek kimliğiyle gösterilir
+  // (V1 host kontrolüne kalmış; pratikte denge tablosunda hep ozgurlukcu ≥ 2).
+  const sahteRoller = new Map();
+  for (const [oyuncuId, rol] of dagilim.entries()) {
+    if (rol.id === 'bastirmis') {
+      const sahte = muratSahteRolSec(tumRoller);
+      if (sahte) sahteRoller.set(oyuncuId, sahte);
+    }
+  }
+
+  return { dagilim, sahteRoller };
 }
 
-module.exports = { rolleriDagit };
+module.exports = { rolleriDagit, muratSahteRolSec };

@@ -94,11 +94,28 @@ function oyuncuyuBul(oda, id) {
   return oda.players.find(p => p.id === id);
 }
 
+// ─── Murat C — Görünen Rol Yardımcısı ────────────────────────
+// Belge §9 + faz1-mekanik-kararlar.md Karar 2: Bastırmış (Murat) oyun boyunca
+// SAHTE Özgürlükçü rolüyle görünür. Diğer oyuncular Murat'ı incelediğinde,
+// kimliği açıklandığında ya da liste gördüklerinde sahte rolü görür.
+// Gerçek rol yalnızca:
+//   - Oyun bitince (bitiseBasla içinde herkese ifşa)
+//   - Server'ın iç kazanma kontrolü (kazananGrupBul, erkenBitisKazanani)
+// için kullanılır.
+function gorunenRol(oda, oyuncuId) {
+  if (!oda.oyun?.roller) return null;
+  const sahte = oda.oyun.sahteRoller?.get(oyuncuId);
+  if (sahte) return sahte;
+  return oda.oyun.roller.get(oyuncuId) || null;
+}
+
 function aciklananKimlikler(oda) {
   if (!oda.oyun) return {};
   const sonuc = {};
   for (const id of oda.oyun.aciklanmislar) {
-    const rol = oda.oyun.roller.get(id);
+    // Murat kendi kimliğini açıklarsa SAHTE rol görünür (kendisi de sahte rolü
+    // sanıyor zaten). Diğer oyuncular için aynı görünüm.
+    const rol = gorunenRol(oda, id);
     if (rol) sonuc[id] = { ad: rol.ad, grup: rol.grup };
   }
   return sonuc;
@@ -112,7 +129,12 @@ function oyuncuListesi(oda, kullaniciId) {
   const kullanici = oyuncuyuBul(oda, kullaniciId);
   const benAyrilanmiyim = kullanici?.koydeMi === false;
   return oda.players.map(p => {
-    const rol = oda.oyun?.roller?.get(p.id);
+    const gercek = oda.oyun?.roller?.get(p.id);
+    // Murat C: kimliği görünen yerlerde her zaman sahte rol kullanılır;
+    // gerçek rol yalnızca Murat KÖYDEN AYRILDIYSA ifşa olur (kenar durum).
+    // Murat hâlâ köydeyse sahte rol görünür (bitiş ekranı ayrı yoldan ifşa eder).
+    const muratAyrildi = gercek?.id === 'bastirmis' && p.koydeMi === false;
+    const rol = muratAyrildi ? gercek : gorunenRol(oda, p.id);
     let rolBilgi = null;
     if (rol) {
       const ifsa = oda.oyun?.aciklanmislar?.has(p.id) || p.koydeMi === false;
@@ -628,11 +650,15 @@ function gercekHazirsaBotlariDoldur(oda, faz, kontrolFn) {
 function oyunuBaslat(oda) {
   // Madde 4 (A) — host özel dağılım belirlediyse onu kullan, yoksa varsayılan denge
   const ozelDenge = oda.ayarlar?.dagilim || null;
-  const dagilim = rolleriDagit(oda.players, ozelDenge);
+  const { dagilim, sahteRoller } = rolleriDagit(oda.players, ozelDenge);
 
   oda.faz = 'rol_dagitimi';
   oda.oyun = {
     roller: dagilim,
+    // Outsider (Bastırmış / Murat) sahte rolleri — sadece client'a gösterim için
+    // GERÇEK rol oda.oyun.roller'da kalır; bu Map sadece "Murat ne sanıyor + dış
+    // dünya Murat'ı nasıl görüyor" için kullanılır.
+    sahteRoller: sahteRoller,
     rolOnaylari: new Set(),
     aciklanmislar: new Set(),
     basvuranlar: new Set(),
@@ -644,20 +670,69 @@ function oyunuBaslat(oda) {
     karakterCinsiyetleri: new Map(Object.entries(KARAKTER_CINSIYET)),
     // v1.3 — Master §10: Not defteri her fazdan yazılabilir.
     // Map oyun başlangıcında oluşturuluyor ki tanışma/sabah'tan da yazılabilsin.
-    geceNotlari: new Map()
+    geceNotlari: new Map(),
+    // ─── V1 yeni Tarafsız roller için kümülatif state Map'leri ─
+    aksiyonGecmisi: new Map(),       // oyuncuId → [{gun, tip}]  (Aseksüel)
+    oylamaGecmisi: [],               // [{gun, oylar:Map}]       (Mazoşist, Fuckbuddy)
+    fetisistEtiketi: new Map(),      // fetisistId → etiket      (Fetişist)
+    coplatanEslesmeleri: new Map(),  // copcatanId → [{a,b,gun}] (Çöpçatan kazanma)
+    sbHediyeAlinanlar: new Map(),    // sbId → Set(hedefId)      (Sugar Baby tekrar yasak)
+    sdOySonuc: new Map(),            // hedefId → katsayi        (Sugar Daddy oy katı)
+    sdSonHedef: new Map(),           // sdId → hedefId           (SD üst üste yasak)
+    capkinTavlananlar: new Map(),    // capkinId → Set(hedefId)  (Çapkın tekrar yasak)
+    lbBagSayaci: new Map(),          // lbId → Map(hedefId→sayi) (Lovebuddy ardışık)
+    lbBagliCiftler: new Set(),       // "lbId:hedefId"           (Lovebuddy kazanma)
+    // ─── V1 yeni Gelenekçi roller için "ertesi gün" geçici state'leri ─
+    // Bu Set'ler tek gece-gündüz döngüsü kadar yaşar; geceyeBasla() temizler.
+    sinanSavunmaKapali: new Set(),   // hedefId set     (Transfobik: savunmaya çıkamaz)
+    yaseminKendineOy: new Set(),     // hedefId set     (Bifobik: oy kendine geri döner)
+    huseyinPasYapilanlar: new Set(), // hedefId set     (Dinci: ertesi gece aksiyon yok)
+    oguzKadinHedefleri: new Set(),   // hedefId set     (Cinsiyetçi: Gel adayına oy 0)
+
+    // ─── V1 Kaosçu rolleri için state Map'leri ────────────────
+    // Geçici (her gece-gündüz döngüsünde sıfırlanır — geceyeBasla'da):
+    okanSpotlightHedef: new Set(),       // hedefId set (Okan: yarın kimlik açıklayamaz)
+    okanBuTurHedefleri: new Map(),       // okanId → Set(hedefId) (1. oylama sonu raporu için)
+    boraGecikme: new Set(),              // hedefId set (Bora: yarın ilk mesaj 30sn gecik)
+    boraGecikmeIlkMesaj: new Set(),      // hedefId set (Bora: gün içinde ilk mesaj bekliyor)
+    hakanYasakliOy: new Map(),           // baskilananId → yasakliId (1. oylama yasağı)
+    // Kümülatif (oyun boyu — kazanma izleme):
+    okanSpotlightSayaci: new Map(),      // okanId → Set(hedefId)
+    okanGoruldugKimlikler: new Set(),    // hedefId set (kimlik açıklayan her oyuncu)
+    boraHedefSayaci: new Map(),          // boraId → Set(hedefId)
+    boraGunSayaci: new Map(),            // gun → Set(boraHedefId)  (oylama sonucu eşleştirme)
+    boraGunOyAlan: new Map(),            // gun → Set(boraHedefId)  (o gün ham oy alan Bora hedefleri)
+    erdemOgrenilenHedefler: new Map(),   // erdemId → Set(hedefId)
+    hakanYasakliTarihce: new Map()       // hakanId → [{gun, baskilananId, yasakliId, sonucCokOyMu}]
   };
 
+  // Fetişist etiketi: oyunda Fetişist varsa rastgele bir meslek grubu etiketi ata.
+  // Etiketler: yaratıcı / akademik / fiziksel (görev kararı).
+  // geceMotoru lazy-init de yapıyor; bu blok her şartta etiket hazır olsun diye.
+  const ETIKETLER = ['yaratıcı', 'akademik', 'fiziksel'];
+  for (const [pid, rol] of dagilim.entries()) {
+    if (rol.id === 'fetisist') {
+      const rastgele = ETIKETLER[Math.floor(Math.random() * ETIKETLER.length)];
+      oda.oyun.fetisistEtiketi.set(pid, rastgele);
+      console.log(`[oyun] ${oda.kod} — Fetişist (${pid}) etiketi: ${rastgele}`);
+    }
+  }
+
   oda.players.forEach(p => {
-    const rol = dagilim.get(p.id);
+    const gercekRol = dagilim.get(p.id);
+    // Murat C: client'a SAHTE rol gönderilir (varsa). Gerçek rolü Murat asla
+    // öğrenmemeli. sahteRoller boşsa (kenar durum: Özgürlükçü yok) gerçek rol
+    // gönderilir; bu durumda host kontrolü sayesinde pratikte yaşanmaz.
+    const gosterilen = sahteRoller.get(p.id) || gercekRol;
     // Botlara rol kartı göndermeye gerek yok ama göndersek de zarar vermez
     if (!p.bot) {
       io.to(p.id).emit('rol:kart', {
         rol: {
-          id: rol.id, ad: rol.ad, grup: rol.grup,
-          karakter: rol.karakter, yas: rol.yas, meslek: rol.meslek,
-          motivasyon: rol.motivasyon, geceAksiyonu: rol.geceAksiyonu,
-          kazanmaKosulu: rol.kazanmaKosulu,
-          gorsel: rol.gorsel  // v1.6 — Madde 5: karakter portresi yolu
+          id: gosterilen.id, ad: gosterilen.ad, grup: gosterilen.grup,
+          karakter: gosterilen.karakter, yas: gosterilen.yas, meslek: gosterilen.meslek,
+          motivasyon: gosterilen.motivasyon, geceAksiyonu: gosterilen.geceAksiyonu,
+          kazanmaKosulu: gosterilen.kazanmaKosulu,
+          gorsel: gosterilen.gorsel  // v1.6 — Madde 5: karakter portresi yolu
         }
       });
     }
@@ -734,6 +809,16 @@ function tanismaBasla(oda) {
   sistemMesaji(oda, 'Köyde sabah oldu. Tanışma vakti — kimliğini açıklamak isteyen başvurabilir.');
   console.log(`[oyun] ${oda.kod} — Faz 4 başladı (başvuru penceresi)`);
 
+  // V1 Kaosçu — Okan "Spotlight": bu turda spotlight'a alınmış oyunculara
+  // kişisel bildirim gönder (UI başvuru butonunu disable etmek için).
+  if (oda.oyun.okanSpotlightHedef && oda.oyun.okanSpotlightHedef.size > 0) {
+    for (const hedefId of oda.oyun.okanSpotlightHedef) {
+      io.to(hedefId).emit('tanisma:spotlightKapali', {
+        mesaj: 'Bu turda kimlik açıklama yapamazsın (Spotlight etkisi).'
+      });
+    }
+  }
+
   const t1 = setTimeout(() => basvuruKapat(oda), SURE_BASVURU);
   oda.oyun.fazTimerleri.push(t1);
 
@@ -774,10 +859,17 @@ function basvuruKapat(oda) {
 
   secilenler.forEach((secilenId, idx) => {
     const secilen = oyuncuyuBul(oda, secilenId);
-    const rol = oda.oyun.roller.get(secilenId);
+    // Murat C: kimlik açıklaması sahte rol üzerinden yapılır — Murat kendisini
+    // sahte rol sanıyor, herkes de onu sahte rolüyle görsün.
+    const rol = gorunenRol(oda, secilenId);
     if (!secilen || !rol) return;
 
     oda.oyun.aciklanmislar.add(secilenId);
+    // V1 Kaosçu — Okan kazanma izleme: kimlik açıklayan her oyuncu kümülatif
+    // set'e eklenir (oyun boyu). Okan'ın spotlight'a aldığı oyuncu zaten basvur
+    // handler'ında reddedilmiştir, bu set sadece "açıklayanların oranını" tutar.
+    if (!oda.oyun.okanGoruldugKimlikler) oda.oyun.okanGoruldugKimlikler = new Set();
+    oda.oyun.okanGoruldugKimlikler.add(secilenId);
 
     // Her açıklamayı sırayla geciktirerek sahnele
     const t1 = 600 + idx * 1800;
@@ -846,16 +938,69 @@ function geceyeBasla(oda) {
   // Yeni gece: önceki gecenin sabah verilerini temizle
   oda.oyun.sabahKisisel = new Map();
   oda.oyun.sabahHerkese = null;
+  // Sugar Daddy oy katsayısı SADECE "ertesi gün" oylamasında geçerli.
+  // O oylama bittikten sonra (yeni gece başlarken) sıfırlanır.
+  // Yatırım yeni gece içinde tekrar yapılırsa Map yeniden doldurulur.
+  if (!oda.oyun.sdOySonuc) oda.oyun.sdOySonuc = new Map();
+  oda.oyun.sdOySonuc.clear();
   // Belge §11 (Bug #2 / kural A): Her gün için ek tartışma hakkı 1 ile sınırlı —
   // yeni gece başlarken sayacı sıfırla.
   oda.oyun.tekrarTartismaYapildi = false;
+
+  // ─── V1 yeni Gelenekçi geçici state'leri ──────────────────
+  // Sinan/Yasemin/Oğuz: hedeflenen oyuncuya GEÇEN gece kondu, ETKİSİ ertesi
+  // gündür (bu fonksiyon "yeni gece" başında çalışıyor → o oyun günü kapandı,
+  // efektler tüketildi; şimdi yeni döngü için Set'leri sıfırlıyoruz).
+  // Hüseyin: hedef ETKİSİ "ertesi gece pas" → işte O gece şu an başlıyor.
+  //   Önce huseyinPasYapilanlar'ı OKUYUP geceAksiyonlari'na "pas işaretli/kilitli"
+  //   kayıt yerleştiriyoruz, SONRA Set'i sıfırlıyoruz.
+  if (!oda.oyun.sinanSavunmaKapali)   oda.oyun.sinanSavunmaKapali = new Set();
+  if (!oda.oyun.yaseminKendineOy)     oda.oyun.yaseminKendineOy = new Set();
+  if (!oda.oyun.huseyinPasYapilanlar) oda.oyun.huseyinPasYapilanlar = new Set();
+  if (!oda.oyun.oguzKadinHedefleri)   oda.oyun.oguzKadinHedefleri = new Set();
+  oda.oyun.sinanSavunmaKapali.clear();
+  oda.oyun.yaseminKendineOy.clear();
+  oda.oyun.oguzKadinHedefleri.clear();
+  // Hüseyin pas etkisi: bu gece tetiklenir, sonra temizle.
+  const huseyinPasSnapshot = new Set(oda.oyun.huseyinPasYapilanlar);
+  oda.oyun.huseyinPasYapilanlar.clear();
+
+  // ─── V1 Kaosçu geçici state'leri ──────────────────────────
+  // Yeni gece başlıyor: önceki gün'ün geçici efektleri tüketildi (kimlik
+  // açıklama yapıldı / yapılamadı; ilk mesaj yazıldı; 1. oylama bitti).
+  // Kümülatif Map'lere DOKUNMUYORUZ — kazanma izleme oyun boyu sürmeli.
+  if (!oda.oyun.okanSpotlightHedef)   oda.oyun.okanSpotlightHedef = new Set();
+  if (!oda.oyun.okanBuTurHedefleri)   oda.oyun.okanBuTurHedefleri = new Map();
+  if (!oda.oyun.boraGecikme)          oda.oyun.boraGecikme = new Set();
+  if (!oda.oyun.boraGecikmeIlkMesaj)  oda.oyun.boraGecikmeIlkMesaj = new Set();
+  if (!oda.oyun.hakanYasakliOy)       oda.oyun.hakanYasakliOy = new Map();
+  oda.oyun.okanSpotlightHedef.clear();
+  oda.oyun.okanBuTurHedefleri.clear();
+  oda.oyun.boraGecikme.clear();
+  oda.oyun.boraGecikmeIlkMesaj.clear();
+  oda.oyun.hakanYasakliOy.clear();
 
   // Gece aksiyonları: her aktif oyuncu için boş kayıt (sadece köyde olanlar)
   oda.oyun.geceAksiyonlari = new Map();
   oda.aktifOyuncular()
     .filter(p => p.koydeMi !== false)
     .forEach(p => {
-      oda.oyun.geceAksiyonlari.set(p.id, { hedef1: null, hedef2: null, gonderildi: false });
+      // Hüseyin "vicdan baskısı" — bu oyuncunun bu gece aksiyonu kilitli.
+      // gonderildi=true + hedef1=null: motor onu "pas" olarak okur (aksiyonu(ctx,..)
+      // null döner çünkü hedef yok). Ayrıca client'a kilitli olarak işaretlemek
+      // gerekirse "huseyinPasli" bayrağı eklenebilir.
+      const huseyinPasli = huseyinPasSnapshot.has(p.id);
+      oda.oyun.geceAksiyonlari.set(p.id, {
+        hedef1: null,
+        hedef2: null,
+        gonderildi: huseyinPasli,    // otomatik "pas" işaretli
+        huseyinPasli                  // client'a bildirim için (UI'da kilitlenebilir)
+      });
+      if (huseyinPasli) {
+        io.to(p.id).emit('gece:vicdanBaskisi', {
+          mesaj: 'Bu gece vicdan baskısı altındasın. Aksiyon yapamazsın (Dinci\'nin "ahlaki vaazı" etkisi).'
+        });
+      }
     });
 
   // Not defterleri (zaten varsa koru, yoksa başlat)
@@ -1170,6 +1315,19 @@ function birInciOylamayaBasla(oda) {
     koydekiler
   });
 
+  // V1 Kaosçu — Hakan "Baskı Mesajı": baskılanan oyuncuya yasaklı hedefi
+  // kişisel olarak bildir; UI o oyuncuda yasaklı hedefin oy butonunu griler.
+  // (Yasak Set'i sadece o gün geçerlidir; sonraki gece başında geceyeBasla
+  //  hakanYasakliOy.clear() çağırıyor.)
+  if (oda.oyun.hakanYasakliOy && oda.oyun.hakanYasakliOy.size > 0) {
+    for (const [baskilananId, yasakliId] of oda.oyun.hakanYasakliOy.entries()) {
+      io.to(baskilananId).emit('oylama:hakanYasakliOy', {
+        yasakliId,
+        mesaj: 'Baskı mesajı altındasın — bu turda yasaklı hedefe oy veremezsin.'
+      });
+    }
+  }
+
   sistemMesaji(oda, '⚖️ Oylama başladı — 15 saniye içinde kimi köyden göndermek istediğinizi seçin.');
   console.log(`[oyun] ${oda.kod} — Faz 7: 1. Oylama başladı`);
 
@@ -1196,6 +1354,15 @@ function birInciOylamaBitti(oda) {
 
   // En çok oy alanı bul
   const { hedef, oyCount, esitlik } = enCokOyAlan(oylarSonuc);
+
+  // ─── V1 Kaosçu — 1. Oylama sonrası kazanma izleme ──────────
+  // (a) Okan'a spotlight'a aldığı hedeflerin oy yönlerini kişisel rapor olarak
+  //     gönder. (Hangi adaya oy verdiler? "Kimseye/Kullanmadı" olabilir.)
+  // (b) Hakan'ın tarihçesinde bu günün kayıtlarını güncelle: yasakladığı hedef
+  //     EN ÇOK OY ALAN mı? (sonucCokOyMu).
+  // (c) Bora'nın bu günkü hedeflerinden hangileri (ham) oy aldı kaydet
+  //     (boraGunSayaci içeriği zaten bu günün Bora hedefleri).
+  uygulaKaoscuOylamaSonrasi(oda, oylarHam, hedef);
 
   console.log(`[oyun] ${oda.kod} — 1. Oylama bitti. En çok oy: ${hedef || 'yok'} (${oyCount})`);
 
@@ -1235,6 +1402,13 @@ function birInciOylamaBitti(oda) {
   oda.oyun.birInciOylamaKatilimcilar = new Set(oylarHam.keys());
   oda.oyun.birInciOylamaSonuc = { hedef, oyCount, oylarSonuc, oyAciklamasi };
 
+  // Mazoşist / Fuckbuddy için oylama geçmişine kaydet (ham oylar — kim kime)
+  if (!oda.oyun.oylamaGecmisi) oda.oyun.oylamaGecmisi = [];
+  oda.oyun.oylamaGecmisi.push({
+    gun: oda.oyun.geceTuru || 0,
+    oylar: new Map(oylarHam)  // shallow kopya — sonraki manipülasyondan etkilenmesin
+  });
+
   savunmayaBasla(oda, hedef);
 }
 
@@ -1249,13 +1423,33 @@ function savunmayaBasla(oda, savunulanId) {
 
   const savunulan = oyuncuyuBul(oda, savunulanId);
 
+  // ─── V1: Transfobik (Sinan) "Veli toplantısı" etkisi ──────
+  // Hedef savunmaya çıkıyorsa otomatik pas: kısa duyuru + 2 saniye sonra savunma biter.
+  // Bayrak tek seferlik; aynı oyuncu sonraki turda normal savunabilir (Set bu gün kapanışında temizlenecek).
+  const sinanKapali = oda.oyun.sinanSavunmaKapali?.has(savunulanId);
+
   io.to(oda.kod).emit('faz:degisti', {
     faz: 'savunma',
     sure: SURE_SAVUNMA,
     sonZaman: oda.fazSonZaman,
     savunulanId,
-    savunulanIsim: savunulan?.isim || '???'
+    savunulanIsim: savunulan?.isim || '???',
+    sinanKapali: !!sinanKapali   // client UI savunma alanını gizleyebilir
   });
+
+  if (sinanKapali) {
+    sistemMesaji(oda,
+      `🤐 ${savunulan?.isim || '???'} savunmaya çıkamadı (Transfobik etkisiyle veli toplantısına çağrılmış — susuyor).`);
+    console.log(`[oyun] ${oda.kod} — Savunma: ${savunulan?.isim} (Sinan etkisiyle PAS)`);
+    // Sinan tek seferlik etki: bayrağı kullandık, temizle.
+    oda.oyun.sinanSavunmaKapali.delete(savunulanId);
+    // Kısa gecikme sonrası savunma otomatik biter.
+    const tPas = setTimeout(() => {
+      if (oda.faz === 'savunma') savunmaBitti(oda, savunulanId);
+    }, 2500);
+    oda.oyun.fazTimerleri.push(tPas);
+    return;
+  }
 
   sistemMesaji(oda, `🎤 ${savunulan?.isim || '???'} kendini savunuyor — 20 saniye.`);
   console.log(`[oyun] ${oda.kod} — Savunma: ${savunulan?.isim}`);
@@ -1544,13 +1738,28 @@ function tekrarTartismayaBasla(oda) {
 
 // ─── Oylama Yardımcı Fonksiyonları ──────────────────────────
 
-// Motor etkilerini (Necmi, Azra, DQ) uygular; ham oylar → işlenmiş oylar
+// Motor etkilerini (Necmi, Azra, DQ, Sugar Daddy, V1 Gelenekçi) uygular; ham oylar → işlenmiş oylar
 function oylariBisle(oda, oylarHam) {
   const oyEtkileri = oda.oyun.oyEtkileri || new Map();
+  // Sugar Daddy etkisi: hedef bazlı oy katsayısı (gruptan bağımsız)
+  // Map(hedefId → katsayi) — geceMotoru'nda uygulaSugarDaddyYatirim doldurur
+  const sdOySonuc = oda.oyun.sdOySonuc || new Map();
+  // V1 Gelenekçi geçici state'leri (Bifobik & Cinsiyetçi)
+  const yaseminKendineOy = oda.oyun.yaseminKendineOy || new Set();
+  const oguzKadinHedefleri = oda.oyun.oguzKadinHedefleri || new Set();
+
   const oylarSonuc = new Map(); // hedefId → oy sayısı (ağırlıklı)
 
   for (const [oyuncuId, hedefId] of oylarHam.entries()) {
     if (!hedefId) continue;
+
+    // ─── V1: Bifobik (Yasemin) "Sözleşme hilesi" ─────────────
+    // Yaseminin hedefi oy verirken oyu kendine yönlenir → kendine oy = geçersiz.
+    // Kendi adına sayma adımına bile gelmeden bu oyu atla.
+    if (yaseminKendineOy.has(oyuncuId)) {
+      console.log(`[oylama] ${oyuncuId} oyu Bifobik (Yasemin) etkisiyle kendine yönlendi → geçersiz`);
+      continue;
+    }
 
     // Azra'nın oySayilmaz etkisi: bu oyuncunun oyu sayılmaz
     const azraEtki = oyEtkileri.get(oyuncuId);
@@ -1571,6 +1780,25 @@ function oylariBisle(oda, oylarHam) {
       } else if (hedefRol?.grup === 'gelenekci') {
         // DQ gelenekçiye gittiyse oySayilmaz
         console.log(`[oylama] ${oyuncuId} oyu DQ etkisiyle sayılmadı (gelenekçiye gitti)`);
+        continue;
+      }
+    }
+
+    // Sugar Daddy etkisi: oy VEREN kişi (oyuncuId) SD'nin hedefiyse oyu 2 sayılır.
+    // Karar: DQ ile çakışırsa max 2 kalır (kümülatif değil).
+    const sdKati = sdOySonuc.get(oyuncuId);
+    if (sdKati && sdKati > oyAgirligi) {
+      oyAgirligi = sdKati;
+      console.log(`[oylama] ${oyuncuId} oyu SD etkisiyle ${oyAgirligi}x sayıldı`);
+    }
+
+    // ─── V1: Cinsiyetçi (Oğuz) "Yer bilir" ──────────────────
+    // Oğuz'un kadın hedefinin Gelenekçi adaya verdiği oy 0 sayılır.
+    // Karar #10: yarılama değil, "Gelenekçi adayına 0" (diğer adaylara oy normal).
+    if (oguzKadinHedefleri.has(oyuncuId)) {
+      const hedefRol = oda.oyun.roller?.get(hedefId);
+      if (hedefRol?.grup === 'gelenekci') {
+        console.log(`[oylama] ${oyuncuId} oyu Cinsiyetçi (Oğuz) etkisiyle Gelenekçi adaya 0 sayıldı`);
         continue;
       }
     }
@@ -1628,7 +1856,10 @@ function botlarOyVersin(oda, faz, oylarMap) {
   oda.players.filter(p => p.bot && p.koydeMi !== false).forEach(bot => {
     setTimeout(() => {
       if (oda.faz !== faz) return;
-      const adaylar = aktif.filter(p => p.id !== bot.id);
+      // V1 Kaosçu — Hakan yasağı: bot bu turda yasaklıysa o hedefi listeden çıkar
+      const yasakliHedef = (faz === 'oylama_1')
+        ? oda.oyun.hakanYasakliOy?.get(bot.id) || null : null;
+      const adaylar = aktif.filter(p => p.id !== bot.id && p.id !== yasakliHedef);
       if (adaylar.length === 0) return;
       const hedef = adaylar[Math.floor(Math.random() * adaylar.length)];
       oylarMap.set(bot.id, hedef.id);
@@ -1667,6 +1898,70 @@ function oylarAnlikDurum(oda, oylarMap) {
   return { sayimlar: Object.fromEntries(sayimlar), kullananlar };
 }
 
+// ─── V1 Kaosçu — 1. oylama sonrası kazanma izleme ───────────
+// Çağrı yeri: birInciOylamaBitti içinde, enCokOyAlan'dan sonra.
+// (a) Okan: spotlight aldığı hedeflerin "kime oy verdiği" Okan'a kişisel emit.
+// (b) Hakan: tarihçesinde bu günün son kaydının sonucCokOyMu alanını günceller.
+// (c) Bora: günsel kazanma izleme — bu günkü Bora hedeflerinden hangileri ham oy aldı
+//     ayrı bir Set'te saklanır (kazanma kontrolü bitiseBasla'da yapılır).
+function uygulaKaoscuOylamaSonrasi(oda, oylarHam, enCokOyAlanId) {
+  if (!oda.oyun) return;
+  const gun = oda.oyun.geceTuru || 0;
+
+  // (a) Okan: bu turdaki spotlight hedeflerinin oy yönü
+  if (oda.oyun.okanBuTurHedefleri && oda.oyun.okanBuTurHedefleri.size > 0) {
+    for (const [okanId, hedefSet] of oda.oyun.okanBuTurHedefleri.entries()) {
+      const okanOyuncu = oyuncuyuBul(oda, okanId);
+      if (!okanOyuncu || okanOyuncu.koydeMi === false) continue;
+      for (const hedefId of hedefSet) {
+        const oyu = oylarHam.get(hedefId);
+        const hedefIsim = oyuncuyuBul(oda, hedefId)?.isim || '?';
+        const oyIsim = oyu ? (oyuncuyuBul(oda, oyu)?.isim || '?') : null;
+        io.to(okanId).emit('kaoscu:okanOyRaporu', {
+          gun,
+          hedefId,
+          hedefIsim,
+          oyVerilenId: oyu || null,
+          oyVerilenIsim: oyIsim,
+          mesaj: oyu
+            ? `Spotlight: ${hedefIsim} → ${oyIsim}'e oy verdi.`
+            : `Spotlight: ${hedefIsim} oy kullanmadı.`
+        });
+      }
+    }
+    // Bu turun spotlight hedeflerini temizle — bir sonraki gece yeniden dolar.
+    oda.oyun.okanBuTurHedefleri.clear();
+  }
+
+  // (b) Hakan: tarihçedeki bu günün kaydı için sonucCokOyMu güncelle.
+  if (oda.oyun.hakanYasakliTarihce && oda.oyun.hakanYasakliTarihce.size > 0) {
+    for (const liste of oda.oyun.hakanYasakliTarihce.values()) {
+      for (const kayit of liste) {
+        if (kayit.gun !== gun) continue;
+        kayit.sonucCokOyMu = (kayit.yasakliId === enCokOyAlanId);
+      }
+    }
+  }
+
+  // (c) Bora: bu günkü Bora hedeflerinden ham oy alanlar
+  if (oda.oyun.boraGunSayaci && oda.oyun.boraGunSayaci.size > 0) {
+    if (!oda.oyun.boraGunOyAlan) oda.oyun.boraGunOyAlan = new Map();
+    const gunHedefleri = oda.oyun.boraGunSayaci.get(gun);
+    if (gunHedefleri && gunHedefleri.size > 0) {
+      // Oy alanların set'i: oylarHam'da değer olarak görünen tüm hedefler
+      const oyAlanlar = new Set();
+      for (const oyHedef of oylarHam.values()) {
+        if (oyHedef) oyAlanlar.add(oyHedef);
+      }
+      const buGunBoraOyAlan = new Set();
+      for (const boraHedef of gunHedefleri) {
+        if (oyAlanlar.has(boraHedef)) buGunBoraOyAlan.add(boraHedef);
+      }
+      oda.oyun.boraGunOyAlan.set(gun, buGunBoraOyAlan);
+    }
+  }
+}
+
 // ─── Bitişe Geçiş (Faz 8) ───────────────────────────────────
 function bitiseBasla(oda, kazananGrup) {
   oda.oyun?.fazTimerleri?.forEach(t => clearTimeout(t));
@@ -1694,10 +1989,84 @@ function bitiseBasla(oda, kazananGrup) {
     .filter(r => r.rol.grup === 'tarafsiz' && r.koydeMi)
     .map(r => ({ oyuncuId: r.oyuncuId, isim: r.isim, rolAd: r.rol.ad }));
 
+  // Outsider (Bastırmış / Murat) bireysel kazanma — Özgürlükçü zaferi + Murat köyde kalmalı
+  const muratBireyKazanan = tumRoller
+    .filter(r => r.rol.id === 'bastirmis' && r.koydeMi && kazananGrup === 'ozgurlukcu')
+    .map(r => ({ oyuncuId: r.oyuncuId, isim: r.isim, rolAd: r.rol.ad }));
+
+  // Mazoşist (Beren) bireysel kazanma — Beren oyun sırasında köyden AYRILDIYSA kazanır.
+  // (Karar: gizli tahmin yok; ayrılmak otomatik kazanma.)
+  // koydeMi === false → ayrılmış demektir.
+  const mazosistBireyKazanan = tumRoller
+    .filter(r => r.rol.id === 'mazosist' && !r.koydeMi)
+    .map(r => ({ oyuncuId: r.oyuncuId, isim: r.isim, rolAd: r.rol.ad }));
+
+  // ─── V1 Kaosçu bireysel kazananlar ─────────────────────────
+  // Her Kaosçu rolünün koşulu farklı; faz1-mekanik-kararlar.md'ye göre:
+  //   Okan (kaoscu_narsist): kimlik açıklayanların ≥%50'si (min 2) spotlight'ında
+  //   Bora (sadist):         4+ farklı hedef + bunlardan 2'si aynı gün ham oy aldı
+  //   Erdem (sinir_tanimaz): 4+ farklı oyuncunun aksiyonunu öğrenmiş
+  //   Hakan (zorba):         2+ oylamada yasakladığı kişi en çok oy almış
+  const kaoscuBireyKazananlar = [];
+
+  for (const [oyuncuId, rolObj] of oda.oyun.roller) {
+    const rolId = rolObj.id;
+    const oyuncu = oda.players.find(p => p.id === oyuncuId);
+    if (!oyuncu) continue;
+    const isim = oyuncu.isim;
+    // koydeMi koşulu: spec'te ayrılma şartı yok — ayrılsalar bile koşul tamamsa
+    // kazanırlar (Kaosçu = bireysel zafer; oyun devam etse de tetiklenir).
+
+    if (rolId === 'kaoscu_narsist') {
+      // Okan: spotlight aldıkları arasında kimlik açıklamış olanların oranı
+      // %50 ve üzeriyse (ve en az 2 kişi) kazanır.
+      const aciklananSet = oda.oyun.aciklanmislar || new Set();
+      const spotlightSet = oda.oyun.okanSpotlightSayaci?.get(oyuncuId) || new Set();
+      if (aciklananSet.size > 0) {
+        const ortak = [...aciklananSet].filter(id => spotlightSet.has(id)).length;
+        const minEsik = Math.max(2, Math.ceil(aciklananSet.size / 2));
+        if (ortak >= minEsik) {
+          kaoscuBireyKazananlar.push({ oyuncuId, isim, rolAd: rolObj.ad });
+        }
+      }
+    } else if (rolId === 'sadist') {
+      // Bora: 4+ farklı hedefe "Bozuk Sipariş" uygulamış olmalı; ayrıca
+      // bunlardan en az 2'si aynı gün (1. oylamada) ham oy almış olmalı.
+      // boraGunOyAlan: gun → Set(boraHedefId) — o gün ham oy alan Bora hedefleri
+      // Burada herhangi bir günde >=2 olması koşulu sağlar.
+      const hedefSet = oda.oyun.boraHedefSayaci?.get(oyuncuId) || new Set();
+      let enFazlaAynıGun = 0;
+      if (oda.oyun.boraGunOyAlan instanceof Map) {
+        for (const oyAlanSet of oda.oyun.boraGunOyAlan.values()) {
+          if (oyAlanSet?.size > enFazlaAynıGun) enFazlaAynıGun = oyAlanSet.size;
+        }
+      }
+      if (hedefSet.size >= 4 && enFazlaAynıGun >= 2) {
+        kaoscuBireyKazananlar.push({ oyuncuId, isim, rolAd: rolObj.ad });
+      }
+    } else if (rolId === 'sinir_tanimaz') {
+      // Erdem: 4+ farklı oyuncunun aksiyonunu öğrenmiş
+      const ogrenilen = oda.oyun.erdemOgrenilenHedefler?.get(oyuncuId) || new Set();
+      if (ogrenilen.size >= 4) {
+        kaoscuBireyKazananlar.push({ oyuncuId, isim, rolAd: rolObj.ad });
+      }
+    } else if (rolId === 'zorba') {
+      // Hakan: tarihçede sonucCokOyMu=true olan kayıt sayısı 2+
+      const tarihce = oda.oyun.hakanYasakliTarihce?.get(oyuncuId) || [];
+      const basariliSay = tarihce.filter(t => t.sonucCokOyMu).length;
+      if (basariliSay >= 2) {
+        kaoscuBireyKazananlar.push({ oyuncuId, isim, rolAd: rolObj.ad });
+      }
+    }
+  }
+
   oda.oyun.bitis = {
     kazananGrup,
     tumRoller,
     tarafsizKazananlar,
+    muratBireyKazanan,
+    mazosistBireyKazanan,
+    kaoscuBireyKazananlar,
     geceTuru: oda.oyun.geceTuru || 0
   };
 
@@ -1706,10 +2075,13 @@ function bitiseBasla(oda, kazananGrup) {
     kazananGrup,
     tumRoller,
     tarafsizKazananlar,
+    muratBireyKazanan,
+    mazosistBireyKazanan,
+    kaoscuBireyKazananlar,
     geceTuru: oda.oyun.geceTuru || 0
   });
 
-  console.log(`[oyun] ${oda.kod} — Bitiş: ${kazananGrup} kazandı`);
+  console.log(`[oyun] ${oda.kod} — Bitiş: ${kazananGrup} kazandı (Kaosçu bireysel: ${kaoscuBireyKazananlar.length})`);
 }
 
 // ─── Fobik Kanal Üyeleri ─────────────────────────────────────
@@ -2077,6 +2449,29 @@ io.on('connection', (socket) => {
       return callback?.({ ok: false, hata: 'Şu an mesaj atılamaz' });
     }
 
+    // V1 Kaosçu — Bora "Bozuk Sipariş": hedef bu gün ilk mesajını yazıyorsa
+    // 30 saniye gecikmeli iletilir. Sadece İLK mesaj geciktirilir; flag tek
+    // kullanımlık (boraGecikmeIlkMesaj Set'inden çıkar). Bora etkisi her gün
+    // başlangıcında (geceyeBasla yerine yeni gün başladığında) yeniden uygulanır;
+    // Set'ler geceyeBasla'da temizleniyor — yani gecede uygulanan etki ertesi
+    // gündüz (tanışma + tartışma) içinde geçerli.
+    if (oda.oyun.boraGecikme?.has(oyuncuId)
+        && oda.oyun.boraGecikmeIlkMesaj?.has(oyuncuId)) {
+      // İlk mesaj flag'ini hemen temizle (yeniden bekletmeyelim)
+      oda.oyun.boraGecikmeIlkMesaj.delete(oyuncuId);
+      // Hedefe info — UI mesajın "gönderildi ama gecikecek" göstersin
+      callback?.({ ok: true, gecikme: 30000, sebep: 'Bozuk Sipariş etkisi' });
+      // 30 sn sonra mesajı yayınla. Faz değişmiş olabilir; en azından mesajın
+      // o gün içinde iletilmesini garanti edelim (faz kontrolü yok bilerek —
+      // mesaj zaten "şu an" izinli fazda yazılmıştı, sonradan gece geçse bile
+      // mesaj kayıtlı tutulur). Köy uyandığında gecikmeli mesajı kayda almak
+      // pratik açıdan en az şaşırtıcı yol.
+      setTimeout(() => {
+        oyuncuMesaji(oda, oyuncu, temizMetin, 'koy');
+      }, 30000);
+      return;
+    }
+
     oyuncuMesaji(oda, oyuncu, temizMetin, 'koy');
     callback?.({ ok: true });
   });
@@ -2089,6 +2484,12 @@ io.on('connection', (socket) => {
     }
     if (oda.oyun.aciklanmislar.has(oyuncuId)) {
       return callback?.({ ok: false, hata: 'Kimliğin zaten açık' });
+    }
+    // V1 Kaosçu — Okan "Spotlight": bu turda spotlight'ta olan oyuncu kimlik
+    // açıklama başvurusu yapamaz. Set geceyeBasla → yeni gece başında temizlenir,
+    // yani sadece "spotlight uygulandıktan sonraki ilk tanışma" için geçerli.
+    if (oda.oyun.okanSpotlightHedef?.has(oyuncuId)) {
+      return callback?.({ ok: false, hata: 'Bu turda spotlight altındasın — kimliğini açıklayamazsın.' });
     }
     const yeni = !oda.oyun.basvuranlar.has(oyuncuId);
     oda.oyun.basvuranlar.add(oyuncuId);
@@ -2335,6 +2736,13 @@ io.on('connection', (socket) => {
     const hedef = oyuncuyuBul(oda, hedefId);
     if (!hedef || hedef.koydeMi === false) return callback?.({ ok: false, hata: 'Geçersiz hedef' });
 
+    // V1 Kaosçu — Hakan "Baskı Mesajı": baskılanan oyuncu yasaklı hedefe oy
+    // veremez. Yasaklı hedef hâlâ köydeyse (aktif aday) kontrol etmek anlamlı.
+    const yasakliHedef = oda.oyun.hakanYasakliOy?.get(oyuncuId);
+    if (yasakliHedef && yasakliHedef === hedefId) {
+      return callback?.({ ok: false, hata: 'Baskı mesajı: bu oyuncuya oy veremezsin.' });
+    }
+
     // Necmi etkisi var mı? Etkiyi ham oy haritasını güncellerken uygulama — birInciOylamaBitti'de toplu yapılacak
     oda.oyun.oylar1.set(oyuncuId, hedefId);
     io.to(oda.kod).emit('oylama:guncellendi', oylarAnlikDurum(oda, oda.oyun.oylar1));
@@ -2461,6 +2869,8 @@ io.on('connection', (socket) => {
       .filter(p => p.koydeMi !== false && p.baglantiVar !== false)
       .map(p => ({ id: p.id, isim: p.isim, bot: !!p.bot }));
 
+    // V1 Kaosçu — Hakan yasak (sadece bu oyuncuya özel)
+    const hakanYasakliId = oda.oyun.hakanYasakliOy?.get(oyuncuId) || null;
     callback?.({
       ok: true,
       faz: oda.faz,
@@ -2473,6 +2883,7 @@ io.on('connection', (socket) => {
         ? oyuncuyuBul(oda, oda.oyun.birInciOylamaSonuc.hedef)?.isim : null,
       katilabilirMiyim: oda.oyun.birInciOylamaKatilimcilar?.has(oyuncuId) || false,
       benimOyum2: oda.oyun.oylar2?.get(oyuncuId) || null,
+      hakanYasakliId,
       chat: chatGecmisi(oda, oyuncuId),
       hazirMiyim: oda.oyun.hazirOlanlar?.has(oyuncuId) || false,
       oyuncular: oyuncuListesi(oda, oyuncuId)

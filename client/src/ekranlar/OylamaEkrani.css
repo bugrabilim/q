@@ -187,6 +187,25 @@
   transform: none;
 }
 
+/* V1 Kaosçu — Hakan baskı altındaki oyuncuya yasaklı hedefin kartı */
+.oylama-kart-yasakli {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: rgba(180, 60, 60, 0.12);
+  border-color: rgba(180, 60, 60, 0.35);
+  filter: grayscale(0.6);
+}
+
+.oylama-kart-yasakli:hover {
+  background: rgba(180, 60, 60, 0.12);
+  border-color: rgba(180, 60, 60, 0.35);
+  transform: none;
+}
+
+.oylama-kart-yasakli:active {
+  transform: none;
+}
+
 .oylama-ben-etiketi {
   font-family: var(--font-ui);
   font-weight: 400;
