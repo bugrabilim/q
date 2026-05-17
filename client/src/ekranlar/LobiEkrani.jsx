@@ -524,29 +524,44 @@ function RollerPopup({ roller, onRolSec, onKapat }) {
           <h2 className="lobi-popup-ad">🎭 Roller</h2>
           <p className="lobi-popup-karakter">Birine tıkla → detay kartı açılır</p>
         </div>
-        <div className="lobi-roller-grid">
-          {roller.map(r => {
-            const grup = GRUP_BILGI[r.grup];
+        <div className="lobi-roller-bolumler">
+          {['ozgurlukcu', 'outsider', 'tarafsiz', 'gelenekci', 'kaoscu'].map(grupId => {
+            const grupRolleri = roller.filter(r => r.grup === grupId);
+            if (grupRolleri.length === 0) return null;
+            const grup = GRUP_BILGI[grupId];
             return (
-              <button
-                key={r.id}
-                className="lobi-rol-kart"
-                style={{ borderColor: grup?.renk }}
-                onClick={() => onRolSec(r)}
-              >
-                {/* v1.6 — Madde 5: Karakter portresi */}
-                <KarakterPortresi
-                  karakter={r.karakter}
-                  gorsel={r.gorsel}
-                  grup={r.grup}
-                  boyut={48}
-                />
-                <span className="lobi-rol-kart-grup" style={{ color: grup?.renk }}>
-                  {grup?.sembol}
-                </span>
-                <span className="lobi-rol-kart-ad">{r.ad}</span>
-                <span className="lobi-rol-kart-karakter">{r.karakter}</span>
-              </button>
+              <div key={grupId} className="lobi-roller-bolum">
+                <h3
+                  className="lobi-roller-bolum-baslik"
+                  style={{ color: grup?.renk, borderColor: grup?.renk }}
+                >
+                  <span className="lobi-roller-bolum-sembol">{grup?.sembol}</span>
+                  <span className="lobi-roller-bolum-ad">{grup?.ad}</span>
+                  <span className="lobi-roller-bolum-sayi">({grupRolleri.length})</span>
+                </h3>
+                <div className="lobi-roller-grid">
+                  {grupRolleri.map(r => (
+                    <button
+                      key={r.id}
+                      className="lobi-rol-kart"
+                      style={{ borderColor: grup?.renk }}
+                      onClick={() => onRolSec(r)}
+                    >
+                      <KarakterPortresi
+                        karakter={r.karakter}
+                        gorsel={r.gorsel}
+                        grup={r.grup}
+                        boyut={48}
+                      />
+                      <span className="lobi-rol-kart-grup" style={{ color: grup?.renk }}>
+                        {grup?.sembol}
+                      </span>
+                      <span className="lobi-rol-kart-ad">{r.ad}</span>
+                      <span className="lobi-rol-kart-karakter">{r.karakter}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
             );
           })}
         </div>
