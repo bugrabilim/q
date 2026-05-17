@@ -142,16 +142,17 @@ export default function RolKartPaneli({ rol }) {
               </>
             )}
           </div>
-
-          <button
-            className="rol-kart-paneli-galeri-btn"
-            onClick={() => setGaleriAcik(true)}
-            title="Bu oyunda kim hangi rolü oynayabilir?"
-          >
-            Diğer Roller →
-          </button>
         </div>
       )}
+
+      {/* v1.8 — "Diğer Roller" butonu panel acik/kapali durumundan BAĞIMSIZ */}
+      <button
+        className="rol-kart-paneli-galeri-btn"
+        onClick={() => setGaleriAcik(true)}
+        title="Bu oyunda kim hangi rolü oynayabilir?"
+      >
+        Diğer Roller →
+      </button>
 
       {/* v1.3 — Galeri modal */}
       {galeriAcik && (

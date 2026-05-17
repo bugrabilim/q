@@ -355,7 +355,8 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
           <div className="oyuncu-baslik-satir">
             <h2 className="oyuncu-baslik">Köydekiler</h2>
             <span className="oyuncu-sayac">
-              {durum.oyuncuSayisi} <span className="bolu">/</span> {durum.maxOyuncu}
+              {durum.oyuncuSayisi}
+              <span className="oyuncu-sayac-not"> · en az {durum.minOyuncu} kişiyle başlar</span>
             </span>
           </div>
 
@@ -468,6 +469,17 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
           </h3>
           <div className="lobi-sureler-grid">
             <label className="lobi-sure-satir">
+              <span className="lobi-sure-etiket">💬 Tartışma</span>
+              <select
+                className="lobi-tartisma-ayar-select"
+                value={tartismaSuresi}
+                onChange={e => benHostMu && hostTartismaSuresiSec(Number(e.target.value))}
+                disabled={!benHostMu}
+              >
+                {TARTISMA_SURELERI.map(sn => <option key={sn} value={sn}>{sn} sn</option>)}
+              </select>
+            </label>
+            <label className="lobi-sure-satir">
               <span className="lobi-sure-etiket">🌙 Gece</span>
               <select
                 className="lobi-tartisma-ayar-select"
@@ -487,17 +499,6 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
                 disabled={!benHostMu}
               >
                 {FAZ_SURELERI.map(sn => <option key={sn} value={sn}>{sn} sn</option>)}
-              </select>
-            </label>
-            <label className="lobi-sure-satir">
-              <span className="lobi-sure-etiket">💬 Tartışma</span>
-              <select
-                className="lobi-tartisma-ayar-select"
-                value={tartismaSuresi}
-                onChange={e => benHostMu && hostTartismaSuresiSec(Number(e.target.value))}
-                disabled={!benHostMu}
-              >
-                {TARTISMA_SURELERI.map(sn => <option key={sn} value={sn}>{sn} sn</option>)}
               </select>
             </label>
             <label className="lobi-sure-satir">
@@ -576,12 +577,7 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
             )}
             {hostHata && <p className="hata">{hostHata}</p>}
 
-            {/* V1 — Outsider/Kaosçu bilgi notu */}
-            <p className="lobi-host-ayar-v1-not">
-              💡 <strong>Outsider</strong> ve <strong>Kaosçu</strong> rolleri V1'de eklendi.
-              Outsider seçilirse rastgele Özgürlükçü gibi davranan bir oyuncu olur (Bastırmış Murat).
-              Kaosçular bireysel antagonistlerdir, birbirlerini bilmezler.
-            </p>
+            {/* v1.8 — Outsider/Kaosçu bilgi notu kaldırıldı (Buğra isteği) */}
           </section>
         )}
 
