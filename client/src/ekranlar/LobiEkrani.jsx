@@ -604,19 +604,14 @@ function DagilimPopup({ oyuncuSayisi, onKapat }) {
             placeholder="örn. 8"
             autoFocus
           />
-          {/* v1.8 — Renkler sabit, sayılar dinamik (geçersizde "—") */}
+          {/* v1.8 — Sıra: yeşil → sarı → kırmızı → beyaz → siyah · sayılar dinamik */}
           <div className="lobi-onerilen-sorgu-sonuc">
             <span className="lobi-onerilen-grup ozg" title="Özgürlükçü">🟢 {gecerli ? dagilim.ozgurlukcu : '—'}</span>
-            <span className="lobi-onerilen-grup outsider" title="Outsider">⚪ {gecerli ? (dagilim.outsider || 0) : '—'}</span>
             <span className="lobi-onerilen-grup tar" title="Tarafsız">🟡 {gecerli ? dagilim.tarafsiz : '—'}</span>
             <span className="lobi-onerilen-grup gel" title="Gelenekçi">🔴 {gecerli ? dagilim.gelenekci : '—'}</span>
+            <span className="lobi-onerilen-grup outsider" title="Outsider">⚪ {gecerli ? (dagilim.outsider || 0) : '—'}</span>
             <span className="lobi-onerilen-grup kaoscu" title="Kaosçu">⚫ {gecerli ? (dagilim.kaoscu || 0) : '—'}</span>
           </div>
-          {!gecerli && (
-            <p className="lobi-onerilen-sorgu-uyari">
-              {secilen === '' ? 'Sayı gir' : 'En az 4 kişi'}
-            </p>
-          )}
         </div>
         <p className="lobi-onerilen-aciklama">
           V1'de <strong>⚪ Outsider</strong> ve <strong>⚫ Kaosçu</strong> opsiyonel — önerilen dağılımda 0,

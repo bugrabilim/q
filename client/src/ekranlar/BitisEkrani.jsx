@@ -29,11 +29,13 @@ const GRUP_SEMBOL = {
   gelenekci: '🔴'
 };
 
-// v1.3 — Bitiş ekranında renk gradyanı sırası: yeşil → sarı → kırmızı
+// v1.8 — Bitiş ekranında sıra: yeşil → sarı → kırmızı → beyaz → siyah (her yerde aynı)
 const GRUP_SIRA = {
   ozgurlukcu: 0,
   tarafsiz: 1,
-  gelenekci: 2
+  gelenekci: 2,
+  outsider: 3,
+  kaoscu: 4
 };
 
 // v1.5 — Madde 6 (b): Kazanan gruba göre partikül emojisi
