@@ -466,6 +466,52 @@
   cursor: not-allowed;
 }
 
+/* v1.8 — "Detaylı oku" expandable hikaye (rol popup + rol kartı + detay) */
+.rol-detayli-hikaye {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.rol-detayli-hikaye > summary {
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--deniz);
+  padding: 6px 10px;
+  background: rgba(168, 218, 220, 0.25);
+  border-radius: 5px;
+  display: inline-block;
+  user-select: none;
+}
+
+.rol-detayli-hikaye > summary:hover {
+  background: rgba(42, 157, 143, 0.15);
+}
+
+.rol-detayli-hikaye[open] > summary {
+  margin-bottom: 8px;
+}
+
+.rol-detayli-hikaye-icerik {
+  font-family: var(--font-alinti, 'Lora', serif);
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--derin);
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.5);
+  border-left: 3px solid rgba(42, 157, 143, 0.3);
+  border-radius: 4px;
+}
+
+.rol-detayli-hikaye-icerik p {
+  margin: 0 0 10px;
+}
+
+.rol-detayli-hikaye-icerik p:last-child {
+  margin-bottom: 0;
+}
+
 /* v1.8 — Önerilen Dağılım inline (lobide sürekli açık) */
 .lobi-onerilen-inline {
   padding: 12px 14px;

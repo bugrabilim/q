@@ -5,6 +5,7 @@
 import { useEffect, useState } from 'react';
 import { socket } from '../socket.js';
 import KarakterPortresi from '../bilesenler/KarakterPortresi.jsx';
+import { uzunHikayeyiAl } from '../karakterler/hikayeler.js';
 import './RolKartPaneli.css';
 
 const GRUP_BILGI = {
@@ -77,11 +78,19 @@ export default function RolKartPaneli({ rol }) {
 
   return (
     <div className={`rol-kart-paneli ${acik ? '' : 'rol-kart-paneli--kapali'}`}>
-      <header className="rol-kart-paneli-bas" onClick={() => setAcik(a => !a)}>
-        <span className="rol-kart-paneli-baslik">
+      <header className="rol-kart-paneli-bas">
+        <span className="rol-kart-paneli-baslik" onClick={() => setAcik(a => !a)}>
           🎭 {rol.ad}
         </span>
-        <span className="rol-kart-paneli-acma">{acik ? '−' : '+'}</span>
+        {/* v1.8 — Diğer Roller butonu header'da, panel açık/kapalı her zaman görünür */}
+        <button
+          className="rol-kart-paneli-galeri-mini"
+          onClick={(e) => { e.stopPropagation(); setGaleriAcik(true); }}
+          title="Bu oyunda kim hangi rolü oynayabilir?"
+        >
+          Diğer Roller
+        </button>
+        <span className="rol-kart-paneli-acma" onClick={() => setAcik(a => !a)}>{acik ? '−' : '+'}</span>
       </header>
 
       {acik && (
@@ -145,14 +154,7 @@ export default function RolKartPaneli({ rol }) {
         </div>
       )}
 
-      {/* v1.8 — "Diğer Roller" butonu panel acik/kapali durumundan BAĞIMSIZ */}
-      <button
-        className="rol-kart-paneli-galeri-btn"
-        onClick={() => setGaleriAcik(true)}
-        title="Bu oyunda kim hangi rolü oynayabilir?"
-      >
-        Diğer Roller →
-      </button>
+      {/* v1.8 — Eski büyük "Diğer Roller" butonu kaldırıldı; artık header'da */}
 
       {/* v1.3 — Galeri modal */}
       {galeriAcik && (
@@ -232,6 +234,11 @@ function RollerGalerisiModal({ roller, seciliRol, onSec, onKapat }) {
 function RolDetayPopup({ rol, onKapat }) {
   const grup = GRUP_BILGI[rol.grup];
   const burc = ROL_BURCLARI[rol.id];
+  const [uzunHikaye, setUzunHikaye] = useState(null);
+
+  useEffect(() => {
+    uzunHikayeyiAl(rol.karakter).then(setUzunHikaye);
+  }, [rol.karakter]);
 
   useEffect(() => {
     function esc(e) { if (e.key === 'Escape') onKapat(); }
@@ -264,6 +271,14 @@ function RolDetayPopup({ rol, onKapat }) {
 
           <p className="lobi-popup-bolum-altbaslik lobi-popup-altbaslik-ikinci">Neden bu köye geldin?</p>
           <p className="lobi-popup-bolum-metin lobi-popup-motivasyon">{rol.motivasyon}</p>
+          {uzunHikaye && (
+            <details className="rol-detayli-hikaye">
+              <summary>Detaylı oku</summary>
+              <div className="rol-detayli-hikaye-icerik">
+                {uzunHikaye.split('\n\n').map((p, i) => <p key={i}>{p}</p>)}
+              </div>
+            </details>
+          )}
 
           <p className="lobi-popup-bolum-altbaslik lobi-popup-altbaslik-ikinci">Ne yapmak istiyorsun?</p>
           <p className="lobi-popup-bolum-metin">{GRUP_NIYETLERI[rol.grup] || '—'}</p>

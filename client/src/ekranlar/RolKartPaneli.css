@@ -135,6 +135,29 @@
 }
 
 /* v1.3 — "Diğer Roller →" butonu */
+/* v1.8 — Header'daki kompakt "Diğer Roller" butonu */
+.rol-kart-paneli-galeri-mini {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--deniz);
+  background: rgba(168, 218, 220, 0.25);
+  border: 1px solid rgba(42, 157, 143, 0.3);
+  border-radius: 5px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.rol-kart-paneli-galeri-mini:hover {
+  background: rgba(42, 157, 143, 0.15);
+  border-color: var(--deniz);
+}
+
+.rol-kart-paneli-baslik { cursor: pointer; }
+
+/* Eski full-width buton (artık header'da; alt sınıf bırakıldı yedek için) */
 .rol-kart-paneli-galeri-btn {
   margin-top: 14px;
   width: 100%;

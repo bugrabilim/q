@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { socket } from '../socket.js';
 import SesButonu from '../ses/SesButonu.jsx';
 import KarakterPortresi from '../bilesenler/KarakterPortresi.jsx';
+import { uzunHikayeyiAl } from '../karakterler/hikayeler.js';
 import './LobiEkrani.css';
 
 const GRUP_BILGI = {
@@ -728,6 +729,11 @@ function RollerPopup({ roller, onRolSec, onKapat }) {
 function RolPopup({ rol, onKapat }) {
   const grup = GRUP_BILGI[rol.grup];
   const burc = ROL_BURCLARI[rol.id];
+  const [uzunHikaye, setUzunHikaye] = useState(null);
+
+  useEffect(() => {
+    uzunHikayeyiAl(rol.karakter).then(setUzunHikaye);
+  }, [rol.karakter]);
 
   // Escape ile kapama
   useEffect(() => {
@@ -770,6 +776,14 @@ function RolPopup({ rol, onKapat }) {
 
           <p className="lobi-popup-bolum-altbaslik lobi-popup-altbaslik-ikinci">Neden bu köye geldin?</p>
           <p className="lobi-popup-bolum-metin lobi-popup-motivasyon">{rol.motivasyon}</p>
+          {uzunHikaye && (
+            <details className="rol-detayli-hikaye">
+              <summary>Detaylı oku</summary>
+              <div className="rol-detayli-hikaye-icerik">
+                {uzunHikaye.split('\n\n').map((p, i) => <p key={i}>{p}</p>)}
+              </div>
+            </details>
+          )}
 
           <p className="lobi-popup-bolum-altbaslik lobi-popup-altbaslik-ikinci">Ne yapmak istiyorsun?</p>
           <p className="lobi-popup-bolum-metin">{GRUP_NIYETLERI[rol.grup] || '—'}</p>

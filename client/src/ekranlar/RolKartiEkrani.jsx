@@ -10,6 +10,7 @@
 import { useEffect, useState } from 'react';
 import { socket } from '../socket.js';
 import KarakterPortresi from '../bilesenler/KarakterPortresi.jsx';
+import { uzunHikayeyiAl } from '../karakterler/hikayeler.js';
 import './RolKartiEkrani.css';
 
 const GRUP_BILGI = {
@@ -111,6 +112,11 @@ export default function RolKartiEkrani({ benimIsmim, rol: rolProp = null, sonZam
 
   const grup = GRUP_BILGI[rol.grup];
   const burc = ROL_BURCLARI[rol.id];
+  const [uzunHikaye, setUzunHikaye] = useState(null);
+
+  useEffect(() => {
+    uzunHikayeyiAl(rol.karakter).then(setUzunHikaye);
+  }, [rol.karakter]);
 
   return (
     <div className="rol-ekran">
@@ -155,6 +161,14 @@ export default function RolKartiEkrani({ benimIsmim, rol: rolProp = null, sonZam
 
             <p className="rol-bolum-altbaslik rol-altbaslik-ikinci">Neden bu köye geldin?</p>
             <p className="rol-bolum-metin rol-motivasyon">{rol.motivasyon}</p>
+            {uzunHikaye && (
+              <details className="rol-detayli-hikaye">
+                <summary>Detaylı oku</summary>
+                <div className="rol-detayli-hikaye-icerik">
+                  {uzunHikaye.split('\n\n').map((p, i) => <p key={i}>{p}</p>)}
+                </div>
+              </details>
+            )}
 
             <p className="rol-bolum-altbaslik rol-altbaslik-ikinci">Ne yapmak istiyorsun?</p>
             <p className="rol-bolum-metin">{GRUP_NIYETLERI[rol.grup] || '—'}</p>
