@@ -335,10 +335,12 @@
 }
 
 .lobi-onerilen-satir {
+  /* V1: 5 grup sütunu (kişi + ozg + tar + gel + outsider + kaoscu) */
   display: grid;
-  grid-template-columns: 44px 1fr 1fr 1fr;
+  grid-template-columns: 38px repeat(5, 1fr);
   align-items: center;
-  padding: 7px 12px;
+  gap: 2px;
+  padding: 7px 10px;
   background: white;
   border-radius: 8px;
   font-family: var(--font-ui);
@@ -346,6 +348,34 @@
   color: var(--derin);
   border: 1px solid transparent;
   transition: all 0.2s ease;
+}
+
+.lobi-onerilen-grup.outsider {
+  color: #6B7280;
+}
+
+.lobi-onerilen-grup.kaoscu {
+  color: #1A1A1A;
+  font-weight: 600;
+}
+
+.lobi-onerilen-aciklama {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: rgba(38, 70, 83, 0.7);
+  margin-top: 10px;
+  line-height: 1.5;
+  padding: 0 4px;
+}
+
+/* Mobilde popup tablosu — sütunlar daralır ama 5 sütun durur */
+@media (max-width: 480px) {
+  .lobi-onerilen-satir {
+    grid-template-columns: 30px repeat(5, 1fr);
+    padding: 6px 6px;
+    font-size: 13px;
+    gap: 1px;
+  }
 }
 
 .lobi-onerilen-baslik-satir {
@@ -514,6 +544,20 @@
   background: white;
   border-radius: 8px;
   border: 1px solid rgba(42, 157, 143, 0.15);
+  border-left-width: 3px;
+}
+
+/* V1: 5 grup renk aksanı (sol kenar şeridi) — mevcut renkler korunur */
+.lobi-host-ayar-satir--ozg      { border-left-color: var(--ozgurlukcu); }
+.lobi-host-ayar-satir--tar      { border-left-color: var(--tarafsiz); }
+.lobi-host-ayar-satir--gel      { border-left-color: var(--gelenekci); }
+.lobi-host-ayar-satir--outsider {
+  border-left-color: #9AA0A6;
+  background: #FAFAFA;
+}
+.lobi-host-ayar-satir--kaoscu {
+  border-left-color: #1A1A1A;
+  background: #F3F2F1;
 }
 
 .lobi-host-ayar-etiket {
@@ -637,6 +681,29 @@
   font-weight: 600;
   margin-top: 8px;
   text-align: center;
+}
+
+.lobi-host-ayar-fark {
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+/* V1 — Outsider/Kaosçu bilgi notu */
+.lobi-host-ayar-v1-not {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1.55;
+  color: rgba(38, 70, 83, 0.78);
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(154, 160, 166, 0.08);
+  border-left: 3px solid #9AA0A6;
+  border-radius: 6px;
+}
+
+.lobi-host-ayar-v1-not strong {
+  color: var(--derin);
+  font-weight: 600;
 }
 
 /* Madde 3: Roller galerisi (lobide) */

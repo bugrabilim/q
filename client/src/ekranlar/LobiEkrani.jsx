@@ -9,20 +9,27 @@ import './LobiEkrani.css';
 const GRUP_BILGI = {
   ozgurlukcu: { ad: 'Özgürlükçü', renk: 'var(--ozgurlukcu)', sembol: '🟢' },
   tarafsiz:   { ad: 'Tarafsız',   renk: 'var(--tarafsiz)',   sembol: '🟡' },
-  gelenekci:  { ad: 'Gelenekçi',  renk: 'var(--gelenekci)',  sembol: '🔴' }
+  gelenekci:  { ad: 'Gelenekçi',  renk: 'var(--gelenekci)',  sembol: '🔴' },
+  outsider:   { ad: 'Outsider',   renk: 'var(--outsider, #9AA0A6)', sembol: '⚪' },
+  kaoscu:     { ad: 'Kaosçu',     renk: 'var(--kaoscu, #1A1A1A)',   sembol: '⚫' }
 };
 
+// V1 — Outsider/Kaosçu üst sınırları (host paneli için)
+const OUTSIDER_MAX = 1;
+const KAOSCU_MAX = 3;
+
 // Madde 5: Önerilen dağılım tablosu (statik — server'daki DENGE ile eşleşir)
+// V1: outsider/kaoscu opsiyonel; default 0 — host isterse aktive eder
 const DENGE_ONERILEN = {
-  4:  { ozgurlukcu: 2, tarafsiz: 1, gelenekci: 1 },
-  5:  { ozgurlukcu: 2, tarafsiz: 2, gelenekci: 1 },
-  6:  { ozgurlukcu: 2, tarafsiz: 2, gelenekci: 2 },
-  7:  { ozgurlukcu: 3, tarafsiz: 2, gelenekci: 2 },
-  8:  { ozgurlukcu: 3, tarafsiz: 3, gelenekci: 2 },
-  9:  { ozgurlukcu: 4, tarafsiz: 3, gelenekci: 2 },
-  10: { ozgurlukcu: 4, tarafsiz: 3, gelenekci: 3 },
-  11: { ozgurlukcu: 5, tarafsiz: 3, gelenekci: 3 },
-  12: { ozgurlukcu: 6, tarafsiz: 3, gelenekci: 3 }
+  4:  { ozgurlukcu: 2, tarafsiz: 1, gelenekci: 1, outsider: 0, kaoscu: 0 },
+  5:  { ozgurlukcu: 2, tarafsiz: 2, gelenekci: 1, outsider: 0, kaoscu: 0 },
+  6:  { ozgurlukcu: 2, tarafsiz: 2, gelenekci: 2, outsider: 0, kaoscu: 0 },
+  7:  { ozgurlukcu: 3, tarafsiz: 2, gelenekci: 2, outsider: 0, kaoscu: 0 },
+  8:  { ozgurlukcu: 3, tarafsiz: 3, gelenekci: 2, outsider: 0, kaoscu: 0 },
+  9:  { ozgurlukcu: 4, tarafsiz: 3, gelenekci: 2, outsider: 0, kaoscu: 0 },
+  10: { ozgurlukcu: 4, tarafsiz: 3, gelenekci: 3, outsider: 0, kaoscu: 0 },
+  11: { ozgurlukcu: 5, tarafsiz: 3, gelenekci: 3, outsider: 0, kaoscu: 0 },
+  12: { ozgurlukcu: 6, tarafsiz: 3, gelenekci: 3, outsider: 0, kaoscu: 0 }
 };
 const OYUNCU_SAYILARI = [4, 5, 6, 7, 8, 9, 10, 11, 12];
 
@@ -61,9 +68,18 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
   const dolu = durum.oyuncuSayisi >= durum.maxOyuncu;
 
   // Madde 4: Aktif dağılım — host ayarı varsa onu, yoksa önerilen
-  const aktifDagilim = durum.ayarlar?.dagilim
+  // V1: 5 grup (ozg + tar + gel + outsider + kaoscu). Eski oyunlarda outsider/kaoscu eksik
+  // olabilir; defaultlarla normalize edilir.
+  const aktifDagilimHam = durum.ayarlar?.dagilim
     || DENGE_ONERILEN[durum.oyuncuSayisi]
     || { ozgurlukcu: 0, tarafsiz: 0, gelenekci: 0 };
+  const aktifDagilim = {
+    ozgurlukcu: aktifDagilimHam.ozgurlukcu || 0,
+    tarafsiz:   aktifDagilimHam.tarafsiz   || 0,
+    gelenekci:  aktifDagilimHam.gelenekci  || 0,
+    outsider:   aktifDagilimHam.outsider   || 0,
+    kaoscu:     aktifDagilimHam.kaoscu     || 0
+  };
 
   // v1.7 — Tanışma'da kaç kişi kimlik açıklasın (host seçer; 0-3; default 1)
   const kimlikAciklamaAdedi = Number.isInteger(durum.ayarlar?.kimlikAciklamaAdedi)
@@ -76,36 +92,56 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
     setHostHata('');
   }, [durum.oyuncuSayisi, durum.ayarlar]);
 
-  // Host düzenleme modunda — gerçek aktif değer
+  // Host düzenleme modunda — gerçek aktif değer (5 grup)
   const duzenlemeDagilim = hostSecim || aktifDagilim;
-  const hostToplam = duzenlemeDagilim.ozgurlukcu + duzenlemeDagilim.tarafsiz + duzenlemeDagilim.gelenekci;
-  const hostGecerli = hostToplam === durum.oyuncuSayisi && duzenlemeDagilim.gelenekci >= 1 && durum.oyuncuSayisi >= durum.minOyuncu;
+  const hostToplam =
+    duzenlemeDagilim.ozgurlukcu +
+    duzenlemeDagilim.tarafsiz +
+    duzenlemeDagilim.gelenekci +
+    duzenlemeDagilim.outsider +
+    duzenlemeDagilim.kaoscu;
+  const hostGecerli =
+    hostToplam === durum.oyuncuSayisi &&
+    duzenlemeDagilim.gelenekci >= 1 &&
+    duzenlemeDagilim.outsider >= 0 && duzenlemeDagilim.outsider <= OUTSIDER_MAX &&
+    duzenlemeDagilim.kaoscu >= 0 && duzenlemeDagilim.kaoscu <= KAOSCU_MAX &&
+    durum.oyuncuSayisi >= durum.minOyuncu;
 
   // v1.6 — Madde 1 (rev): +/- bastığında otomatik dengele + anında server'a uygula.
-  // "Uygula" butonu kaldırıldı. Toplam korunur: hedef grubu artarsa başka gruptan
-  // otomatik düşürür (en yüksek olan, gelenekçi ≥ 1 korunarak). Azaltırsa diğer
-  // gruba ekler (en düşük olan).
+  // V1: 5 grup (ozg + tar + gel + outsider + kaoscu). Outsider 0-1, Kaosçu 0-3.
+  // Toplam korunur: hedef grup artarsa başka birinden düşülür; azaltılırsa başkasına eklenir.
+  // Outsider/Kaosçu değişimi → karşı taraf ana gruplar (ozg/tar/gel). Bu sayede Kaan ≥ 1
+  // korunur ve mevcut Özg/Tar/Gel mantığı bozulmaz.
   function hostDegistir(grup, delta) {
     setHostHata('');
     const base = { ...(hostSecim || aktifDagilim) };
     const yeniDeger = base[grup] + delta;
 
-    // Min sınırları: gelenekçi ≥ 1 (Kaan zorunlu), diğerleri ≥ 0
+    // Min/max sınırları
     if (grup === 'gelenekci' && yeniDeger < 1) return;
+    if (grup === 'outsider' && (yeniDeger < 0 || yeniDeger > OUTSIDER_MAX)) return;
+    if (grup === 'kaoscu' && (yeniDeger < 0 || yeniDeger > KAOSCU_MAX)) return;
     if (yeniDeger < 0) return;
 
     base[grup] = yeniDeger;
 
-    // Toplamı eski oyuncu sayısında tut — diğer iki grubu otomatik dengele
-    const diger = ['ozgurlukcu', 'tarafsiz', 'gelenekci'].filter(g => g !== grup);
+    // Dengeleme havuzu: outsider/kaoscu değişirse karşı taraf üç ana gruptur.
+    // Ozg/Tar/Gel değişirse karşı taraf diğer iki ana gruptur (outsider/kaoscu sabit kalır).
+    const ANA_GRUPLAR = ['ozgurlukcu', 'tarafsiz', 'gelenekci'];
+    const diger = (grup === 'outsider' || grup === 'kaoscu')
+      ? ANA_GRUPLAR.slice()
+      : ANA_GRUPLAR.filter(g => g !== grup);
+
     if (delta > 0) {
-      // Bir grup arttı — başka birinden düş. En yüksekten başla; gelenekçi en son
-      // ve ancak >1 ise düşülebilir.
+      // Bir grup arttı — başka birinden düş. En yüksekten başla; gelenekçi ≥ 1 korunur.
       const sirali = diger.sort((a, b) => base[b] - base[a]);
+      let dusuldu = false;
       for (const g of sirali) {
         const altSinir = g === 'gelenekci' ? 1 : 0;
-        if (base[g] > altSinir) { base[g] -= 1; break; }
+        if (base[g] > altSinir) { base[g] -= 1; dusuldu = true; break; }
       }
+      // Karşıdan düşülecek alan yoksa (örn. herkes alt sınırda) — değişikliği geri al
+      if (!dusuldu) return;
     } else if (delta < 0) {
       // Bir grup azaldı — başka birine ekle (en düşük olanı tercih et).
       const sirali = diger.sort((a, b) => base[a] - base[b]);
@@ -265,7 +301,7 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
             <span className="lobi-info-btn-ikon">📊</span>
             <span className="lobi-info-btn-metin">
               <span className="lobi-info-btn-baslik">Önerilen Dağılım</span>
-              <span className="lobi-info-btn-altyazi">{durum.oyuncuSayisi} kişiyle 🟢 🟡 🔴</span>
+              <span className="lobi-info-btn-altyazi">{durum.oyuncuSayisi} kişiyle 🟢 🟡 🔴 ⚪ ⚫</span>
             </span>
           </button>
           <button
@@ -334,18 +370,20 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
             </p>
             <div className="lobi-host-ayar-satirlar">
               {[
-                { key: 'ozgurlukcu', etiket: '🟢 Özgürlükçü' },
-                { key: 'tarafsiz',   etiket: '🟡 Tarafsız' },
-                { key: 'gelenekci',  etiket: '🔴 Gelenekçi' }
-              ].map(({ key, etiket }) => (
-                <div key={key} className="lobi-host-ayar-satir">
+                { key: 'ozgurlukcu', etiket: '🟢 Özgürlükçü', altSinir: 0, ustSinir: null, satirClass: 'ozg' },
+                { key: 'tarafsiz',   etiket: '🟡 Tarafsız',   altSinir: 0, ustSinir: null, satirClass: 'tar' },
+                { key: 'gelenekci',  etiket: '🔴 Gelenekçi',  altSinir: 1, ustSinir: null, satirClass: 'gel' },
+                { key: 'outsider',   etiket: '⚪ Outsider',   altSinir: 0, ustSinir: OUTSIDER_MAX, satirClass: 'outsider' },
+                { key: 'kaoscu',     etiket: '⚫ Kaosçu',     altSinir: 0, ustSinir: KAOSCU_MAX,  satirClass: 'kaoscu' }
+              ].map(({ key, etiket, altSinir, ustSinir, satirClass }) => (
+                <div key={key} className={`lobi-host-ayar-satir lobi-host-ayar-satir--${satirClass}`}>
                   <span className="lobi-host-ayar-etiket">{etiket}</span>
                   <div className="lobi-host-ayar-sayac">
                     <button
                       type="button"
                       className="lobi-host-ayar-btn"
                       onClick={() => hostDegistir(key, -1)}
-                      disabled={duzenlemeDagilim[key] <= (key === 'gelenekci' ? 1 : 0)}
+                      disabled={duzenlemeDagilim[key] <= altSinir}
                       aria-label="azalt"
                     >−</button>
                     <span className="lobi-host-ayar-deger">{duzenlemeDagilim[key]}</span>
@@ -353,6 +391,7 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
                       type="button"
                       className="lobi-host-ayar-btn"
                       onClick={() => hostDegistir(key, +1)}
+                      disabled={ustSinir !== null && duzenlemeDagilim[key] >= ustSinir}
                       aria-label="arttır"
                     >+</button>
                   </div>
@@ -360,8 +399,13 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
               ))}
             </div>
             <div className="lobi-host-ayar-altbar">
-              <span className="lobi-host-ayar-toplam ok">
+              <span className={`lobi-host-ayar-toplam ${hostToplam === durum.oyuncuSayisi ? 'ok' : 'hata'}`}>
                 Toplam: {hostToplam} / {durum.oyuncuSayisi}
+                {hostToplam !== durum.oyuncuSayisi && (
+                  <span className="lobi-host-ayar-fark">
+                    {' '}({Math.abs(hostToplam - durum.oyuncuSayisi)} {hostToplam > durum.oyuncuSayisi ? 'fazla' : 'eksik'})
+                  </span>
+                )}
               </span>
               <button
                 type="button"
@@ -376,6 +420,13 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
               <p className="lobi-host-ayar-aktif">Özel dağılım aktif</p>
             )}
             {hostHata && <p className="hata">{hostHata}</p>}
+
+            {/* V1 — Outsider/Kaosçu bilgi notu */}
+            <p className="lobi-host-ayar-v1-not">
+              💡 <strong>Outsider</strong> ve <strong>Kaosçu</strong> rolleri V1'de eklendi.
+              Outsider seçilirse rastgele Özgürlükçü gibi davranan bir oyuncu olur (Bastırmış Murat).
+              Kaosçular bireysel antagonistlerdir, birbirlerini bilmezler.
+            </p>
           </section>
         )}
 
@@ -427,9 +478,11 @@ function DagilimPopup({ oyuncuSayisi, onKapat }) {
         <div className="lobi-onerilen-tablo">
           <div className="lobi-onerilen-satir lobi-onerilen-baslik-satir">
             <span className="lobi-onerilen-sayi-bas">Kişi</span>
-            <span className="lobi-onerilen-grup ozg">🟢 Özg</span>
-            <span className="lobi-onerilen-grup tar">🟡 Tar</span>
-            <span className="lobi-onerilen-grup gel">🔴 Gel</span>
+            <span className="lobi-onerilen-grup ozg">🟢</span>
+            <span className="lobi-onerilen-grup tar">🟡</span>
+            <span className="lobi-onerilen-grup gel">🔴</span>
+            <span className="lobi-onerilen-grup outsider">⚪</span>
+            <span className="lobi-onerilen-grup kaoscu">⚫</span>
           </div>
           {OYUNCU_SAYILARI.map(sayi => {
             const d = DENGE_ONERILEN[sayi];
@@ -440,10 +493,16 @@ function DagilimPopup({ oyuncuSayisi, onKapat }) {
                 <span className="lobi-onerilen-grup ozg">{d.ozgurlukcu}</span>
                 <span className="lobi-onerilen-grup tar">{d.tarafsiz}</span>
                 <span className="lobi-onerilen-grup gel">{d.gelenekci}</span>
+                <span className="lobi-onerilen-grup outsider">{d.outsider || 0}</span>
+                <span className="lobi-onerilen-grup kaoscu">{d.kaoscu || 0}</span>
               </div>
             );
           })}
         </div>
+        <p className="lobi-onerilen-aciklama">
+          V1'de <strong>⚪ Outsider</strong> ve <strong>⚫ Kaosçu</strong> opsiyonel — önerilen dağılımda 0,
+          host panelinden açılır.
+        </p>
       </div>
     </div>
   );

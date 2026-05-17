@@ -2390,7 +2390,7 @@ io.on('connection', (socket) => {
     const dagilimVar = Object.prototype.hasOwnProperty.call(p, 'dagilim');
     const kimlikVar = Object.prototype.hasOwnProperty.call(p, 'kimlikAciklamaAdedi');
 
-    // ─ Dağılım (eski davranış korunur) ─
+    // ─ Dağılım (v1.8 — outsider + kaoscu eklendi) ─
     if (dagilimVar) {
       const dagilim = p.dagilim;
       if (dagilim === null || dagilim === undefined) {
@@ -2399,17 +2399,25 @@ io.on('connection', (socket) => {
         const ozg = Number(dagilim.ozgurlukcu);
         const tar = Number(dagilim.tarafsiz);
         const gel = Number(dagilim.gelenekci);
-        if ([ozg, tar, gel].some(n => !Number.isInteger(n) || n < 0)) {
+        const outsider = Number(dagilim.outsider ?? 0);
+        const kaoscu = Number(dagilim.kaoscu ?? 0);
+        if ([ozg, tar, gel, outsider, kaoscu].some(n => !Number.isInteger(n) || n < 0)) {
           return callback?.({ ok: false, hata: 'Geçersiz sayı' });
         }
         if (gel < 1) {
           return callback?.({ ok: false, hata: 'En az 1 gelenekçi olmalı (Kaan zorunlu)' });
         }
-        const toplam = ozg + tar + gel;
+        if (outsider > 1) {
+          return callback?.({ ok: false, hata: 'Outsider en fazla 1 olabilir' });
+        }
+        if (kaoscu > 3) {
+          return callback?.({ ok: false, hata: 'Kaosçu en fazla 3 olabilir' });
+        }
+        const toplam = ozg + tar + gel + outsider + kaoscu;
         if (toplam !== oda.players.length) {
           return callback?.({ ok: false, hata: `Toplam ${oda.players.length} olmalı (şu an ${toplam})` });
         }
-        ayarlar.dagilim = { ozgurlukcu: ozg, tarafsiz: tar, gelenekci: gel };
+        ayarlar.dagilim = { ozgurlukcu: ozg, tarafsiz: tar, gelenekci: gel, outsider, kaoscu };
       }
     }
 
