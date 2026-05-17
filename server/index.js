@@ -47,13 +47,24 @@ function odaKoduUret() {
 const KIMLIK_ACIKLAMA_DEFAULT = 1;
 
 // Yardımcı: oda.ayarlar yapısını garanti et (her zaman obje)
+// v1.8 — Host'un seçebileceği tartışma süreleri (saniye)
+const TARTISMA_SURELERI = [30, 60, 90, 120, 180, 240];
+const TARTISMA_SURESI_DEFAULT = 120;
+
 function ayarlariNormalize(oda) {
   if (!oda.ayarlar || typeof oda.ayarlar !== 'object') {
-    oda.ayarlar = { dagilim: null, kimlikAciklamaAdedi: KIMLIK_ACIKLAMA_DEFAULT };
+    oda.ayarlar = {
+      dagilim: null,
+      kimlikAciklamaAdedi: KIMLIK_ACIKLAMA_DEFAULT,
+      tartismaSuresi: TARTISMA_SURESI_DEFAULT
+    };
   } else {
     if (oda.ayarlar.dagilim === undefined) oda.ayarlar.dagilim = null;
     if (!Number.isInteger(oda.ayarlar.kimlikAciklamaAdedi)) {
       oda.ayarlar.kimlikAciklamaAdedi = KIMLIK_ACIKLAMA_DEFAULT;
+    }
+    if (!TARTISMA_SURELERI.includes(oda.ayarlar.tartismaSuresi)) {
+      oda.ayarlar.tartismaSuresi = TARTISMA_SURESI_DEFAULT;
     }
   }
   return oda.ayarlar;
@@ -1241,7 +1252,11 @@ function tartismayaBasla(oda) {
   oda.altFaz = null;
   oda.oyun.hazirOlanlar.clear();
 
-  const SURE_TARTISMA = Number(process.env.Q_TARTISMA_MS || 120_000);
+  // v1.8 — Host'un belirlediği tartışma süresi (env override hâlâ test için geçerli)
+  const ayarlarTart = ayarlariNormalize(oda);
+  const SURE_TARTISMA = process.env.Q_TARTISMA_MS
+    ? Number(process.env.Q_TARTISMA_MS)
+    : ayarlarTart.tartismaSuresi * 1000;
   oda.fazSonZaman = Date.now() + SURE_TARTISMA;
 
   io.to(oda.kod).emit('faz:degisti', {
@@ -1251,7 +1266,7 @@ function tartismayaBasla(oda) {
     chat: oda.oyun.chat
   });
 
-  sistemMesaji(oda, `Gece ${oda.oyun.geceTuru} sona erdi. Tartışma başladı — 120 saniye serbest sohbet.`);
+  sistemMesaji(oda, `Gece ${oda.oyun.geceTuru} sona erdi. Tartışma başladı — ${Math.round(SURE_TARTISMA / 1000)} saniye serbest sohbet.`);
   console.log(`[oyun] ${oda.kod} — Faz 6 (Tartışma) başladı`);
 
   const t = setTimeout(() => tartismadanOylamaya(oda), SURE_TARTISMA);
@@ -2433,6 +2448,16 @@ io.on('connection', (socket) => {
         return callback?.({ ok: false, hata: 'Kimlik açıklama adedi 0-3 arası olmalı' });
       }
       ayarlar.kimlikAciklamaAdedi = n;
+    }
+
+    // ─ Tartışma süresi (v1.8) ─
+    const tartismaVar = Object.prototype.hasOwnProperty.call(p, 'tartismaSuresi');
+    if (tartismaVar) {
+      const sn = Number(p.tartismaSuresi);
+      if (!TARTISMA_SURELERI.includes(sn)) {
+        return callback?.({ ok: false, hata: 'Tartışma süresi 30/60/90/120/180/240 saniyelerden biri olmalı' });
+      }
+      ayarlar.tartismaSuresi = sn;
     }
 
     lobiyiYayinla(oda.kod);

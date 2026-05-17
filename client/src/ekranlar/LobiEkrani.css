@@ -368,6 +368,68 @@
   padding: 0 4px;
 }
 
+/* v1.8 — Önerilen dağılım: oyuncu sayısı yaz, yanında dağılımı gör */
+.lobi-onerilen-sorgu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.lobi-onerilen-sorgu-etiket {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--derin);
+  letter-spacing: 0.3px;
+}
+
+.lobi-onerilen-sorgu-input {
+  width: 100%;
+  max-width: 140px;
+  padding: 10px 14px;
+  font-family: var(--font-baslik);
+  font-size: 22px;
+  font-weight: 600;
+  text-align: center;
+  border: 2px solid var(--deniz-acik);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--derin);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.lobi-onerilen-sorgu-input:focus {
+  border-color: var(--deniz);
+}
+
+.lobi-onerilen-sorgu-sonuc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  padding: 12px;
+  background: rgba(168, 218, 220, 0.18);
+  border-radius: 8px;
+}
+
+.lobi-onerilen-sorgu-sonuc .lobi-onerilen-grup {
+  font-family: var(--font-baslik);
+  font-size: 16px;
+  font-weight: 600;
+  padding: 4px 8px;
+  background: #fff;
+  border-radius: 6px;
+}
+
+.lobi-onerilen-sorgu-uyari {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--gunes);
+  margin: 0;
+}
+
 /* Mobilde popup tablosu — sütunlar daralır ama 5 sütun durur */
 @media (max-width: 480px) {
   .lobi-onerilen-satir {

@@ -133,6 +133,12 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
     ? durum.ayarlar.kimlikAciklamaAdedi
     : 1;
 
+  // v1.8 — Host'un seçeceği tartışma süresi (saniye; default 120)
+  const TARTISMA_SURELERI = [30, 60, 90, 120, 180, 240];
+  const tartismaSuresi = TARTISMA_SURELERI.includes(durum.ayarlar?.tartismaSuresi)
+    ? durum.ayarlar.tartismaSuresi
+    : 120;
+
   // Oyuncu sayısı veya server ayarı değişince host düzenlemesini senkronize et
   useEffect(() => {
     setHostSecim(null);
@@ -207,6 +213,16 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
     if (!Number.isInteger(yeniDeger) || yeniDeger < 0 || yeniDeger > 3) return;
     if (yeniDeger === kimlikAciklamaAdedi) return;
     socket.emit('lobi:ayar', { kimlikAciklamaAdedi: yeniDeger }, (cevap) => {
+      if (!cevap?.ok) setHostHata(cevap?.hata || 'Ayar uygulanamadı');
+    });
+  }
+
+  // v1.8 — Tartışma süresi seçimi (30/60/90/120/180/240 sn)
+  function hostTartismaSuresiSec(yeniSn) {
+    setHostHata('');
+    if (!TARTISMA_SURELERI.includes(yeniSn)) return;
+    if (yeniSn === tartismaSuresi) return;
+    socket.emit('lobi:ayar', { tartismaSuresi: yeniSn }, (cevap) => {
       if (!cevap?.ok) setHostHata(cevap?.hata || 'Ayar uygulanamadı');
     });
   }
@@ -406,6 +422,43 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
           )}
         </section>
 
+        {/* v1.8 — Tartışma (gündüz) süresi (host seçer · diğerleri read-only görür) */}
+        <section className="lobi-kimlik-ayar-bolum">
+          <div className="lobi-kimlik-ayar-bas">
+            <h3 className="lobi-kimlik-ayar-baslik">
+              Tartışma süresi (saniye)
+              {benHostMu && <span className="lobi-host-ayar-rozet">host</span>}
+            </h3>
+            <p className="lobi-kimlik-ayar-altyazi">
+              Sabah sonrası gündüz tartışma fazının süresi
+            </p>
+          </div>
+          <div className="lobi-kimlik-ayar-secenekler" role="radiogroup" aria-label="Tartışma süresi">
+            {TARTISMA_SURELERI.map(sn => {
+              const aktif = sn === tartismaSuresi;
+              return (
+                <button
+                  type="button"
+                  key={sn}
+                  role="radio"
+                  aria-checked={aktif}
+                  className={`lobi-kimlik-ayar-sec ${aktif ? 'aktif' : ''}`}
+                  onClick={() => benHostMu && hostTartismaSuresiSec(sn)}
+                  disabled={!benHostMu}
+                  title={`Tartışma fazı ${sn} saniye sürer`}
+                >
+                  {sn}
+                </button>
+              );
+            })}
+          </div>
+          {!benHostMu && (
+            <p className="lobi-kimlik-ayar-not">
+              Host bu süreyi belirler — şu an: {tartismaSuresi} saniye
+            </p>
+          )}
+        </section>
+
         {/* Madde 4: Host'a özel dağılım ayarı paneli (A seçeneği — grup sayıları) */}
         {benHostMu && durum.oyuncuSayisi >= durum.minOyuncu && (
           <section className="lobi-host-ayar-bolum">
@@ -504,13 +557,30 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
   );
 }
 
-// v1.6 — Madde 1: Önerilen Dağılım popup'ı (mevcut tablo içeriği)
+// v1.8 — Önerilen Dağılım popup'ı: oyuncu sayısı yaz, yandaki dağılımı gör
 function DagilimPopup({ oyuncuSayisi, onKapat }) {
+  const minSayi = OYUNCU_SAYILARI[0];
+  const maxSayi = OYUNCU_SAYILARI[OYUNCU_SAYILARI.length - 1];
+  const [secilen, setSecilen] = useState(() => {
+    if (OYUNCU_SAYILARI.includes(oyuncuSayisi)) return oyuncuSayisi;
+    return minSayi;
+  });
+
   useEffect(() => {
     function esc(e) { if (e.key === 'Escape') onKapat(); }
     window.addEventListener('keydown', esc);
     return () => window.removeEventListener('keydown', esc);
   }, [onKapat]);
+
+  function girisDegis(e) {
+    const ham = e.target.value.replace(/\D/g, '').slice(0, 2);
+    if (ham === '') { setSecilen(''); return; }
+    const n = Number(ham);
+    setSecilen(n);
+  }
+
+  const gecerli = Number.isInteger(secilen) && secilen >= minSayi && secilen <= maxSayi;
+  const dagilim = gecerli ? DENGE_ONERILEN[secilen] : null;
 
   return (
     <div className="lobi-popup-arka" onClick={onKapat}>
@@ -519,32 +589,37 @@ function DagilimPopup({ oyuncuSayisi, onKapat }) {
         <div className="lobi-popup-bas">
           <h2 className="lobi-popup-ad">📊 Önerilen Dağılım</h2>
           <p className="lobi-popup-karakter">
-            Oyuncu sayısına göre dengeli dağılım — host isterse değiştirebilir
+            Oyuncu sayısını gir, dengeli dağılımı gör ({minSayi}–{maxSayi} kişi)
           </p>
         </div>
-        <div className="lobi-onerilen-tablo">
-          <div className="lobi-onerilen-satir lobi-onerilen-baslik-satir">
-            <span className="lobi-onerilen-sayi-bas">Kişi</span>
-            <span className="lobi-onerilen-grup ozg">🟢</span>
-            <span className="lobi-onerilen-grup tar">🟡</span>
-            <span className="lobi-onerilen-grup gel">🔴</span>
-            <span className="lobi-onerilen-grup outsider">⚪</span>
-            <span className="lobi-onerilen-grup kaoscu">⚫</span>
-          </div>
-          {OYUNCU_SAYILARI.map(sayi => {
-            const d = DENGE_ONERILEN[sayi];
-            const aktif = sayi === oyuncuSayisi;
-            return (
-              <div key={sayi} className={`lobi-onerilen-satir ${aktif ? 'aktif' : ''}`}>
-                <span className="lobi-onerilen-sayi">{sayi}</span>
-                <span className="lobi-onerilen-grup ozg">{d.ozgurlukcu}</span>
-                <span className="lobi-onerilen-grup tar">{d.tarafsiz}</span>
-                <span className="lobi-onerilen-grup gel">{d.gelenekci}</span>
-                <span className="lobi-onerilen-grup outsider">{d.outsider || 0}</span>
-                <span className="lobi-onerilen-grup kaoscu">{d.kaoscu || 0}</span>
-              </div>
-            );
-          })}
+        <div className="lobi-onerilen-sorgu">
+          <label className="lobi-onerilen-sorgu-etiket" htmlFor="lobi-onerilen-input">
+            Oyuncu sayısı
+          </label>
+          <input
+            id="lobi-onerilen-input"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            className="lobi-onerilen-sorgu-input"
+            value={secilen}
+            onChange={girisDegis}
+            placeholder={`${minSayi}–${maxSayi}`}
+            autoFocus
+          />
+          {gecerli ? (
+            <div className="lobi-onerilen-sorgu-sonuc">
+              <span className="lobi-onerilen-grup ozg" title="Özgürlükçü">🟢 {dagilim.ozgurlukcu}</span>
+              <span className="lobi-onerilen-grup outsider" title="Outsider">⚪ {dagilim.outsider || 0}</span>
+              <span className="lobi-onerilen-grup tar" title="Tarafsız">🟡 {dagilim.tarafsiz}</span>
+              <span className="lobi-onerilen-grup gel" title="Gelenekçi">🔴 {dagilim.gelenekci}</span>
+              <span className="lobi-onerilen-grup kaoscu" title="Kaosçu">⚫ {dagilim.kaoscu || 0}</span>
+            </div>
+          ) : (
+            <p className="lobi-onerilen-sorgu-uyari">
+              {secilen === '' ? 'Sayı gir' : `${minSayi}–${maxSayi} arası olmalı`}
+            </p>
+          )}
         </div>
         <p className="lobi-onerilen-aciklama">
           V1'de <strong>⚪ Outsider</strong> ve <strong>⚫ Kaosçu</strong> opsiyonel — önerilen dağılımda 0,

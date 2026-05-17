@@ -478,6 +478,19 @@ function uygulaKaanUzaklastirma(ctx) {
     }
   }
 
+  // v1.8 — Tanışmada kimlik açıklayan oyuncu ilk gece köy tarafından korunur
+  if (
+    ctx.oda.oyun.geceTuru === 1 &&
+    ctx.oda.oyun.aciklanmislar?.has(asilHedef)
+  ) {
+    ekleSatir(ctx, kaanId,
+      `Hedefin ${isim(ctx, a.hedef1)} idi ama tanışmada kimliğini açıklayan oyuncu ilk gece köy tarafından korunuyor — aksiyonun boşa çıktı.`);
+    ekleSatir(ctx, asilHedef,
+      `Tanışmada kimliğini açıkladığın için bu gece köy seni korudu. Kaan'ın hedefiydin ama ayrılmadın.`);
+    ctx.herkeseSabah.push('Köy, kimliğini açıklayan oyuncuyu ilk gecede koruma altına aldı — Kaan boşa çıktı.');
+    return;
+  }
+
   ctx.ayrilanlar.add(asilHedef);
   const ayrilanRol = rolu(ctx, asilHedef);
   ekleSatir(ctx, kaanId, `Hedefin ${isim(ctx, a.hedef1)} idi. Köyden ayrılan: ${isim(ctx, asilHedef)} (${ayrilanRol?.ad || '?'}).`);
