@@ -31,7 +31,8 @@ const SURE_TANISMA = Number(process.env.Q_TANISMA_MS || 30_000);
 // v1.5 — Madde 1: Rol kartı max süre (otomatik tanışmaya geç)
 const SURE_ROL = Number(process.env.Q_ROL_MS || 10_000);
 // v1.5 — Madde 2: Sabah ekranı max süre (host basmasa da otomatik devam)
-const SURE_SABAH = Number(process.env.Q_SABAH_MS || 30_000);
+// v1.8 — SURE_SABAH artık host'un belirlediği değer (her kullanımda dinamik hesaplanır)
+// Eski sabit kaldırıldı; aşağıdaki sabaha geçiş bloğunda dynamic okunur.
 
 const rooms = {};
 
@@ -51,12 +52,21 @@ const KIMLIK_ACIKLAMA_DEFAULT = 1;
 const TARTISMA_SURELERI = [30, 60, 90, 120, 180, 240];
 const TARTISMA_SURESI_DEFAULT = 120;
 
+// v1.8 — Host'un seçebileceği faz süreleri (saniye): gece, sabah, savunma
+const FAZ_SURELERI = [10, 20, 30, 40];
+const GECE_SURESI_DEFAULT = 30;
+const SABAH_SURESI_DEFAULT = 30;
+const SAVUNMA_SURESI_DEFAULT = 20;
+
 function ayarlariNormalize(oda) {
   if (!oda.ayarlar || typeof oda.ayarlar !== 'object') {
     oda.ayarlar = {
       dagilim: null,
       kimlikAciklamaAdedi: KIMLIK_ACIKLAMA_DEFAULT,
-      tartismaSuresi: TARTISMA_SURESI_DEFAULT
+      tartismaSuresi: TARTISMA_SURESI_DEFAULT,
+      geceSuresi: GECE_SURESI_DEFAULT,
+      sabahSuresi: SABAH_SURESI_DEFAULT,
+      savunmaSuresi: SAVUNMA_SURESI_DEFAULT
     };
   } else {
     if (oda.ayarlar.dagilim === undefined) oda.ayarlar.dagilim = null;
@@ -65,6 +75,15 @@ function ayarlariNormalize(oda) {
     }
     if (!TARTISMA_SURELERI.includes(oda.ayarlar.tartismaSuresi)) {
       oda.ayarlar.tartismaSuresi = TARTISMA_SURESI_DEFAULT;
+    }
+    if (!FAZ_SURELERI.includes(oda.ayarlar.geceSuresi)) {
+      oda.ayarlar.geceSuresi = GECE_SURESI_DEFAULT;
+    }
+    if (!FAZ_SURELERI.includes(oda.ayarlar.sabahSuresi)) {
+      oda.ayarlar.sabahSuresi = SABAH_SURESI_DEFAULT;
+    }
+    if (!FAZ_SURELERI.includes(oda.ayarlar.savunmaSuresi)) {
+      oda.ayarlar.savunmaSuresi = SAVUNMA_SURESI_DEFAULT;
     }
   }
   return oda.ayarlar;
@@ -1042,7 +1061,10 @@ function geceyeBasla(oda) {
   if (!oda.oyun.ayrilanlarOdasi) oda.oyun.ayrilanlarOdasi = { mesajlar: [], uyeler: new Set() };
 
   // Gece süre timer
-  const SURE_GECE = Number(process.env.Q_GECE_MS || 30_000);
+  // v1.8 — Host'un belirlediği gece süresi (env override hâlâ test için geçerli)
+  const SURE_GECE = process.env.Q_GECE_MS
+    ? Number(process.env.Q_GECE_MS)
+    : ayarlariNormalize(oda).geceSuresi * 1000;
   oda.geceSonZaman = Date.now() + SURE_GECE;
 
   io.to(oda.kod).emit('faz:degisti', {
@@ -1113,6 +1135,10 @@ function geceyiCoz(oda) {
   // v1.5 — Madde 2: Sabah max 30 sn — host basmasa da otomatik devam
   oda.oyun.fazTimerleri.forEach(t => clearTimeout(t));
   oda.oyun.fazTimerleri = [];
+  // v1.8 — Host'un belirlediği sabah süresi (env override test için geçerli)
+  const SURE_SABAH = process.env.Q_SABAH_MS
+    ? Number(process.env.Q_SABAH_MS)
+    : ayarlariNormalize(oda).sabahSuresi * 1000;
   const sabahSonZaman = Date.now() + SURE_SABAH;
   oda.fazSonZaman = sabahSonZaman;
 
@@ -1433,7 +1459,8 @@ function savunmayaBasla(oda, savunulanId) {
   oda.altFaz = null;
   oda.oyun.hazirOlanlar.clear();
 
-  const SURE_SAVUNMA = 20_000;
+  // v1.8 — Host'un belirlediği savunma süresi (env override yok, sadece host)
+  const SURE_SAVUNMA = ayarlariNormalize(oda).savunmaSuresi * 1000;
   oda.fazSonZaman = Date.now() + SURE_SAVUNMA;
 
   const savunulan = oyuncuyuBul(oda, savunulanId);
@@ -2456,6 +2483,17 @@ io.on('connection', (socket) => {
         return callback?.({ ok: false, hata: 'Tartışma süresi 30/60/90/120/180/240 saniyelerden biri olmalı' });
       }
       ayarlar.tartismaSuresi = sn;
+    }
+
+    // ─ Gece/Sabah/Savunma süreleri (v1.8) ─
+    for (const alan of ['geceSuresi', 'sabahSuresi', 'savunmaSuresi']) {
+      if (Object.prototype.hasOwnProperty.call(p, alan)) {
+        const sn = Number(p[alan]);
+        if (!FAZ_SURELERI.includes(sn)) {
+          return callback?.({ ok: false, hata: `${alan} 10/20/30/40 saniyelerden biri olmalı` });
+        }
+        ayarlar[alan] = sn;
+      }
     }
 
     lobiyiYayinla(oda.kod);

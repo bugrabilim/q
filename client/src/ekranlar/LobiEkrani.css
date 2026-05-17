@@ -368,6 +368,49 @@
   padding: 0 4px;
 }
 
+/* v1.8 — 4 sürelik panel (Gece / Sabah / Tartışma / Savunma) */
+.lobi-sureler-bolum {
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 6px;
+}
+
+.lobi-sureler-baslik {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--derin);
+  margin: 0 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lobi-sureler-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.lobi-sure-satir {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--derin);
+}
+
+.lobi-sure-etiket {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .lobi-sureler-grid { grid-template-columns: 1fr; }
+}
+
 /* v1.8 — Tartışma süresi kompakt seçici (dropdown) */
 .lobi-tartisma-ayar-bolum {
   display: flex;

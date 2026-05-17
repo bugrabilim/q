@@ -142,11 +142,17 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
     ? durum.ayarlar.kimlikAciklamaAdedi
     : 1;
 
-  // v1.8 — Host'un seçeceği tartışma süresi (saniye; default 120)
+  // v1.8 — Host'un seçeceği süreler (saniye)
   const TARTISMA_SURELERI = [30, 60, 90, 120, 180, 240];
+  const FAZ_SURELERI = [10, 20, 30, 40];
   const tartismaSuresi = TARTISMA_SURELERI.includes(durum.ayarlar?.tartismaSuresi)
-    ? durum.ayarlar.tartismaSuresi
-    : 120;
+    ? durum.ayarlar.tartismaSuresi : 120;
+  const geceSuresi = FAZ_SURELERI.includes(durum.ayarlar?.geceSuresi)
+    ? durum.ayarlar.geceSuresi : 30;
+  const sabahSuresi = FAZ_SURELERI.includes(durum.ayarlar?.sabahSuresi)
+    ? durum.ayarlar.sabahSuresi : 30;
+  const savunmaSuresi = FAZ_SURELERI.includes(durum.ayarlar?.savunmaSuresi)
+    ? durum.ayarlar.savunmaSuresi : 20;
 
   // Oyuncu sayısı veya server ayarı değişince host düzenlemesini senkronize et
   useEffect(() => {
@@ -232,6 +238,15 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
     if (!TARTISMA_SURELERI.includes(yeniSn)) return;
     if (yeniSn === tartismaSuresi) return;
     socket.emit('lobi:ayar', { tartismaSuresi: yeniSn }, (cevap) => {
+      if (!cevap?.ok) setHostHata(cevap?.hata || 'Ayar uygulanamadı');
+    });
+  }
+
+  // v1.8 — Gece/Sabah/Savunma süresi seçimi (10/20/30/40 sn)
+  function hostFazSuresiSec(alan, yeniSn) {
+    setHostHata('');
+    if (!FAZ_SURELERI.includes(yeniSn)) return;
+    socket.emit('lobi:ayar', { [alan]: yeniSn }, (cevap) => {
       if (!cevap?.ok) setHostHata(cevap?.hata || 'Ayar uygulanamadı');
     });
   }
@@ -431,23 +446,58 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
           )}
         </section>
 
-        {/* v1.8 — Tartışma süresi (kompakt: açılır menü) */}
-        <section className="lobi-tartisma-ayar-bolum">
-          <h3 className="lobi-tartisma-ayar-baslik">
-            Tartışma süresi
+        {/* v1.8 — Süre ayarları (host belirler · 4 dropdown) */}
+        <section className="lobi-sureler-bolum">
+          <h3 className="lobi-sureler-baslik">
+            Süreler
             {benHostMu && <span className="lobi-host-ayar-rozet">host</span>}
           </h3>
-          <select
-            className="lobi-tartisma-ayar-select"
-            value={tartismaSuresi}
-            onChange={e => benHostMu && hostTartismaSuresiSec(Number(e.target.value))}
-            disabled={!benHostMu}
-            aria-label="Tartışma süresi (saniye)"
-          >
-            {TARTISMA_SURELERI.map(sn => (
-              <option key={sn} value={sn}>{sn} sn</option>
-            ))}
-          </select>
+          <div className="lobi-sureler-grid">
+            <label className="lobi-sure-satir">
+              <span className="lobi-sure-etiket">🌙 Gece</span>
+              <select
+                className="lobi-tartisma-ayar-select"
+                value={geceSuresi}
+                onChange={e => benHostMu && hostFazSuresiSec('geceSuresi', Number(e.target.value))}
+                disabled={!benHostMu}
+              >
+                {FAZ_SURELERI.map(sn => <option key={sn} value={sn}>{sn} sn</option>)}
+              </select>
+            </label>
+            <label className="lobi-sure-satir">
+              <span className="lobi-sure-etiket">☀️ Sabah</span>
+              <select
+                className="lobi-tartisma-ayar-select"
+                value={sabahSuresi}
+                onChange={e => benHostMu && hostFazSuresiSec('sabahSuresi', Number(e.target.value))}
+                disabled={!benHostMu}
+              >
+                {FAZ_SURELERI.map(sn => <option key={sn} value={sn}>{sn} sn</option>)}
+              </select>
+            </label>
+            <label className="lobi-sure-satir">
+              <span className="lobi-sure-etiket">💬 Tartışma</span>
+              <select
+                className="lobi-tartisma-ayar-select"
+                value={tartismaSuresi}
+                onChange={e => benHostMu && hostTartismaSuresiSec(Number(e.target.value))}
+                disabled={!benHostMu}
+              >
+                {TARTISMA_SURELERI.map(sn => <option key={sn} value={sn}>{sn} sn</option>)}
+              </select>
+            </label>
+            <label className="lobi-sure-satir">
+              <span className="lobi-sure-etiket">⚖️ Savunma</span>
+              <select
+                className="lobi-tartisma-ayar-select"
+                value={savunmaSuresi}
+                onChange={e => benHostMu && hostFazSuresiSec('savunmaSuresi', Number(e.target.value))}
+                disabled={!benHostMu}
+              >
+                {FAZ_SURELERI.map(sn => <option key={sn} value={sn}>{sn} sn</option>)}
+              </select>
+            </label>
+          </div>
         </section>
 
         {/* Madde 4: Host'a özel dağılım ayarı paneli (A seçeneği — grup sayıları) */}
