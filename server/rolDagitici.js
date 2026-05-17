@@ -18,7 +18,12 @@ function karistir(dizi) {
   return yeni;
 }
 
-// Belirli bir gruptan N tane rastgele rol seç (zorunlu olanlar önce)
+// Belirli bir gruptan N tane rastgele rol seç (zorunlu olanlar önce).
+// Tekil grup kuralı (roller.js → r.tekil): Aynı tekil etiket (örn. 'heterolar',
+// 'sugar', 'buddy', 'boylar', 'fobikler-homo') taşıyan rollerden en fazla 1 tanesi
+// seçilir. HE ile HK aynı oyunda bulunamaz. Zorunlu roller bu kuralın dışındadır
+// (zaten önceden eklenmiş kabul edilir) — zorunlu bir rolün tekil grubu kullanılmış
+// olarak işaretlenir, böylece o gruptan başka rol gelmez.
 function gruptanSec(grupId, sayi) {
   const havuz = ROLLER.filter(r => r.grup === grupId);
   const zorunlular = havuz.filter(r => r.zorunlu);
@@ -29,9 +34,32 @@ function gruptanSec(grupId, sayi) {
   }
 
   const secilen = [...zorunlular];
+  // Zorunlu rollerden gelen tekil etiketler — bunlardan bir daha çekme
+  const kullanilanTekilGruplar = new Set();
+  for (const r of zorunlular) {
+    if (r.tekil) kullanilanTekilGruplar.add(r.tekil);
+  }
+
   const karistirilmis = karistir(digerleri);
   const eksik = sayi - zorunlular.length;
-  secilen.push(...karistirilmis.slice(0, eksik));
+
+  for (const aday of karistirilmis) {
+    if (secilen.length - zorunlular.length >= eksik) break;
+    if (aday.tekil && kullanilanTekilGruplar.has(aday.tekil)) {
+      // Aynı tekil gruptan başka rol seçildi — atla
+      continue;
+    }
+    secilen.push(aday);
+    if (aday.tekil) kullanilanTekilGruplar.add(aday.tekil);
+  }
+
+  // Tekil kuralları yüzünden hedef sayıya ulaşılamadıysa açıkça hata ver
+  if (secilen.length < sayi) {
+    throw new Error(
+      `${grupId} grubunda ${sayi} rol için yeterli uygun aday yok ` +
+      `(tekil kural kısıtlamasıyla ${secilen.length} seçilebildi)`
+    );
+  }
 
   return secilen;
 }
@@ -102,6 +130,11 @@ function rolleriDagit(oyuncular, ozelDenge) {
   }
   if ((denge.gelenekci || 0) < 1) {
     throw new Error('En az 1 gelenekçi olmalı (Kaan zorunlu)');
+  }
+  // BUG #6 defansif: Outsider (Murat) sahte rolü için en az 1 Özgürlükçü gerekli.
+  // Aksi halde Murat'a gerçek "Bastırmış" rolü gösterilir (faz1-mekanik #2).
+  if (outsiderSayi > 0 && (denge.ozgurlukcu || 0) < 1) {
+    throw new Error('Outsider seçmek için en az 1 Özgürlükçü olmalı');
   }
 
   // 1) Her gruptan rolleri seç

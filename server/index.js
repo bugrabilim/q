@@ -2410,6 +2410,11 @@ io.on('connection', (socket) => {
         if (outsider > 1) {
           return callback?.({ ok: false, hata: 'Outsider en fazla 1 olabilir' });
         }
+        // BUG #6 — Murat (Outsider) sahte rol için bir Özgürlükçü hedefi gerekli.
+        // Aksi halde Murat'a gerçek "Bastırmış" rolü gösterilir (faz1-mekanik #2 ihlali).
+        if (outsider > 0 && ozg < 1) {
+          return callback?.({ ok: false, hata: 'Outsider seçmek için en az 1 Özgürlükçü olmalı' });
+        }
         if (kaoscu > 3) {
           return callback?.({ ok: false, hata: 'Kaosçu en fazla 3 olabilir' });
         }

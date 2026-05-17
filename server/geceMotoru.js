@@ -37,20 +37,19 @@ function geceyiCozumle(oda) {
   // Bu adım, ziyaret eden rollerin "gerçekte kimi gördüğünü" hesaplar
   uygulaTransport(ctx);
 
-  // Adım 0.5: Non-binary (Aren) maskeleme — "görünürlük" katmanı.
-  // Karar (faz1-mekanik-kararlar.md #3): "Aren öncelik 1.5 (Sit ile aynı katman)".
-  // Bu öncelik *iptal/engel* çakışmaları içindir. Aren'in mekanik etkisi araştıran
-  // rollerin çıktısını "?" yapmak — yani BİLGİ ÜRETEN tüm rollerden ÖNCE çalışmalı.
-  // (Gay engel adım 1'de hedef Özg ise rol adı yazıyor; bu yüzden maskeleme önce.)
-  // Maskeleme aksiyonu iptal etmez; sadece görünürlük bulanır.
-  uygulaArenMaskeleme(ctx);
-
   // Adım 1: Engel — Gay → Gelenekçi → o Gelenekçi'nin aksiyonu iptal
   uygulaGayEngel(ctx);
 
-  // Adım 1.5: Situationship karşılıklı iptal — Gay'den sonra, DQ'dan önce çalışmalı
+  // Adım 1.5a: Situationship karşılıklı iptal — Gay'den sonra, DQ'dan önce çalışmalı
   // çünkü "yapışılan" kişinin aksiyonu henüz işlenmeden iptalEdilen'e eklenebilmeli
   uygulaSituationshipIptal(ctx);
+
+  // Adım 1.5b: Non-binary (Aren) maskeleme — Sit ile aynı katman (öncelik 1.5).
+  // Karar (faz1-mekanik-kararlar.md #3 + Master Bölüm 9): Sit iptalinden SONRA çalışır;
+  // böylece Sit'le iptal edilen Aren ise maskeleme uygulanmaz. Aren'in mekanik etkisi
+  // araştıran rollerin çıktısını "?" yapmak — bilgi üreten rollerden ÖNCE bitmiş olmalı.
+  // Maskeleme aksiyonu iptal etmez; sadece görünürlük bulanır.
+  uygulaArenMaskeleme(ctx);
 
   // Adım 2: Drag Queen koruma — Kaan'ın hedefi DQ tarafından korunduysa Kaan'ın aksiyonu boşa
   uygulaDQKoruma(ctx);
