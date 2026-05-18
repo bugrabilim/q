@@ -79,6 +79,110 @@
   gap: 8px;
 }
 
+/* v1.8 — Arama kutusu */
+.wiki-arama-kutu {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.wiki-arama-input {
+  width: 100%;
+  padding: 8px 32px 8px 12px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--derin);
+  background: #fff;
+  border: 1.5px solid var(--deniz-acik);
+  border-radius: 6px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.wiki-arama-input:focus {
+  border-color: var(--deniz);
+}
+
+.wiki-arama-temizle {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: var(--derin);
+  opacity: 0.5;
+  cursor: pointer;
+  padding: 2px 6px;
+}
+
+.wiki-arama-temizle:hover { opacity: 1; }
+
+/* Arama sonuç listesi */
+.wiki-arama-sonuc {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.wiki-arama-baslik {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--deniz);
+  margin: 0 0 6px;
+}
+
+.wiki-arama-bos {
+  font-size: 13px;
+  color: var(--derin);
+  opacity: 0.6;
+  font-style: italic;
+}
+
+.wiki-arama-link {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(42, 157, 143, 0.15);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.15s;
+  width: 100%;
+}
+
+.wiki-arama-link:hover {
+  background: rgba(168, 218, 220, 0.3);
+  border-color: var(--deniz-acik);
+}
+
+.wiki-arama-link-ad {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--deniz);
+  margin-bottom: 3px;
+}
+
+.wiki-arama-link-sayi {
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--derin);
+  opacity: 0.6;
+}
+
+.wiki-arama-link-baglam {
+  font-size: 11px;
+  color: var(--derin);
+  opacity: 0.7;
+  line-height: 1.4;
+}
+
 .wiki-nav {
   display: flex;
   flex-direction: column;

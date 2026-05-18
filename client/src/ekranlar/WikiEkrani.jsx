@@ -32,12 +32,26 @@ export default function WikiEkrani() {
   const [icerik, setIcerik] = useState('');
   const [yukleniyor, setYukleniyor] = useState(true);
   const [sidebarAcik, setSidebarAcik] = useState(false);
+  // v1.8 — Arama
+  const [aramaSorgu, setAramaSorgu] = useState('');
+  const [tumIcerikler, setTumIcerikler] = useState({}); // { sayfaId: text }
 
   // URL → state senkronizasyonu (popstate)
   useEffect(() => {
     function urlDegisti() { setAktifSayfa(rotadanSayfa()); }
     window.addEventListener('popstate', urlDegisti);
     return () => window.removeEventListener('popstate', urlDegisti);
+  }, []);
+
+  // Arama için tüm sayfaları arka planda yükle
+  useEffect(() => {
+    Promise.all(SAYFALAR.map(s =>
+      fetch(`/wiki/${s.id}.md`).then(r => r.ok ? r.text() : '').then(t => [s.id, t])
+    )).then(ciftler => {
+      const harita = {};
+      for (const [id, t] of ciftler) harita[id] = t;
+      setTumIcerikler(harita);
+    });
   }, []);
 
   // Aktif sayfa değişince dosyayı çek
@@ -48,6 +62,27 @@ export default function WikiEkrani() {
       .then(t => { setIcerik(t); setYukleniyor(false); })
       .catch(() => { setIcerik(`# Sayfa bulunamadı\n\n\`${aktifSayfa}\` adlı bir sayfa yok.`); setYukleniyor(false); });
   }, [aktifSayfa]);
+
+  // Arama sonuçları — eşleşen sayfalar + ilk eşleşen satır
+  const aramaSonuclari = (() => {
+    const q = aramaSorgu.trim().toLocaleLowerCase('tr-TR');
+    if (q.length < 2) return null;
+    const sonuc = [];
+    for (const s of SAYFALAR) {
+      const metin = tumIcerikler[s.id] || '';
+      const metinKucuk = metin.toLocaleLowerCase('tr-TR');
+      const idx = metinKucuk.indexOf(q);
+      if (idx === -1) continue;
+      // Eşleşmenin etrafından kısa bağlam çıkar
+      const bas = Math.max(0, idx - 30);
+      const son = Math.min(metin.length, idx + q.length + 60);
+      const baglam = (bas > 0 ? '…' : '') + metin.slice(bas, son).replace(/\s+/g, ' ').trim() + (son < metin.length ? '…' : '');
+      // Kaç kez geçiyor
+      const sayi = metinKucuk.split(q).length - 1;
+      sonuc.push({ id: s.id, ad: s.ad, baglam, sayi });
+    }
+    return sonuc;
+  })();
 
   function sayfayaGec(id) {
     setAktifSayfa(id);
@@ -94,17 +129,61 @@ export default function WikiEkrani() {
 
       <div className="wiki-icerik">
         <aside className={`wiki-sidebar ${sidebarAcik ? 'acik' : ''}`}>
-          <nav className="wiki-nav">
-            {SAYFALAR.map(s => (
+          {/* v1.8 — Arama kutusu */}
+          <div className="wiki-arama-kutu">
+            <input
+              type="text"
+              className="wiki-arama-input"
+              placeholder="🔍 Wiki'de ara..."
+              value={aramaSorgu}
+              onChange={(e) => setAramaSorgu(e.target.value)}
+            />
+            {aramaSorgu && (
               <button
-                key={s.id}
-                className={`wiki-nav-link ${aktifSayfa === s.id ? 'aktif' : ''}`}
-                onClick={() => sayfayaGec(s.id)}
+                type="button"
+                className="wiki-arama-temizle"
+                onClick={() => setAramaSorgu('')}
+                aria-label="Aramayı temizle"
               >
-                {s.ad}
+                ✕
               </button>
-            ))}
-          </nav>
+            )}
+          </div>
+
+          {aramaSonuclari ? (
+            <div className="wiki-arama-sonuc">
+              {aramaSonuclari.length === 0 ? (
+                <p className="wiki-arama-bos">Sonuç yok</p>
+              ) : (
+                <>
+                  <p className="wiki-arama-baslik">{aramaSonuclari.length} sayfada bulundu:</p>
+                  {aramaSonuclari.map(r => (
+                    <button
+                      key={r.id}
+                      className="wiki-arama-link"
+                      onClick={() => { sayfayaGec(r.id); setAramaSorgu(''); }}
+                    >
+                      <span className="wiki-arama-link-ad">{r.ad} <span className="wiki-arama-link-sayi">({r.sayi})</span></span>
+                      <span className="wiki-arama-link-baglam">{r.baglam}</span>
+                    </button>
+                  ))}
+                </>
+              )}
+            </div>
+          ) : (
+            <nav className="wiki-nav">
+              {SAYFALAR.map(s => (
+                <button
+                  key={s.id}
+                  className={`wiki-nav-link ${aktifSayfa === s.id ? 'aktif' : ''}`}
+                  onClick={() => sayfayaGec(s.id)}
+                >
+                  {s.ad}
+                </button>
+              ))}
+            </nav>
+          )}
+
           <p className="wiki-not">
             📂 Kaynak: <a href="https://github.com/bugrabilim/q/wiki" target="_blank" rel="noopener noreferrer">GitHub Wiki</a>
           </p>
