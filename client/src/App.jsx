@@ -13,12 +13,16 @@ import OylamaEkrani from './ekranlar/OylamaEkrani.jsx';
 import BitisEkrani from './ekranlar/BitisEkrani.jsx';
 import AyrilanEkrani from './ekranlar/AyrilanEkrani.jsx';
 import OyunDuzeni from './ekranlar/OyunDuzeni.jsx';
+import WikiEkrani from './ekranlar/WikiEkrani.jsx';
 import { muzikCal, efektCal } from './ses/SesYoneticisi.js';
 import { fazaMuzikEslestir } from './ses/sesHaritasi.js';
 
 const OYLAMA_FAZLARI = new Set(['oylama_1', 'savunma', 'oylama_2', 'oylama_tartisma', 'oylama_sonuc']);
 
 export default function App() {
+  // v1.8 — /wiki rotası kontrolü (hooks önce kurulur, render sırasında override)
+  const isWikiRoute = typeof window !== 'undefined' && window.location.pathname.startsWith('/wiki');
+
   const [faz, setFaz] = useState('acilis');
   const [oturum, setOturum] = useState(null);
   const [benimRolum, setBenimRolum] = useState(null);
@@ -110,6 +114,9 @@ export default function App() {
     if (yeniFaz === 'gece') gidFaz('gece');
     else if (yeniFaz === 'bitis') gidFaz('bitis');
   }
+
+  // v1.8 — /wiki rotası override (tüm hooks zaten kuruldu)
+  if (isWikiRoute) return <WikiEkrani />;
 
   if (faz === 'acilis') return <AcilisEkrani onOdayaGir={onOdayaGir} />;
 
