@@ -141,6 +141,18 @@ export default function AcilisEkrani({ onOdayaGir }) {
         </div>
 
         {hata && <p className="hata">{hata}</p>}
+
+        {/* v1.8 — Wiki / Kurallar dış linki */}
+        <footer className="acilis-footer">
+          <a
+            href="https://github.com/bugrabilim/q/wiki"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="acilis-wiki-link"
+          >
+            📚 Kurallar &amp; Roller (Wiki)
+          </a>
+        </footer>
       </div>
     </div>
   );
