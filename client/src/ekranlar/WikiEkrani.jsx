@@ -4,6 +4,7 @@
 
 import { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import './WikiEkrani.css';
 
 const SAYFALAR = [
@@ -114,7 +115,7 @@ export default function WikiEkrani() {
             <p className="wiki-yukleniyor">Yükleniyor…</p>
           ) : (
             <article className="wiki-markdown">
-              <ReactMarkdown components={markdownComponents}>{icerik}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>{icerik}</ReactMarkdown>
             </article>
           )}
         </main>
