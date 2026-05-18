@@ -10,6 +10,7 @@ const { Server } = require('socket.io');
 const { rolleriDagit } = require('./rolDagitici.js');
 const { KARAKTER_CINSIYET } = require('./roller.js');
 const { geceyiCozumle, ayrilanAciklamalari } = require('./geceMotoru.js');
+const { rastgeleKoyOlayi } = require('./koyOlaylari.js');
 
 // Production: CLIENT_URL env tanımlıysa onu kullan; yoksa same-origin (true)
 // Dev: Vite 5173'ten geliyor.
@@ -1131,6 +1132,10 @@ function geceyiCoz(oda) {
   // Faz değişimi
   oda.faz = 'sabah';
   oda.altFaz = null;
+
+  // v1.8 — Köy olayı (%30 ihtimal atmosfer mesajı)
+  const koyOlayi = rastgeleKoyOlayi();
+  if (koyOlayi) sistemMesaji(oda, koyOlayi);
 
   // v1.5 — Madde 2: Sabah max 30 sn — host basmasa da otomatik devam
   oda.oyun.fazTimerleri.forEach(t => clearTimeout(t));
