@@ -147,7 +147,10 @@ const ROLLER = [
     geceAksiyonu: 'Ekonomik Abluka. Gece bir kişiyi ekonomik olarak izole edip köyden uzaklaştırırsın. Her gece 1 kişi. Savunma: Gay (engel), Drag Queen (koruma), Crossdresser (yerine geçme). Kendine aksiyon yapamazsın.',
     kazanmaKosulu: 'Tüm Özgürlükçüler köyden ayrılırsa kazanırsın.',
     tekil: 'fobikler-homo',
-    zorunlu: true // Kaan her oyunda bulunur
+    // v1.8.33: Kaan "grup içi favori" — gelenekci > 0 ise her oyunda en az 1 Kaan seçilir.
+    // Ama master belge Bölüm 18'e göre gelenekci 0 olabilir (Kaan zorunluluğu kalktı).
+    // Yani Kaan ZORUNLU değil, sadece grup VARSA FAVORİ.
+    zorunlu: true
   },
   {
     id: 'muhafazakar',

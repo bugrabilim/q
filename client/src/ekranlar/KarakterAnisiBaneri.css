@@ -16,7 +16,7 @@
   box-shadow: 0 4px 28px rgba(0, 0, 0, 0.32);
   opacity: 0;
   pointer-events: none;
-  z-index: 9999;
+  z-index: 1500;
   transition: opacity 600ms ease, transform 600ms ease;
   font-family: 'Lora', Georgia, serif;
   font-style: italic;

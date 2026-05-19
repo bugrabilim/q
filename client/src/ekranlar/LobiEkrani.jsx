@@ -584,11 +584,12 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
         )}
 
         {/* v1.8.32 — B Seçeneği: Host hangi rollerin havuzda olabileceğini seçer */}
+        {/* v1.8.33 — dagilim prop'u aktifDagilim'e (default dağılım için de validation çalışsın) */}
         {benHostMu && (
           <RolHavuzuPaneli
             roller={roller}
             rolHavuzu={durum.ayarlar?.rolHavuzu || null}
-            dagilim={durum.ayarlar?.dagilim || null}
+            dagilim={aktifDagilim}
             onChange={(yeniHavuz) => {
               socket.emit('lobi:ayar', { rolHavuzu: yeniHavuz }, (cevap) => {
                 if (!cevap?.ok) console.warn('rolHavuzu güncelleme hatası:', cevap?.hata);

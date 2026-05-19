@@ -20,6 +20,8 @@ export default function KarakterAnisiBaneri({ karakter }) {
 
     // Rastgele anı seç
     const havuz = karakterAnilari[karakter];
+    // v1.8.33: Boş havuz defansif guard (gelecekte anı dosyası eksilebilir)
+    if (!Array.isArray(havuz) || havuz.length === 0) return;
     const secilen = havuz[Math.floor(Math.random() * havuz.length)];
     setAni(secilen);
 

@@ -2532,9 +2532,11 @@ io.on('connection', (socket) => {
           }
         });
         // Hepsi true ise null'a düşür (default davranışa eşdeğer, payload temiz kalır)
+        // v1.8.33: Boş obje de null'a düşür (yanıltıcı "Özel havuz aktif" rozetini engelle)
         const hepsiAcik = Object.values(temizlenmis).every(v => v === true);
         const tamSayi = Object.keys(temizlenmis).length === gecerliIdler.size;
-        ayarlar.rolHavuzu = (hepsiAcik && tamSayi) ? null : temizlenmis;
+        const bosObje = Object.keys(temizlenmis).length === 0;
+        ayarlar.rolHavuzu = (bosObje || (hepsiAcik && tamSayi)) ? null : temizlenmis;
       } else {
         return callback?.({ ok: false, hata: 'Geçersiz rolHavuzu' });
       }
