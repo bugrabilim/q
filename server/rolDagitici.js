@@ -20,12 +20,20 @@ function karistir(dizi) {
 
 // Belirli bir gruptan N tane rastgele rol seç (zorunlu olanlar önce).
 // v1.8 — Tekil kural kaldırıldı; aynı rolden birden fazla oyuncu olabilir.
+// v1.8.32 — B seçeneği: rolHavuzu verilirse, kapalı roller (false) havuzdan çıkarılır.
 // Zorunlu roller (örn. Kaan) hâlâ en az 1 kez dağıtılır; geri kalanlar havuzdan
 // rastgele (tekrar serbest) seçilir.
-function gruptanSec(grupId, sayi) {
+function gruptanSec(grupId, sayi, rolHavuzu) {
   if (sayi <= 0) return [];
 
-  const havuz = ROLLER.filter(r => r.grup === grupId);
+  let havuz = ROLLER.filter(r => r.grup === grupId);
+  // v1.8.32 — Host B seçeneğiyle bazı rolleri kapattıysa filtrele
+  if (rolHavuzu && typeof rolHavuzu === 'object') {
+    havuz = havuz.filter(r => rolHavuzu[r.id] !== false);
+    if (havuz.length === 0) {
+      throw new Error(`${grupId} grubunda rol havuzunda açık rol kalmadı (B seçeneği)`);
+    }
+  }
   const zorunlular = havuz.filter(r => r.zorunlu);
   const digerleri = havuz.filter(r => !r.zorunlu);
 
@@ -86,7 +94,7 @@ function muratSahteRolSec(tumRoller) {
  *   - dagilim: her oyuncu ID'sine GERÇEK rol eşlemesi (Murat için bastirmis)
  *   - sahteRoller: sadece Outsider'lar için sahte (gösterilen) rol eşlemesi
  */
-function rolleriDagit(oyuncular, ozelDenge) {
+function rolleriDagit(oyuncular, ozelDenge, rolHavuzu) {
   const sayi = oyuncular.length;
   const denge = ozelDenge || DENGE[sayi];
 
@@ -124,17 +132,17 @@ function rolleriDagit(oyuncular, ozelDenge) {
     throw new Error('Outsider seçmek için en az 1 Özgürlükçü olmalı');
   }
 
-  // 1) Her gruptan rolleri seç
-  const ozgurlukcuRolleri = gruptanSec(GRUP.OZGURLUKCU, denge.ozgurlukcu);
-  const tarafsizRolleri   = gruptanSec(GRUP.TARAFSIZ,   denge.tarafsiz);
-  const gelenekciRolleri  = gruptanSec(GRUP.GELENEKCI,  denge.gelenekci);
+  // 1) Her gruptan rolleri seç (v1.8.32 — rolHavuzu varsa filtre uygula)
+  const ozgurlukcuRolleri = gruptanSec(GRUP.OZGURLUKCU, denge.ozgurlukcu, rolHavuzu);
+  const tarafsizRolleri   = gruptanSec(GRUP.TARAFSIZ,   denge.tarafsiz,   rolHavuzu);
+  const gelenekciRolleri  = gruptanSec(GRUP.GELENEKCI,  denge.gelenekci,  rolHavuzu);
   // Outsider havuzu: V1'de sadece Murat (bastirmis). Tekil kuralı yok.
   const outsiderRolleri   = outsiderSayi > 0
-    ? gruptanSec(GRUP.OUTSIDER, outsiderSayi)
+    ? gruptanSec(GRUP.OUTSIDER, outsiderSayi, rolHavuzu)
     : [];
   // Kaosçu havuzu: 4 rol, tekil kuralı yok — istenen kadar rastgele seçilir.
   const kaoscuRolleri     = kaoscuSayi > 0
-    ? gruptanSec(GRUP.KAOSCU, kaoscuSayi)
+    ? gruptanSec(GRUP.KAOSCU, kaoscuSayi, rolHavuzu)
     : [];
 
   const tumRoller = [

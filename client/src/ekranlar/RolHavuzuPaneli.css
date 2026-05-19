@@ -1,0 +1,196 @@
+/* q — Rol Havuzu Paneli stilleri (B Seçeneği, v1.8.32) */
+
+.rol-havuzu-paneli {
+  background: var(--gokyuzu, #E8F4FB);
+  border: 1px solid rgba(42, 157, 143, 0.18);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-top: 16px;
+}
+
+.rol-havuzu-baslik {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 18px;
+  color: var(--derin, #264653);
+  margin: 0 0 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rol-havuzu-rozet {
+  display: inline-block;
+  background: var(--deniz, #2A9D8F);
+  color: white;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-family: system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.rol-havuzu-altyazi {
+  font-size: 13px;
+  color: var(--derin, #264653);
+  opacity: 0.78;
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
+
+.rol-havuzu-hizli-butonlar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.rol-havuzu-hizli-btn {
+  background: var(--deniz, #2A9D8F);
+  color: white;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: opacity 0.18s ease;
+}
+.rol-havuzu-hizli-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.rol-havuzu-hizli-btn:not(:disabled):hover {
+  opacity: 0.88;
+}
+
+.rol-havuzu-aktif-rozet {
+  background: var(--gunes, #F4A261);
+  color: white;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.rol-havuzu-grup {
+  background: white;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  border-left: 4px solid transparent;
+}
+.rol-havuzu-grup--ozgurlukcu { border-left-color: var(--ozgurlukcu, #06A77D); }
+.rol-havuzu-grup--tarafsiz   { border-left-color: var(--tarafsiz, #F4A261); }
+.rol-havuzu-grup--gelenekci  { border-left-color: var(--gelenekci, #E63946); }
+.rol-havuzu-grup--outsider   { border-left-color: var(--outsider, #9AA0A6); }
+.rol-havuzu-grup--kaoscu     { border-left-color: var(--kaoscu, #1A1A1A); }
+
+.rol-havuzu-grup-baslik {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.rol-havuzu-grup-ad {
+  font-weight: 600;
+  color: var(--derin, #264653);
+  font-size: 14px;
+}
+
+.rol-havuzu-grup-sayi {
+  font-size: 12px;
+  color: var(--derin, #264653);
+  opacity: 0.7;
+}
+
+.rol-havuzu-grup-mini-btnler {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.rol-havuzu-mini-btn {
+  background: rgba(42, 157, 143, 0.1);
+  color: var(--derin, #264653);
+  border: 1px solid rgba(42, 157, 143, 0.2);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.15s ease;
+}
+.rol-havuzu-mini-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.rol-havuzu-mini-btn:not(:disabled):hover {
+  background: rgba(42, 157, 143, 0.2);
+}
+
+.rol-havuzu-rol-listesi {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 4px 12px;
+}
+
+.rol-havuzu-rol-satir {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.12s ease, opacity 0.18s ease;
+}
+.rol-havuzu-rol-satir:hover {
+  background: rgba(42, 157, 143, 0.06);
+}
+.rol-havuzu-rol-satir.kapali {
+  opacity: 0.45;
+}
+.rol-havuzu-rol-satir input[type="checkbox"] {
+  cursor: pointer;
+  width: 15px;
+  height: 15px;
+  accent-color: var(--deniz, #2A9D8F);
+}
+
+.rol-havuzu-rol-ad {
+  color: var(--derin, #264653);
+}
+.rol-havuzu-karakter {
+  opacity: 0.55;
+  font-size: 12px;
+}
+
+.rol-havuzu-validation {
+  margin-top: 12px;
+  background: rgba(244, 162, 97, 0.12);
+  border: 1px solid rgba(244, 162, 97, 0.4);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+.rol-havuzu-uyari {
+  margin: 4px 0;
+  font-size: 13px;
+  color: #b85e1a;
+  font-weight: 500;
+}
+
+@media (max-width: 600px) {
+  .rol-havuzu-paneli {
+    padding: 12px 14px;
+  }
+  .rol-havuzu-rol-listesi {
+    grid-template-columns: 1fr;
+  }
+  .rol-havuzu-grup-mini-btnler {
+    margin-left: 0;
+  }
+}

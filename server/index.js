@@ -63,6 +63,7 @@ function ayarlariNormalize(oda) {
   if (!oda.ayarlar || typeof oda.ayarlar !== 'object') {
     oda.ayarlar = {
       dagilim: null,
+      rolHavuzu: null,  // v1.8.32: B seçeneği — null = tüm roller açık (default)
       kimlikAciklamaAdedi: KIMLIK_ACIKLAMA_DEFAULT,
       tartismaSuresi: TARTISMA_SURESI_DEFAULT,
       geceSuresi: GECE_SURESI_DEFAULT,
@@ -71,6 +72,7 @@ function ayarlariNormalize(oda) {
     };
   } else {
     if (oda.ayarlar.dagilim === undefined) oda.ayarlar.dagilim = null;
+    if (oda.ayarlar.rolHavuzu === undefined) oda.ayarlar.rolHavuzu = null;
     if (!Number.isInteger(oda.ayarlar.kimlikAciklamaAdedi)) {
       oda.ayarlar.kimlikAciklamaAdedi = KIMLIK_ACIKLAMA_DEFAULT;
     }
@@ -681,7 +683,9 @@ function gercekHazirsaBotlariDoldur(oda, faz, kontrolFn) {
 function oyunuBaslat(oda) {
   // Madde 4 (A) — host özel dağılım belirlediyse onu kullan, yoksa varsayılan denge
   const ozelDenge = oda.ayarlar?.dagilim || null;
-  const { dagilim, sahteRoller } = rolleriDagit(oda.players, ozelDenge);
+  // v1.8.32 (B seçeneği) — host rol havuzunu kısıtladıysa filtre uygula; null = hepsi açık
+  const rolHavuzu = oda.ayarlar?.rolHavuzu || null;
+  const { dagilim, sahteRoller } = rolleriDagit(oda.players, ozelDenge, rolHavuzu);
 
   oda.faz = 'rol_dagitimi';
   oda.oyun = {
@@ -2509,6 +2513,30 @@ io.on('connection', (socket) => {
           return callback?.({ ok: false, hata: `Toplam ${oda.players.length} olmalı (şu an ${toplam})` });
         }
         ayarlar.dagilim = { ozgurlukcu: ozg, tarafsiz: tar, gelenekci: gel, outsider, kaoscu };
+      }
+    }
+
+    // ─ Rol Havuzu (v1.8.32 — B seçeneği) ─
+    // null = tüm roller açık (default); { rolId: bool, ... } = host'un seçimi
+    if (Object.prototype.hasOwnProperty.call(p, 'rolHavuzu')) {
+      const rh = p.rolHavuzu;
+      if (rh === null || rh === undefined) {
+        ayarlar.rolHavuzu = null;
+      } else if (typeof rh === 'object' && !Array.isArray(rh)) {
+        // Sadece bilinen rol ID'lerini al; bilinmeyenleri yoksay
+        const gecerliIdler = new Set(ROLLER.map(r => r.id));
+        const temizlenmis = {};
+        Object.keys(rh).forEach(rolId => {
+          if (gecerliIdler.has(rolId) && (rh[rolId] === true || rh[rolId] === false)) {
+            temizlenmis[rolId] = rh[rolId];
+          }
+        });
+        // Hepsi true ise null'a düşür (default davranışa eşdeğer, payload temiz kalır)
+        const hepsiAcik = Object.values(temizlenmis).every(v => v === true);
+        const tamSayi = Object.keys(temizlenmis).length === gecerliIdler.size;
+        ayarlar.rolHavuzu = (hepsiAcik && tamSayi) ? null : temizlenmis;
+      } else {
+        return callback?.({ ok: false, hata: 'Geçersiz rolHavuzu' });
       }
     }
 

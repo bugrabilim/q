@@ -5,6 +5,7 @@ import { socket } from '../socket.js';
 import SesButonu from '../ses/SesButonu.jsx';
 import KarakterPortresi from '../bilesenler/KarakterPortresi.jsx';
 import { uzunHikayeyiAl } from '../karakterler/hikayeler.js';
+import RolHavuzuPaneli from './RolHavuzuPaneli.jsx';
 import './LobiEkrani.css';
 
 const GRUP_BILGI = {
@@ -580,6 +581,20 @@ export default function LobiEkrani({ kod, benimIsmim, oyuncuId, onAyril }) {
 
             {/* v1.8 — Outsider/Kaosçu bilgi notu kaldırıldı (Buğra isteği) */}
           </section>
+        )}
+
+        {/* v1.8.32 — B Seçeneği: Host hangi rollerin havuzda olabileceğini seçer */}
+        {benHostMu && (
+          <RolHavuzuPaneli
+            roller={roller}
+            rolHavuzu={durum.ayarlar?.rolHavuzu || null}
+            dagilim={durum.ayarlar?.dagilim || null}
+            onChange={(yeniHavuz) => {
+              socket.emit('lobi:ayar', { rolHavuzu: yeniHavuz }, (cevap) => {
+                if (!cevap?.ok) console.warn('rolHavuzu güncelleme hatası:', cevap?.hata);
+              });
+            }}
+          />
         )}
 
       </div>
