@@ -1,0 +1,63 @@
+/* q — Karakter Anısı Banner stili (Aşama 3, v1.8.30+) */
+
+.karakter-anisi-banner {
+  position: fixed;
+  top: 72px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  max-width: min(560px, 92vw);
+  padding: 14px 22px;
+  background: rgba(29, 53, 87, 0.92); /* --gece zemini */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--ayisigi, #A8DADC);
+  border: 1px solid rgba(168, 218, 220, 0.28);
+  border-radius: 14px;
+  box-shadow: 0 4px 28px rgba(0, 0, 0, 0.32);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transition: opacity 600ms ease, transform 600ms ease;
+  font-family: 'Lora', Georgia, serif;
+  font-style: italic;
+  font-size: 14.5px;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.karakter-anisi-banner.gorunur {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.karakter-anisi-metin {
+  display: inline;
+}
+
+.karakter-anisi-tirnak {
+  color: var(--gunes, #F4A261);
+  font-size: 18px;
+  margin: 0 5px;
+  font-style: normal;
+  font-weight: 600;
+  vertical-align: -1px;
+}
+
+@media (max-width: 600px) {
+  .karakter-anisi-banner {
+    top: 60px;
+    font-size: 13px;
+    padding: 11px 16px;
+    max-width: 88vw;
+  }
+  .karakter-anisi-tirnak {
+    font-size: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .karakter-anisi-banner {
+    transition: opacity 120ms ease;
+    transform: translateX(-50%) translateY(0);
+  }
+}

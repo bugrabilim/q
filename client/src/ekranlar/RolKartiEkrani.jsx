@@ -183,6 +183,16 @@ export default function RolKartiEkrani({ benimIsmim, rol: rolProp = null, sonZam
 
             <p className="rol-bolum-altbaslik rol-altbaslik-ikinci">Nasıl kazanırsın?</p>
             <p className="rol-bolum-metin">{rol.kazanmaKosulu}</p>
+
+            {/* v1.8.30 — Necmi forum bağı (Aşama 3): gelenekçilere atmosferik not */}
+            {rol.grup === 'gelenekci' && rol.forumTanidikSayisi > 0 && (
+              <>
+                <p className="rol-bolum-altbaslik rol-altbaslik-ikinci">Necmi'nin Forumu</p>
+                <p className="rol-bolum-metin rol-forum-not">
+                  Necmi'nin forumundan tanıdığın <strong>{rol.forumTanidikSayisi} kişi</strong> daha köyde. Kim oldukları sana söylenmez — ama benzer üslupla konuşan birini görürsen, dikkat et.
+                </p>
+              </>
+            )}
           </div>
         </article>
 

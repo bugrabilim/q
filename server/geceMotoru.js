@@ -4,6 +4,9 @@
 // Giriş: oda.oyun.geceAksiyonlari (Map: oyuncuId → { hedef1, hedef2, gonderildi })
 //        oda.oyun.roller (Map: oyuncuId → rol objesi)
 //        oda.players (oyuncu listesi)
+
+// v1.8.30 — Dul (Fatma) gece aksiyonu için karakter anıları
+const karakterAnilari = require('../client/src/veri/karakterAnilari.json');
 //
 // Çıkış: {
 //   etkiler: { ayrilanlar: Set, oyEtkileri: Map(id → {...}), kaanGelecekGorevi },
@@ -769,16 +772,25 @@ function uygulaTarafsizlar(ctx) {
     // Diğer durum (iptal) zaten Adım 1.5'te mesajlandı — tekrar yazma
   });
 
-  // Koca Karı — iki kişi karşılaştır
-  // Murat C: KK Murat'ı sahte rolüyle (Özgürlükçü) görür.
-  rolSahipleri(ctx, 'koca_kari').forEach(kkId => {
-    const a = aksiyonu(ctx, kkId);
-    if (!a || !a.hedef1 || !a.hedef2) return;
-    const r1 = gorunenHedefRolu(ctx, a.hedef1);
-    const r2 = gorunenHedefRolu(ctx, a.hedef2);
-    if (!r1 || !r2) return;
-    const ayni = r1.grup === r2.grup;
-    ekleSatir(ctx, kkId, `${isim(ctx, a.hedef1)} ve ${isim(ctx, a.hedef2)}'i araştırdın. Sonuç: ${ayni ? 'AYNI grupta' : 'FARKLI gruplarda'}.`);
+  // Dul (Fatma) — v1.8.30 Aşama 3: geçmiş anısı sor
+  // Hedefin karakterinden rastgele 1 anı, hikayeler-v2.md'den parse edilmiş
+  // (client/src/veri/karakterAnilari.json — 38 karakter × 5 anı).
+  // Murat C: Dul, Murat'ın gerçek karakterinden anı alır (sahte değil — anı
+  // karakterin hikayesinden, rol mantığından bağımsız). Buğra onayıyla bu
+  // davranış korunur: Dul'a verilen ipucu karakterin gerçek geçmişidir.
+  rolSahipleri(ctx, 'koca_kari').forEach(dulId => {
+    const a = aksiyonu(ctx, dulId);
+    if (!a || !a.hedef1) return;
+    // Gerçek rolden karakteri al (Murat için sahte değil gerçek karakter Murat)
+    const gercekRol = ctx.oda.oyun.roller.get(a.hedef1);
+    if (!gercekRol || !gercekRol.karakter) return;
+    const anilar = karakterAnilari[gercekRol.karakter];
+    if (!anilar || anilar.length === 0) {
+      ekleSatir(ctx, dulId, `${isim(ctx, a.hedef1)} hakkında bir hatıra bulamadın bu gece.`);
+      return;
+    }
+    const ani = anilar[Math.floor(Math.random() * anilar.length)];
+    ekleSatir(ctx, dulId, `${isim(ctx, a.hedef1)}'in geçmişinden bir hatıra: "${ani}"`);
   });
 
   // ─── V1 yeni Tarafsız roller (11 rol) ─────────────────────

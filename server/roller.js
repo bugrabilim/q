@@ -121,16 +121,16 @@ const ROLLER = [
     tekil: null
   },
   {
-    id: 'koca_kari',
+    id: 'koca_kari',          // legacy id; v1.8.30'da ad 'Koca Karı' → 'Dul'
     grup: GRUP.TARAFSIZ,
-    ad: 'Koca Karı',
+    ad: 'Dul',                // v1.8.30 (Aşama 1.5 — hikaye uyumu)
     karakter: 'Fatma',
     gorsel: '/karakterler/fatma.png',
     yas: 48,
     meslek: 'Eski Ev Hanımı',
-    motivasyon: 'Şehirde kimse seni dinlemiyordu. Burada herkesin hikayesini bileceksin.',
-    geceAksiyonu: 'Gece dedikodu toplarsın — iki oyuncu seçersin (kendin dahil olabilir), aynı grupta olup olmadıklarını öğrenirsin. Sistem grup ismini değil sadece "aynı/farklı" bilgisini verir.',
-    kazanmaKosulu: 'Bireysel gizli koşulun var (prototipte: oyun sonuna kalmak).',
+    motivasyon: 'Otuz yıl başkasının takvimini tuttun. Şimdi öğrenmek istediğin tek şey: bu köyde herkesin geçmişinde ne var?',
+    geceAksiyonu: 'Gece bir oyuncudan geçmiş anısını sor. Hedefin karakterinden rastgele bir hatıra cümlesi sana gösterilir. Aynı hedefe tekrar gidemezsin.',
+    kazanmaKosulu: '3 farklı oyuncudan geçmiş anısı toplamak.',
     tekil: null
   },
 

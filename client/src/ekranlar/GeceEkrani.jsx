@@ -5,10 +5,12 @@
 
 import { useEffect, useState } from 'react';
 import { socket } from '../socket.js';
+import KarakterAnisiBaneri from './KarakterAnisiBaneri.jsx';
 import './GeceEkrani.css';
 
-// Koca Karı dışındaki roller tek hedef seçer (Koca Karı iki hedef seçer)
-const CIFT_HEDEF_ROLLER = ['koca_kari'];
+// v1.8.30 (Aşama 3): Dul artık tek hedef alır (eski Koca Karı'da iki hedef vardı).
+// Çift hedef alan rol kalmadı — havuzda role eklenirse buraya yazılır.
+const CIFT_HEDEF_ROLLER = [];
 
 // Kendine aksiyon yapamayan roller (belge Bölüm 13)
 const KENDINE_YAPILAMAZ = ['gay', 'drag_queen', 'homofobik'];
@@ -156,6 +158,7 @@ export default function GeceEkrani({ benimIsmim, oyuncuId, benimRolum }) {
 
   return (
     <div className="gece-kapsayici">
+      <KarakterAnisiBaneri karakter={benimRolum?.karakter} />
       {/* Üst başlık + sayaç */}
       <header className="gece-header">
         <div className="gece-header-sol">

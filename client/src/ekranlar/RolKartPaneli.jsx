@@ -150,6 +150,16 @@ export default function RolKartPaneli({ rol }) {
                 <p className="rol-kart-paneli-bolum-metin">{rol.kazanmaKosulu}</p>
               </>
             )}
+
+            {/* v1.8.30 — Necmi forum bağı (Aşama 3): gelenekçilere atmosferik not */}
+            {rol.grup === 'gelenekci' && rol.forumTanidikSayisi > 0 && (
+              <>
+                <p className="rol-kart-paneli-bolum-altbaslik rol-kart-paneli-altbaslik-ikinci">Necmi'nin Forumu</p>
+                <p className="rol-kart-paneli-bolum-metin rol-forum-not">
+                  Necmi'nin forumundan tanıdığın <strong>{rol.forumTanidikSayisi} kişi</strong> daha köyde. Kim oldukları söylenmez.
+                </p>
+              </>
+            )}
           </div>
         </div>
       )}

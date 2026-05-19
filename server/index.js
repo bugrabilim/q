@@ -749,6 +749,9 @@ function oyunuBaslat(oda) {
     }
   }
 
+  // v1.8.30 — Necmi forum bağı (Aşama 3): gelenekçi sayısını hesapla (atmosferik not için)
+  const gelenekciSayisi = [...dagilim.values()].filter(r => r.grup === 'gelenekci').length;
+
   oda.players.forEach(p => {
     const gercekRol = dagilim.get(p.id);
     // Murat C: client'a SAHTE rol gönderilir (varsa). Gerçek rolü Murat asla
@@ -763,7 +766,9 @@ function oyunuBaslat(oda) {
           karakter: gosterilen.karakter, yas: gosterilen.yas, meslek: gosterilen.meslek,
           motivasyon: gosterilen.motivasyon, geceAksiyonu: gosterilen.geceAksiyonu,
           kazanmaKosulu: gosterilen.kazanmaKosulu,
-          gorsel: gosterilen.gorsel  // v1.6 — Madde 5: karakter portresi yolu
+          gorsel: gosterilen.gorsel,  // v1.6 — Madde 5: karakter portresi yolu
+          // v1.8.30 — Aşama 3 (Necmi forum bağı): gelenekçilere atmosferik bilgi; isim verilmez
+          forumTanidikSayisi: gosterilen.grup === 'gelenekci' ? Math.max(0, gelenekciSayisi - 1) : 0
         }
       });
     }
@@ -2095,7 +2100,7 @@ function bitiseBasla(oda, kazananGrup) {
       case 'aseksuel':           // 3 farklı oyuncunun aksiyon tipi (özel set yok)
       case 'fetisist':           // 3 farklı doğru tespit (fetisistDogruTespit yok)
       case 'sugar_daddy':        // 2 kez yatırım → oy ile ayrılma (sdYatirimSonuc yok)
-      case 'koca_kari':          // 3 farklı "aynı grup" eşleşmesi (kkAyniGrupEslesmeleri yok)
+      case 'koca_kari':          // v1.8.30 Dul: 3 farklı oyuncudan anı topla (dulAnilarTopladi yok — altyapı v1.9'da)
       case 'poliamorist':        // 3 farklı oyuncunun rolünü doğru (poliDogruTahmin yok)
       case 'fuckbuddy':          // 2 gece bilgi + 1 Gelenekçi işaret (fbBilgi/fbGelIsaret yok)
       case 'situationship':      // 3 gece üst üste aynı hedef (sitArdisikHedef yok)
