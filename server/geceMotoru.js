@@ -1207,6 +1207,12 @@ function uygulaSugarDaddyYatirim(ctx) {
     ctx.oda.oyun.sdOySonuc.set(hedefId, yeni);
     ctx.oda.oyun.sdSonHedef.set(erenId, hedefId);
 
+    // Kazanma takibi: bu oyuncuya kaç kez yatırım yapıldı
+    if (!ctx.oda.oyun.sdYatirim) ctx.oda.oyun.sdYatirim = new Map();
+    let erenY = ctx.oda.oyun.sdYatirim.get(erenId);
+    if (!erenY) { erenY = new Map(); ctx.oda.oyun.sdYatirim.set(erenId, erenY); }
+    erenY.set(hedefId, (erenY.get(hedefId) || 0) + 1);
+
     ekleSatir(ctx, erenId, `${isim(ctx, hedefId)}'e yatırım yaptın. Yarınki oyu 2 sayılacak.`);
     if (hedefId !== erenId) {
       ekleSatir(ctx, hedefId, 'Bu gece sana yatırım yapıldı.');
@@ -1243,30 +1249,25 @@ function uygulaCapkinTavla(ctx) {
   });
 }
 
-// ─── 8. Mazoşist (Beren) — "Terapi" ─────────────────────
-// Hedefin o gün aldığı oy sayısını öğrenir (kim değil, sadece sayı).
-// 1. gecede önceki oylama yoksa "veri yok".
+// ─── 8. Mazoşist (Beren) — "Süpervizyon" ────────────────
+// Hedefin O GECE yaptığı aksiyonun türünü öğrenir (izleme/koruma/engelleme/
+// ziyaret/pas) — "başkasının taşıdığı yükü görmek". Çapkın/Tuna gibi o geceyi okur.
 function uygulaMazosistTerapi(ctx) {
   rolSahipleri(ctx, 'mazosist').forEach(berenId => {
     const a = aksiyonu(ctx, berenId);
     if (!a || !a.hedef1) return;
     const hedefId = a.hedef1;
 
-    const oylamaGecmisi = ctx.oda.oyun.oylamaGecmisi || [];
-    if (oylamaGecmisi.length === 0) {
-      ekleSatir(ctx, berenId, `${isim(ctx, hedefId)}'e terapi seansı verdin. Veri yok (henüz oylama olmadı).`);
-      return;
+    const hedefAks = ctx.aksiyonlar.get(hedefId);
+    if (maskeliMi(ctx, hedefId)) {
+      ekleSatir(ctx, berenId, `${isim(ctx, hedefId)}'e seans verdin. Taşıdığı yük: ? (kimliği bulanıklaştırılmış).`);
+    } else if (!hedefAks || !hedefAks.gonderildi || !hedefAks.hedef1) {
+      ekleSatir(ctx, berenId, `${isim(ctx, hedefId)}'e seans verdin. Bu gece bir yük taşımamış (pas).`);
+    } else {
+      const rol = gorunenHedefRolu(ctx, hedefId);
+      const tip = aksiyonTipiBul(rol?.id);
+      ekleSatir(ctx, berenId, `${isim(ctx, hedefId)}'e seans verdin. Bu gece taşıdığı yükün türü: ${tip}.`);
     }
-    // En son oylama (önceki gün)
-    const sonOylama = oylamaGecmisi[oylamaGecmisi.length - 1];
-    let aldigiOy = 0;
-    if (sonOylama && sonOylama.oylar) {
-      for (const [, hed] of sonOylama.oylar.entries()) {
-        if (hed === hedefId) aldigiOy++;
-      }
-    }
-    ekleSatir(ctx, berenId,
-      `${isim(ctx, hedefId)}'e terapi seansı verdin. Önceki gün aldığı oy sayısı: ${aldigiOy}.`);
   });
 }
 
@@ -1290,26 +1291,28 @@ function uygulaPoliamoristBag(ctx) {
   });
 }
 
-// ─── 10. Fuckbuddy (Tuna) — "Kısa ziyaret" ──────────────
-// Hedefin bir önceki gün kime oy verdiğini öğrenir.
-// 1. gecede önceki oylama yoksa "veri yok".
+// ─── 10. Fuckbuddy (Tuna) — "Son Sipariş" ───────────────
+// Hedefin o gece kime gittiğini (aksiyon hedefini) öğrenir — Çapkın'a benzer.
+// Kazanma takibi: aynı hedefe kaç farklı gece gidildiği fbTakip'te tutulur.
 function uygulaFuckbuddyZiyaret(ctx) {
   rolSahipleri(ctx, 'fuckbuddy').forEach(tunaId => {
     const a = aksiyonu(ctx, tunaId);
     if (!a || !a.hedef1) return;
     const hedefId = a.hedef1;
 
-    const oylamaGecmisi = ctx.oda.oyun.oylamaGecmisi || [];
-    if (oylamaGecmisi.length === 0) {
-      ekleSatir(ctx, tunaId, `${isim(ctx, hedefId)}'e kısa ziyaret yaptın. Veri yok (henüz oylama olmadı).`);
-      return;
-    }
-    const sonOylama = oylamaGecmisi[oylamaGecmisi.length - 1];
-    const oyVerdigi = sonOylama?.oylar?.get(hedefId);
-    if (!oyVerdigi) {
-      ekleSatir(ctx, tunaId, `${isim(ctx, hedefId)}'e kısa ziyaret yaptın. Önceki gün oy kullanmamış.`);
+    // Kazanma takibi: aynı yüzü kaç farklı gece takip etti
+    if (!ctx.oda.oyun.fbTakip) ctx.oda.oyun.fbTakip = new Map();
+    let tunaTakip = ctx.oda.oyun.fbTakip.get(tunaId);
+    if (!tunaTakip) { tunaTakip = new Map(); ctx.oda.oyun.fbTakip.set(tunaId, tunaTakip); }
+    tunaTakip.set(hedefId, (tunaTakip.get(hedefId) || 0) + 1);
+
+    const hedefAks = ctx.aksiyonlar.get(hedefId);
+    if (maskeliMi(ctx, hedefId)) {
+      ekleSatir(ctx, tunaId, `${isim(ctx, hedefId)}'i tanıdın. Bu gece kime gitti: ? (kimliği bulanıklaştırılmış).`);
+    } else if (!hedefAks || !hedefAks.gonderildi || !hedefAks.hedef1) {
+      ekleSatir(ctx, tunaId, `${isim(ctx, hedefId)}'i tanıdın. Bu gece kimseye gitmemiş.`);
     } else {
-      ekleSatir(ctx, tunaId, `${isim(ctx, hedefId)}'e kısa ziyaret yaptın. Önceki gün ${isim(ctx, oyVerdigi)}'e oy vermiş.`);
+      ekleSatir(ctx, tunaId, `${isim(ctx, hedefId)}'i tanıdın. Bu gece gittiği: ${isim(ctx, hedefAks.hedef1)}.`);
     }
   });
 }
@@ -1821,4 +1824,33 @@ function ayrilanAciklamalari(ctx) {
   return aciklamalar;
 }
 
-module.exports = { geceyiCozumle, ayrilanAciklamalari, GRUP_AD, GRUP_SEMBOL };
+// ─── Kazanma kontrolleri (test edilebilir saf fonksiyonlar) ─────────────────
+// index.js bitiseBasla içinden çağrılır. Saf: yalnız oda state'ini okur.
+
+// Fuckbuddy (Tuna): aynı oyuncuyu ≥3 farklı gece hedef al + o oyuncu köyde kalsın.
+function fuckbuddyKazandiMi(oda, oyuncuId) {
+  const takip = oda?.oyun?.fbTakip?.get(oyuncuId);
+  if (!takip) return false;
+  for (const [hedefId, sayi] of takip.entries()) {
+    if (sayi >= 3) {
+      const hedef = oda.players.find(p => p.id === hedefId);
+      if (hedef && hedef.koydeMi !== false) return true;
+    }
+  }
+  return false;
+}
+
+// Sugar Daddy (Eren): en az bir oyuncuya 2 kez yatırım + o oyuncu köyde kalsın.
+function sugarDaddyKazandiMi(oda, oyuncuId) {
+  const yat = oda?.oyun?.sdYatirim?.get(oyuncuId);
+  if (!yat) return false;
+  for (const [hedefId, sayi] of yat.entries()) {
+    if (sayi >= 2) {
+      const hedef = oda.players.find(p => p.id === hedefId);
+      if (hedef && hedef.koydeMi !== false) return true;
+    }
+  }
+  return false;
+}
+
+module.exports = { geceyiCozumle, ayrilanAciklamalari, GRUP_AD, GRUP_SEMBOL, fuckbuddyKazandiMi, sugarDaddyKazandiMi, aksiyonTipiBul };

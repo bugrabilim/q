@@ -22,7 +22,7 @@ const ROLLER = [
     gorsel: '/karakterler/deniz.png',
     yas: 25,
     meslek: 'İK Uzmanı',
-    motivasyon: 'İstanbul\'un kalabalığında kendin olamadın. Bu köy belki nefes aldırır.',
+    motivasyon: 'Deniz beş yıl İK uzmanı olarak Çankaya\'da yüzlerce kişiyi işe aldı; her birine "hoş geldiniz, burada kendiniz olabilirsiniz" dedi — ama o cümleyi kimse içtenlikle ona söylemedi. Ankara\'nın "uygun çocuk" sessizliğinde kendi masasında kendi oryantasyonunu bekledi; bir bayram sofrasında teyzesi "utandırıyorsun bizi" deyince çatalı bıraktı. Köye, ömründe ilk kez karşılanan taraf olmak için geldi.',
     geceAksiyonu: 'Gece bir kişiyi ziyaret edersin. Özgürlükçüyse rolünü öğrenirsin, Tarafsızsa o gece aksiyonu iptal olur, Gelenekçiyse o Gelenekçinin gece aksiyonu tamamen iptal olur. Kendine aksiyon yapamazsın.',
     kazanmaKosulu: 'Tüm Gelenekçiler köyden ayrılırsa kazanırsın.',
     tekil: null
@@ -74,7 +74,7 @@ const ROLLER = [
     gorsel: '/karakterler/devin.png',
     yas: 28,
     meslek: 'Yazar',
-    motivasyon: 'Geçmişle bugün arasında bir köprü olmak istiyorsun.',
+    motivasyon: 'Devin Berlin\'de, Kreuzberg\'in iki dil arasında salınan sokaklarında doğdu; bir elinde hayatı, bir elinde yüz seksen yedi sayfalık prosedür dosyası, hep iki eşik arasında bir yazardı. Karakterlerine istediği adı, istediği bedeni verebildiği klavyenin başında o ağırlık yere inerdi. Bir yazarlık atölyesi için İstanbul\'a, oradan hiç tanımadığı dedesinin köyüne uğradı — ve üç hafta sonra geri dönmedi.',
     geceAksiyonu: 'Köyden ayrılan oyuncularla özel kanaldan iletişimde kalırsın. Onlar bilgi aktarabilir, sen de onlara. Bu kanal başka kimseye açık değildir.',
     kazanmaKosulu: 'Tüm Gelenekçiler köyden ayrılırsa kazanırsın.',
     tekil: null
@@ -102,7 +102,7 @@ const ROLLER = [
     gorsel: '/karakterler/mehmet.png',
     yas: 35,
     meslek: 'Rock Müzisyeni',
-    motivasyon: 'Şehirden kaçtın. Kim olduklarına değil, ne içtiklerine bakıyorsun.',
+    motivasyon: 'Mehmet on beş yıl Kadıköy\'ün bar sahnelerinde gitar çaldı; son turnede hangi şehirde, ne çaldığını hatırlamaz olmuştu — her kalabalık aynı yüz, her setlist bir öncekinin kopyasıydı. Albüm çıkmadı, prodüktör vazgeçti, kira ikiye katlandı. Bir cuma gecesi amfisini kapatıp köy ilanını gördü; müzik yapmaya değil, bir hafta susup dinlemeye geldi.',
     geceAksiyonu: 'Gece çay içmeye, sohbet etmeye gidersin. Özgürlükçüyse o oyuncuyu o gece kimlerin ziyaret ettiğini öğrenirsin. Tarafsızsa boş gece. Kaan\'a gidersen ertesi gece Kaan\'ın hedefini sen belirlersin. Kendine aksiyon yapabilirsin.',
     kazanmaKosulu: 'Bireysel gizli koşulun var (prototipte: oyun sonuna kalmak).',
     tekil: 'heterolar'
@@ -173,7 +173,7 @@ const ROLLER = [
     gorsel: '/karakterler/azra.png',
     yas: 34,
     meslek: 'Ürün Yöneticisi',
-    motivasyon: 'Erkeklerden çok çekmişsin. Burada düzeni sen kuracaksın.',
+    motivasyon: 'Azra yedi yıl boyunca toplantılarda fikrini söyledi; ama "harika fikir" övgüsü hep sesi daha gür, sandalyesi daha büyük bir erkeğe gitti — toplantı notlarına "Azra da evet dedi" diye geçti. Sesinin tavana çarpıp geri döndüğü, kimsenin kulağına değmediği yıllardı. Necmi\'nin forumunda "kendi düzenini kurmak isteyenler" cümlesini okuyunca izin yazıp dönmedi: burada düzeni kendi eliyle kuracak, ve bu kez sözünü kimse başkası adına tekrarlamayacak.',
     geceAksiyonu: 'Kimlik Tespiti. Oyun başında tüm oyuncuların doğuştan cinsiyetini öğrenirsin (rol kartından otomatik). Gece bir erkek oyuncuyu hedef alırsın — ertesi gün oyu sayılmaz. Gay engeli iptal eder. Kendine aksiyon yapabilirsin.',
     kazanmaKosulu: 'Tüm Özgürlükçüler köyden ayrılırsa kazanırsın.',
     tekil: null
@@ -262,7 +262,7 @@ const ROLLER = [
     yas: 23,
     meslek: 'Muhasebeci',
     motivasyon: 'Umay bir denetim firmasında üç yıl boyunca rakamların arkasına saklandı, hafta sonu da çalıştı. Hayatı tabloların arasında kayboldu; hiçbir defterde kendi adı geçmiyordu. Yüksek tempo bir gün bir denetim odasında çöktü. Köye bir hesap makinesi değil, hiç kullanmadığı boş bir günceyle geldi.',
-    geceAksiyonu: '"Hesap tutar." Gece bir oyuncu seçersin; sistem sana hedefin oyun başından beri aktif aksiyon yaptığı kümülatif gece sayısını verir (pas geceler sayılmaz). Kendine aksiyon yapabilirsin.',
+    geceAksiyonu: '"Mizan." Muhasebeci Umay herkesin defterini tutar gibi sayar. Gece bir oyuncu seçersin; sistem sana hedefin oyun başından beri aktif aksiyon yaptığı kümülatif gece sayısını verir (pas geceler sayılmaz). Kendine aksiyon yapabilirsin.',
     kazanmaKosulu: 'Tüm Gelenekçiler köyden ayrılırsa kazanırsın.',
     tekil: 'boylar' // Femboy/Ladyboy → sadece biri
   },
@@ -277,7 +277,7 @@ const ROLLER = [
     yas: 28,
     meslek: 'Dijital Pazarlama',
     motivasyon: 'Bahar üç yıl boyunca bir teknoloji şirketinde dönüşüm oranlarını ondalık basamak hassasiyetinde takip etti. Hafta sonları rapor yazdı, gece yarıları kampanya canlıya alındı. Bir sabah aynaya baktığında kendi yüzünü bir grafik olarak gördüğünü fark etti. İstifa mektubunu yazıp birikimleriyle köye taşındı. Sabah uyandığında bildirim sesi olmamasına alışmak en zoruydu.',
-    geceAksiyonu: '"Kahve ısmarlar." Gece bir oyuncuyu kahveye çağırırsın. Özgürlükçüyse hedefin doğuştan cinsiyetini, Tarafsızsa grup rengini öğrenirsin. Kaan\'a gidersen ertesi gece Kaan\'ın hedefini sen belirlersin. Kendine aksiyon yapabilirsin.',
+    geceAksiyonu: '"Profil Çıkarır." Dijital pazarlamacı Bahar herkesi bir veri gibi okur. Gece bir oyuncuyu kahveye çağırırsın. Özgürlükçüyse hedefin doğuştan cinsiyetini, Tarafsızsa grup rengini öğrenirsin. Kaan\'a gidersen ertesi gece Kaan\'ın hedefini sen belirlersin. Kendine aksiyon yapabilirsin.',
     kazanmaKosulu: 'Bireysel: oyun boyunca en az 2 erkek + 2 kadın hedef seçmiş olmalısın.',
     tekil: 'heterolar' // Hetero Erkek + Hetero Kadın → sadece biri
   },
@@ -316,7 +316,7 @@ const ROLLER = [
     yas: 32,
     meslek: 'Yazılım Mühendisi',
     motivasyon: 'Kartal sekiz yıl boyunca büyük bir bankanın arka sistemini ayakta tuttu. Geceleri uyanıp logları kontrol etti, kodun içinde başkalarının göremediği örüntüleri buldu. Şehirdeki hayatı tekdüze hâle gelince ayrıntıya olan ilgisi de bir tür açlığa dönüştü; her şeyin altında bir şablon arıyordu. Köye, dikkatini tekrar kendi seçtiği şeylere verebilmek için geldi. Şehrin gürültüsü altında kaybettiği inceliği arıyordu.',
-    geceAksiyonu: '"Fetiş etiketi." Oyun başında gizli bir "fetiş etiketi" (meslek grubu, örn. "sağlık", "sanat", "teknoloji") alırsın. Gece bir oyuncu seçersin; sistem sana hedefin mesleğinin senin etiketine uyup uymadığını söyler.',
+    geceAksiyonu: '"Örüntü Taraması." Yazılımcı Kartal her sistemde gizli bir şablon arar. Oyun başında gizli bir etiket (meslek grubu, örn. "sağlık", "sanat", "teknoloji") alırsın. Gece bir oyuncu seçersin; sistem sana hedefin mesleğinin senin etiketine uyup uymadığını söyler.',
     kazanmaKosulu: 'Bireysel: oyun boyunca etiketine uyan 3 farklı oyuncuyu doğru tespit etmiş olmalısın.',
     tekil: null
   },
@@ -343,7 +343,7 @@ const ROLLER = [
     meslek: 'İş İnsanı',
     motivasyon: 'Yirmi yılda kurduğu şirketin tabelası söküldüğü gün, kendi adını söyleyince hâlâ bir karşılık alabileceğini görmek isteyen Eren, köyün yolunu tuttu. Maslak\'taki ofis, üç katlı binanın iki katı, plaketler, diplomalar — hepsi geride kaldı. Şoförün adını ilk kez öğrendiği gün, dolaptaki yedi neredeyse aynı takımdan hangisinin hangi yıldan kaldığını hatırlayamadı.',
     geceAksiyonu: '"Yatırım." Gece bir oyuncuya yatırım yaparsın; ertesi gün hedefin oyu 2 sayılır. Drag Queen ile aynı hedefte çakışırsa oy max 2 kalır (kümülatif değil). Kendine aksiyon yapamazsın.',
-    kazanmaKosulu: 'Bireysel: oyun boyunca 2 kez yatırım yaptığın bir oyuncunun oyu sonucunda birinin köyden ayrılması gerekir.',
+    kazanmaKosulu: 'Bireysel: en az bir oyuncuya 2 kez yatırım yap ve o oyuncu oyun sonuna kadar köyde kalsın.',
     tekil: 'sugar' // Sugar Baby ↔ Sugar Daddy → sadece biri
   },
   {
@@ -355,7 +355,7 @@ const ROLLER = [
     yas: 41,
     meslek: 'Spor Salonu Sahibi',
     motivasyon: 'Aynaya artık dünden daha fazla baktığı sabahları çoğalan Can, kırk sonrasında bedeninin yeni söylediği sözleri duymak için kalabalıktan uzaklaştı. Kadıköy\'deki iki katlı salonun aynaları onun rahatlığıyla, sesleri onun komutuyla doluydu. Doktor "bedeniniz size yeni bir dil konuşmaya başlıyor" dediğinde, aynayı uzun süredir gerçekten görmediğini anladı.',
-    geceAksiyonu: '"Tavla." Gece bir oyuncuyla flört edersin; sistem sana hedefin o gece kime aksiyon yaptığını verir (hedef ismi). Aynı oyuncuyu iki kez hedef alamazsın. Kendine aksiyon yapamazsın.',
+    geceAksiyonu: '"Tavla." Spor salonu sahibi Can, kalabalığı hâlâ kendine çevirebildiğini görmek ister. Gece bir oyuncuyla flört edersin; sistem sana hedefin o gece kime aksiyon yaptığını verir (hedef ismi). Aynı oyuncuyu iki kez hedef alamazsın. Kendine aksiyon yapamazsın.',
     kazanmaKosulu: 'Bireysel: 3 farklı gece, 3 farklı hedefle başarılı tavla atmış olmalısın.',
     tekil: null
   },
@@ -367,8 +367,8 @@ const ROLLER = [
     gorsel: '/karakterler/beren.png',
     yas: 32,
     meslek: 'Psikoterapist',
-    motivasyon: 'Sekiz yıl başkalarının ağırlığını taşıdıktan sonra omuzlarının kendi yükünü unuttuğunu fark eden Beren, sessizliği duyabilmek için köye geldi. Cihangir\'deki muayenehanesi her saatte doluydu; aralardaki dokuz dakika ona kendini "dinleyen" konumuna getirmeye yetmeliydi. Süpervizörü "kendi odanı boş bırakmışsın" dediğinde, son seansta kapıyı kapatırken kilidin sesi ona iyilik gibi geldi.',
-    geceAksiyonu: '"Terapi." Gece bir oyuncu seçersin; sistem sana hedefin o gün aldığı toplam oy sayısını verir (kim oy verdi belirtilmez). Kendine aksiyon yapamazsın.',
+    motivasyon: 'Sekiz yıl başkalarının ağırlığını taşıdıktan sonra omuzlarının kendi yükünü unuttuğunu fark eden Beren, sessizliği duyabilmek için köye geldi. Adana\'da, Seyhan\'ın bir kliniğinde her seans doksanla başlar doksanla biterdi; aradaki dokuz dakika ona kendini "dinleyen" konumuna getirmeye yetmeliydi. Bir danışanın çocukluk anısı kendi uykusuna sızdığı sabah, süpervizörü "kendi odanı boş bırakmışsın" dedi — son seansta kapıyı kapatırken kilidin sesi ona dürüstlük gibi geldi.',
+    geceAksiyonu: '"Süpervizyon." Terapist Beren başkasının taşıdığı yükü görür. Gece bir oyuncu seçersin; sistem sana o oyuncunun o gece yaptığı aksiyonun türünü verir (izleme / koruma / engelleme / ziyaret / pas — kim veya içerik değil, yalnız tür). Kendine aksiyon yapamazsın.',
     kazanmaKosulu: 'Bireysel: Beren oyun sırasında köyden ayrılırsa otomatik kazanır (gizli tahmin yok).',
     tekil: null
   },
@@ -381,7 +381,7 @@ const ROLLER = [
     yas: 31,
     meslek: 'Çevirmen',
     motivasyon: 'Ekin yıllarca başkalarının cümlelerini taşıdı; bir noktada kendi diline yer kalmadı. Şehirde her ilişki bir başka dilbilgisiydi, her ses tonu bir başka şiveydi. Köye, sadece kendi kelimelerini hatırlamak için geldi. Bir akşam yatağa uzandığında, hangi dilde düşündüğünü hatırlayamadı; bu küçük boşluk onu altı ay boyunca uyutmadı.',
-    geceAksiyonu: '"Çoklu bağ." Gece iki oyuncu seçersin; sistem sana ikisinin de rollerinin ilk harfini verir (örn. "G — H" → Gay ve Homofobik). Aynı çifti iki kez seçemezsin.',
+    geceAksiyonu: '"İki Dil." Çevirmen Ekin iki kişinin arasındaki anlamı okur. Gece iki oyuncu seçersin; sistem sana ikisinin de rollerinin ilk harfini verir (örn. "G — H" → Gay ve Homofobik). Aynı çifti iki kez seçemezsin.',
     kazanmaKosulu: 'Bireysel: oyun boyunca 3 farklı oyuncunun rolünü doğru tahmin etmelisin (ilk harf eşleştirmesinden çıkarımla).',
     tekil: null
   },
@@ -394,8 +394,8 @@ const ROLLER = [
     yas: 26,
     meslek: 'Bartender',
     motivasyon: 'Tuna binlerce yüze içki uzattı, hiçbirinin ismini hatırlamadı. Gece kulübünün ışıkları onu yedi yıl boyunca aynı saatte söndürdü. Köyde ilk kez kendi adının bir başkasının ağzında ağır kaldığını duydu. İsim sormayı bıraktı yıllar önce; çünkü bir yüz yarın yine geldiğinde, yanlış adla seslenmek hiç seslenmemekten daha incitici oluyordu.',
-    geceAksiyonu: '"Kısa ziyaret." Gece bir oyuncuya kısa bir ziyaret yaparsın; sistem sana hedefin önceki gün aldığı oy sayısını verir.',
-    kazanmaKosulu: 'Bireysel: en az 2 gece bilgi topla + oyun sonuna kadar bir Gelenekçi\'yi doğru işaretle.',
+    geceAksiyonu: '"Son Sipariş." Gece bir oyuncuyu tanırsın; sistem sana o oyuncunun o gece kime gittiğini (hedefinin ismini) verir — bartender gözüyle kimin kiminle olduğunu görürsün. Aynı yüzün yarın da kalmasını istersin.',
+    kazanmaKosulu: 'Bireysel: aynı oyuncuyu en az 3 farklı gece hedef al ve o oyuncu oyun sonuna kadar köyde kalsın.',
     tekil: 'buddy' // Fuckbuddy ↔ Lovebuddy → sadece biri
   },
   {
@@ -422,7 +422,7 @@ const ROLLER = [
     yas: 39,
     meslek: 'Lise Öğretmeni',
     motivasyon: 'On beş yıllık öğretmen. Sınıfların değişen havasını bir türlü kabul edemedi; bir gece eski bir nizamın hâlâ mümkün olduğu yere kaçtı. Edebiyat dersinde okuduğu şiirlerin artık kimseye bir şey hatırlatmadığını hissediyordu. Müdürle yaptığı son toplantıda "uyum sağlamak zorundayız" dendiğinde, omzundan bir şey düştü. Forumda Necmi Bey\'in yazdıklarını okudu, köye geldi.',
-    geceAksiyonu: '"Veli toplantısı." Gece bir Özgürlükçü oyuncu hedef alırsın. Hedef Trans/CD/DQ/Ladyboy/Femboy ise ertesi gün savunmasını yapamaz (savunma sırası gelince susar). Diğer rollerde etki yok.',
+    geceAksiyonu: '"Veli Toplantısı." Edebiyat öğretmeni Sinan eski nizamı sınıfa geri çağırmak ister. Gece bir Özgürlükçü oyuncu hedef alırsın. Hedef Trans/CD/DQ/Ladyboy/Femboy ise ertesi gün savunmasını yapamaz (savunma sırası gelince susar). Diğer rollerde etki yok.',
     kazanmaKosulu: 'Tüm Özgürlükçüler köyden ayrılırsa kazanırsın.',
     tekil: null
   },
@@ -474,7 +474,7 @@ const ROLLER = [
     yas: 44,
     meslek: 'Esnaf',
     motivasyon: 'Babasından kalan tuhafiye dükkânını yirmi yıl yaşattı, AVM\'ler açıldıkça müşterisini kaybetti. Eski mahalle kalmadı. Dükkânda otururken eski defteri açıp veresiye yazdığı isimlere bakar, hiçbirini artık bilmediğini fark ederdi. Forumda esnaf sohbetlerine takıldı, Necmi Bey\'in köy yazılarını okudu, "ben de denerim" dedi.',
-    geceAksiyonu: '"Yer bilir." Gece bir kadın oyuncu hedef alırsın; ertesi gün o oyuncunun bir Gelenekçi adayına verdiği oy 0 sayılır (sadece Gelenekçi hedefli oyları iptal eder, diğer oylar normal sayılır).',
+    geceAksiyonu: '"Eski Düzen." Yirmi yıl aynı çarşıda esnaflık yapan Oğuz, "herkesin yeri belli" anlayışını köye taşımak ister. Gece bir kadın oyuncu hedef alırsın; ertesi gün o oyuncunun bir Gelenekçi adayına verdiği oy 0 sayılır (yalnız Gelenekçi hedefli oyları iptal eder, diğer oylar normal sayılır).',
     kazanmaKosulu: 'Tüm Özgürlükçüler köyden ayrılırsa kazanırsın.',
     tekil: null
   },
@@ -502,7 +502,7 @@ const ROLLER = [
     yas: 37,
     meslek: 'Bakkal Sahibi',
     motivasyon: 'Köyün tek bakkalını işleten Bora, tezgahın arkasından mahallenin bütün küçük gerilimlerini izlemeyi sever. Kimseye kötülük etmez gibidir, ama birinin canı sıkıldığında ya da iki komşu kapışmaya başladığında yüzüne yerleşen o ince, hafif gülümsemeyi kimse görmez — çünkü o anda hep eğilip raftan bir şey alıyordur.',
-    geceAksiyonu: '"Bozuk Sipariş." Gece bir oyuncu hedef alırsın; hedefin sabah panelinde sistem tarafından üretilmiş küçük bir aksilik notu görünür (3 jenerik mahalle olayı varyasyonundan rastgele — "küflü ekmek", "eksik para üstü", vb.). Ek olarak hedefin o gün ilk yazacağı sohbet mesajı 30 saniye gecikmeli iletilir.',
+    geceAksiyonu: '"Bozuk Sipariş." Bakkal Bora, tezgâhın arkasından küçük bir aksiliği zevkle izler. Gece bir oyuncu hedef alırsın; hedefin sabah panelinde sistem tarafından üretilmiş küçük bir aksilik notu görünür (3 jenerik mahalle olayı varyasyonundan rastgele — "küflü ekmek", "eksik para üstü", vb.). Ek olarak hedefin o gün ilk yazacağı sohbet mesajı 30 saniye gecikmeli iletilir.',
     kazanmaKosulu: 'Bireysel: en az 4 farklı oyuncuya "Bozuk Sipariş" uygulamış ve bu oyunculardan en az 2\'si aynı gün ilk oylamada oy almış olmalı. Koşul tamamlansa da oyun devam eder.',
     tekil: null
   },

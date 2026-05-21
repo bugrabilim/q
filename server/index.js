@@ -9,7 +9,7 @@ const { Server } = require('socket.io');
 
 const { rolleriDagit } = require('./rolDagitici.js');
 const { KARAKTER_CINSIYET } = require('./roller.js');
-const { geceyiCozumle, ayrilanAciklamalari } = require('./geceMotoru.js');
+const { geceyiCozumle, ayrilanAciklamalari, fuckbuddyKazandiMi, sugarDaddyKazandiMi } = require('./geceMotoru.js');
 const { rastgeleKoyOlayi } = require('./koyOlaylari.js');
 
 // Production: CLIENT_URL env tanımlıysa onu kullan; yoksa same-origin (true)
@@ -2097,16 +2097,22 @@ function bitiseBasla(oda, kazananGrup) {
         break;
       }
 
+      case 'fuckbuddy':
+        kazandiMi = fuckbuddyKazandiMi(oda, oyuncuId);
+        break;
+
+      case 'sugar_daddy':
+        kazandiMi = sugarDaddyKazandiMi(oda, oyuncuId);
+        break;
+
       // ─── State altyapısı henüz tam olmayan roller: fallback "köyde kalmak"
       // (faz1-mekanik-kararlar.md koşulları ileride state'lerle değiştirilecek)
       case 'hetero_erkek':       // 3 farklı gece çay + ≥1 ziyaretçi (heAksiyon yok)
       case 'hetero_kadin':       // 2 erkek + 2 kadın hedef (bkHedefler yok)
       case 'aseksuel':           // 3 farklı oyuncunun aksiyon tipi (özel set yok)
       case 'fetisist':           // 3 farklı doğru tespit (fetisistDogruTespit yok)
-      case 'sugar_daddy':        // 2 kez yatırım → oy ile ayrılma (sdYatirimSonuc yok)
       case 'koca_kari':          // v1.8.30 Dul: 3 farklı oyuncudan anı topla (dulAnilarTopladi yok — altyapı v1.9'da)
       case 'poliamorist':        // 3 farklı oyuncunun rolünü doğru (poliDogruTahmin yok)
-      case 'fuckbuddy':          // 2 gece bilgi + 1 Gelenekçi işaret (fbBilgi/fbGelIsaret yok)
       case 'situationship':      // 3 gece üst üste aynı hedef (sitArdisikHedef yok)
       default:
         kazandiMi = koydeMi;
