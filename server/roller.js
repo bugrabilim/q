@@ -382,7 +382,7 @@ const ROLLER = [
     meslek: 'Çevirmen',
     motivasyon: 'Ekin yıllarca başkalarının cümlelerini taşıdı; bir noktada kendi diline yer kalmadı. Şehirde her ilişki bir başka dilbilgisiydi, her ses tonu bir başka şiveydi. Köye, sadece kendi kelimelerini hatırlamak için geldi. Bir akşam yatağa uzandığında, hangi dilde düşündüğünü hatırlayamadı; bu küçük boşluk onu altı ay boyunca uyutmadı.',
     geceAksiyonu: '"İki Dil." Çevirmen Ekin iki kişinin arasındaki anlamı okur. Gece iki oyuncu seçersin; sistem sana ikisinin de rollerinin ilk harfini verir (örn. "G — H" → Gay ve Homofobik). Aynı çifti iki kez seçemezsin.',
-    kazanmaKosulu: 'Bireysel: oyun boyunca 3 farklı oyuncunun rolünü doğru tahmin etmelisin (ilk harf eşleştirmesinden çıkarımla).',
+    kazanmaKosulu: 'Bireysel: oyun boyunca 3 farklı oyuncunun rol harfini öğrenmiş olmalısın (ikili eşleştirmelerden).',
     tekil: null
   },
   {

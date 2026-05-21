@@ -781,6 +781,14 @@ function uygulaTarafsizlar(ctx) {
   rolSahipleri(ctx, 'koca_kari').forEach(dulId => {
     const a = aksiyonu(ctx, dulId);
     if (!a || !a.hedef1) return;
+    // Kazanma takibi + tekrar engeli: aynı kişiden tekrar anı toplanamaz
+    if (!ctx.oda.oyun.dulAnilar) ctx.oda.oyun.dulAnilar = new Map();
+    let dulSet = ctx.oda.oyun.dulAnilar.get(dulId);
+    if (!dulSet) { dulSet = new Set(); ctx.oda.oyun.dulAnilar.set(dulId, dulSet); }
+    if (dulSet.has(a.hedef1)) {
+      ekleSatir(ctx, dulId, `${isim(ctx, a.hedef1)}'e daha önce gittin — aynı kişiden tekrar anı toplayamazsın.`);
+      return;
+    }
     // Gerçek rolden karakteri al (Murat için sahte değil gerçek karakter Murat)
     const gercekRol = ctx.oda.oyun.roller.get(a.hedef1);
     if (!gercekRol || !gercekRol.karakter) return;
@@ -790,6 +798,7 @@ function uygulaTarafsizlar(ctx) {
       return;
     }
     const ani = anilar[Math.floor(Math.random() * anilar.length)];
+    dulSet.add(a.hedef1);
     ekleSatir(ctx, dulId, `${isim(ctx, a.hedef1)}'in geçmişinden bir hatıra: "${ani}"`);
   });
 
@@ -1024,6 +1033,12 @@ function uygulaHeteroKadinKahve(ctx) {
     const hedefRol = gorunenHedefRolu(ctx, hedefId);
     if (!hedefRol) return;
 
+    // Kazanma takibi: seçilen hedeflerin cinsiyeti (2E + 2K)
+    if (!ctx.oda.oyun.hkHedefler) ctx.oda.oyun.hkHedefler = new Map();
+    let baharH = ctx.oda.oyun.hkHedefler.get(baharId);
+    if (!baharH) { baharH = new Map(); ctx.oda.oyun.hkHedefler.set(baharId, baharH); }
+    baharH.set(hedefId, ctx.ozelCinsiyet.get(hedefRol.id) || 'bilinmiyor');
+
     if (maskeliMi(ctx, hedefId)) {
       ekleSatir(ctx, baharId, `${isim(ctx, hedefId)}'e kahve ısmarladın. Bilgi: ? (kimliği bulanıklaştırılmış).`);
       return;
@@ -1078,6 +1093,10 @@ function uygulaAseksuelStalk(ctx) {
       ekleSatir(ctx, irmakId, `${isim(ctx, hedefId)}'in sosyal medyasını stalk ettin. Veri yok.`);
       return;
     }
+    if (!ctx.oda.oyun.asHedefler) ctx.oda.oyun.asHedefler = new Map();
+    let irmakS = ctx.oda.oyun.asHedefler.get(irmakId);
+    if (!irmakS) { irmakS = new Set(); ctx.oda.oyun.asHedefler.set(irmakId, irmakS); }
+    irmakS.add(hedefId);
     ekleSatir(ctx, irmakId,
       `${isim(ctx, hedefId)}'in sosyal medyasını stalk ettin. Önceki gece tipi: ${oncekiKayit.tip}.`);
   });
@@ -1136,6 +1155,12 @@ function uygulaFetisistEtiket(ctx) {
     const etiket = ctx.oda.oyun.fetisistEtiketi.get(kartalId);
     const hedefEtiket = meslekEtiketiBul(hedefRol.meslek);
     const uyuyor = hedefEtiket === etiket;
+    if (uyuyor) {
+      if (!ctx.oda.oyun.ftDogru) ctx.oda.oyun.ftDogru = new Map();
+      let kartalS = ctx.oda.oyun.ftDogru.get(kartalId);
+      if (!kartalS) { kartalS = new Set(); ctx.oda.oyun.ftDogru.set(kartalId, kartalS); }
+      kartalS.add(hedefId);
+    }
     ekleSatir(ctx, kartalId,
       `${isim(ctx, hedefId)}'i (${hedefRol.meslek || '?'}) etiketinle (${etiket}) kontrol ettin: ${uyuyor ? 'UYDU' : 'uymadı'}.`);
   });
@@ -1286,8 +1311,16 @@ function uygulaPoliamoristBag(ctx) {
       if (!rol || !rol.ad) return '?';
       return rol.ad.charAt(0).toUpperCase();
     };
+    const h1Harf = harf(h1);
+    const h2Harf = harf(h2);
+    // Kazanma takibi: harfi öğrenilen farklı oyuncular (maskeli '?' sayılmaz)
+    if (!ctx.oda.oyun.poliOgrendi) ctx.oda.oyun.poliOgrendi = new Map();
+    let ekinS = ctx.oda.oyun.poliOgrendi.get(ekinId);
+    if (!ekinS) { ekinS = new Set(); ctx.oda.oyun.poliOgrendi.set(ekinId, ekinS); }
+    if (h1Harf !== '?') ekinS.add(h1);
+    if (h2Harf !== '?') ekinS.add(h2);
     ekleSatir(ctx, ekinId,
-      `${isim(ctx, h1)} ve ${isim(ctx, h2)} ile yakınlaştın. Rol harfleri: ${harf(h1)} — ${harf(h2)}.`);
+      `${isim(ctx, h1)} ve ${isim(ctx, h2)} ile yakınlaştın. Rol harfleri: ${h1Harf} — ${h2Harf}.`);
   });
 }
 
@@ -1853,4 +1886,29 @@ function sugarDaddyKazandiMi(oda, oyuncuId) {
   return false;
 }
 
-module.exports = { geceyiCozumle, ayrilanAciklamalari, GRUP_AD, GRUP_SEMBOL, fuckbuddyKazandiMi, sugarDaddyKazandiMi, aksiyonTipiBul };
+// Hetero Kadın (Bahar): en az 2 erkek + 2 kadın farklı hedef seçmiş olmalı.
+function heteroKadinKazandiMi(oda, oyuncuId) {
+  const m = oda?.oyun?.hkHedefler?.get(oyuncuId);
+  if (!m) return false;
+  let e = 0, k = 0;
+  for (const c of m.values()) { if (c === 'erkek') e++; else if (c === 'kadin') k++; }
+  return e >= 2 && k >= 2;
+}
+// Aseksüel (Irmak): 3 farklı oyuncuyu başarıyla stalk etmiş olmalı.
+function aseksuelKazandiMi(oda, oyuncuId) {
+  return (oda?.oyun?.asHedefler?.get(oyuncuId)?.size ?? 0) >= 3;
+}
+// Fetişist (Kartal): etiketine uyan 3 farklı oyuncu tespit etmiş olmalı.
+function fetisistKazandiMi(oda, oyuncuId) {
+  return (oda?.oyun?.ftDogru?.get(oyuncuId)?.size ?? 0) >= 3;
+}
+// Dul (Fatma): 3 farklı oyuncudan anı toplamış olmalı.
+function dulKazandiMi(oda, oyuncuId) {
+  return (oda?.oyun?.dulAnilar?.get(oyuncuId)?.size ?? 0) >= 3;
+}
+// Poliamorist (Ekin): 3 farklı oyuncunun rol harfini öğrenmiş olmalı.
+function poliamoristKazandiMi(oda, oyuncuId) {
+  return (oda?.oyun?.poliOgrendi?.get(oyuncuId)?.size ?? 0) >= 3;
+}
+
+module.exports = { geceyiCozumle, ayrilanAciklamalari, GRUP_AD, GRUP_SEMBOL, fuckbuddyKazandiMi, sugarDaddyKazandiMi, aksiyonTipiBul, heteroKadinKazandiMi, aseksuelKazandiMi, fetisistKazandiMi, dulKazandiMi, poliamoristKazandiMi };
