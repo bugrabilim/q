@@ -1,9 +1,9 @@
-/* Q — Ses Ayarları Modal'ı */
+﻿/* Q â€” Ses AyarlarÄ± Modal'Ä± */
 
 .ses-ayar-arka {
   position: fixed;
   inset: 0;
-  background: rgba(38, 70, 83, 0.55);
+  background: rgba(92, 58, 23, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,12 +13,12 @@
 
 .ses-ayar-kart {
   position: relative;
-  background: white;
+  background: #fbf3dd;
   border-radius: 14px;
   padding: 22px 24px 18px;
   width: 100%;
   max-width: 360px;
-  box-shadow: 0 12px 40px rgba(38, 70, 83, 0.25);
+  box-shadow: 0 12px 40px rgba(92, 58, 23, 0.25);
   font-family: var(--font-ui);
   color: var(--derin);
 }
@@ -41,7 +41,7 @@
 
 .ses-ayar-kapat:hover {
   opacity: 1;
-  background: rgba(38, 70, 83, 0.08);
+  background: rgba(92, 58, 23, 0.08);
 }
 
 .ses-ayar-baslik {
@@ -81,9 +81,9 @@
   border-radius: 999px;
   outline: none;
   cursor: pointer;
-  /* Mobilde yatay sürüklemeyi tarayıcıya devretme — slider parmağa cevap versin */
+  /* Mobilde yatay sÃ¼rÃ¼klemeyi tarayÄ±cÄ±ya devretme â€” slider parmaÄŸa cevap versin */
   touch-action: pan-x;
-  /* iOS Safari: temas vurgusu yerine kendi state'imizi göstereceğiz */
+  /* iOS Safari: temas vurgusu yerine kendi state'imizi gÃ¶stereceÄŸiz */
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -96,7 +96,7 @@
   background: var(--deniz);
   cursor: pointer;
   border: none;
-  box-shadow: 0 2px 4px rgba(38, 70, 83, 0.25);
+  box-shadow: 0 2px 4px rgba(92, 58, 23, 0.25);
   transition: transform 0.1s ease;
 }
 
@@ -111,7 +111,7 @@
   background: var(--deniz);
   border: none;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(38, 70, 83, 0.25);
+  box-shadow: 0 2px 4px rgba(92, 58, 23, 0.25);
 }
 
 .ses-ayar-slider::-ms-thumb {
@@ -121,7 +121,7 @@
   background: var(--deniz);
   border: none;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(38, 70, 83, 0.25);
+  box-shadow: 0 2px 4px rgba(92, 58, 23, 0.25);
 }
 
 .ses-ayar-slider::-ms-track {
@@ -131,11 +131,11 @@
   height: 6px;
 }
 
-/* Mobil — parmakla rahat sürükleme için track ve thumb büyür */
+/* Mobil â€” parmakla rahat sÃ¼rÃ¼kleme iÃ§in track ve thumb bÃ¼yÃ¼r */
 @media (hover: none) and (pointer: coarse) {
   .ses-ayar-slider {
     height: 10px;
-    /* Dokunma hedefi daha geniş — track ince görünse de tıklama alanı büyük olsun */
+    /* Dokunma hedefi daha geniÅŸ â€” track ince gÃ¶rÃ¼nse de tÄ±klama alanÄ± bÃ¼yÃ¼k olsun */
     padding: 10px 0;
     background-clip: content-box;
   }

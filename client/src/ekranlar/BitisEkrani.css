@@ -1,6 +1,6 @@
-/* Faz 8 — Bitiş Ekranı stilleri */
+﻿/* Faz 8 â€” BitiÅŸ EkranÄ± stilleri */
 
-/* Madde 9: Kazanan grubuna göre soluk arkaplan tonu */
+/* Madde 9: Kazanan grubuna gÃ¶re soluk arkaplan tonu */
 .bitis-kapsayici {
   position: relative;
   min-height: 100vh;
@@ -13,7 +13,7 @@
   overflow: hidden;
 }
 
-/* v1.5 — Madde 6 (b): Bitiş partikül katmanı (yaprak/bayrak/yıldız) */
+/* v1.5 â€” Madde 6 (b): BitiÅŸ partikÃ¼l katmanÄ± (yaprak/bayrak/yÄ±ldÄ±z) */
 .bitis-partikul-katman {
   position: absolute;
   inset: 0;
@@ -29,7 +29,7 @@
   animation-iteration-count: infinite;
   animation-timing-function: linear;
   opacity: 0.7;
-  filter: drop-shadow(0 1px 2px rgba(38, 70, 83, 0.18));
+  filter: drop-shadow(0 1px 2px rgba(92, 58, 23, 0.18));
   will-change: transform;
 }
 
@@ -49,7 +49,7 @@
   }
 }
 
-/* Tarafsız → yıldız: düşme yerine sabit parıltı */
+/* TarafsÄ±z â†’ yÄ±ldÄ±z: dÃ¼ÅŸme yerine sabit parÄ±ltÄ± */
 .bitis-kapsayici--tarafsiz .bitis-partikul {
   animation-name: bitis-partikul-parilti;
   animation-timing-function: ease-in-out;
@@ -66,13 +66,13 @@
   }
 }
 
-/* Tarafsız partikülleri ekran boyunca dağıt */
+/* TarafsÄ±z partikÃ¼lleri ekran boyunca daÄŸÄ±t */
 .bitis-kapsayici--tarafsiz .bitis-partikul:nth-child(2n) { top: 20%; }
 .bitis-kapsayici--tarafsiz .bitis-partikul:nth-child(3n) { top: 60%; }
 .bitis-kapsayici--tarafsiz .bitis-partikul:nth-child(5n) { top: 80%; }
 
-/* İçeriği partiküllerin üstüne koy — sağ üst köşe hariç (kendi
-   absolute pozisyonu ve daha yüksek z-index'i var) */
+/* Ä°Ã§eriÄŸi partikÃ¼llerin Ã¼stÃ¼ne koy â€” saÄŸ Ã¼st kÃ¶ÅŸe hariÃ§ (kendi
+   absolute pozisyonu ve daha yÃ¼ksek z-index'i var) */
 .bitis-kapsayici > :not(.bitis-partikul-katman):not(.bitis-sag-ust) {
   position: relative;
   z-index: 2;
@@ -82,7 +82,7 @@
   .bitis-partikul-katman { display: none; }
 }
 
-/* Sağ üst — ⚙️ ayarlar butonu kazanan banner'ın üstünde durmalı (tıklanabilir) */
+/* SaÄŸ Ã¼st â€” âš™ï¸ ayarlar butonu kazanan banner'Ä±n Ã¼stÃ¼nde durmalÄ± (tÄ±klanabilir) */
 .bitis-sag-ust {
   position: absolute;
   top: 12px;
@@ -112,7 +112,7 @@
   background: var(--gokyuzu);
 }
 
-/* Kazanan başlığı */
+/* Kazanan baÅŸlÄ±ÄŸÄ± */
 .bitis-baslik-kutu {
   padding: 36px 24px 28px;
   text-align: center;
@@ -145,9 +145,9 @@
   opacity: 0.85;
 }
 
-/* Bölüm */
+/* BÃ¶lÃ¼m */
 .bitis-bolum {
-  background: white;
+  background: #fbf3dd;
   border-radius: 14px;
   padding: 18px 20px;
   margin: 0 16px 16px;
@@ -162,7 +162,7 @@
   margin-bottom: 14px;
 }
 
-/* Tarafsız bireysel kazananlar */
+/* TarafsÄ±z bireysel kazananlar */
 .bitis-tarafsiz-liste {
   list-style: none;
   display: flex;
@@ -193,7 +193,7 @@
   font-weight: 500;
 }
 
-/* Madde 10: Tek liste, satır satır, herkes aynı ton */
+/* Madde 10: Tek liste, satÄ±r satÄ±r, herkes aynÄ± ton */
 .bitis-tum-roller {
   list-style: none;
   display: flex;
@@ -207,7 +207,7 @@
   gap: 10px;
   padding: 10px 14px;
   border-radius: 10px;
-  background: rgba(168, 218, 220, 0.18);
+  background: rgba(226, 205, 159, 0.18);
   font-size: 15px;
 }
 
@@ -237,14 +237,14 @@
   flex-shrink: 0;
 }
 
-/* Tarafsız bireysel kazananlar — vurgulu kart (Madde 11) */
+/* TarafsÄ±z bireysel kazananlar â€” vurgulu kart (Madde 11) */
 .bitis-bolum--tarafsiz {
   background: linear-gradient(135deg, #FFF8EE 0%, white 100%);
   border-left: 4px solid var(--gunes);
   box-shadow: 0 4px 16px rgba(244, 162, 97, 0.18);
 }
 
-/* Aksiyon butonları */
+/* Aksiyon butonlarÄ± */
 .bitis-aksiyon {
   display: flex;
   flex-direction: column;

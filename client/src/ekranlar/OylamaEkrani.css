@@ -1,5 +1,5 @@
-/* Faz 7 — Oylama Ekranı stilleri */
-/* Tasarım dili: v0.4 palet, Lora başlık, system sans UI */
+﻿/* Faz 7 â€” Oylama EkranÄ± stilleri */
+/* TasarÄ±m dili: v0.4 palet, Lora baÅŸlÄ±k, system sans UI */
 
 .oylama {
   height: 100%;
@@ -8,8 +8,8 @@
   flex-direction: column;
   max-width: 540px;
   margin: 0 auto;
-  border-left: 1px solid rgba(42, 157, 143, 0.15);
-  border-right: 1px solid rgba(42, 157, 143, 0.15);
+  border-left: 1px solid rgba(154, 101, 50, 0.15);
+  border-right: 1px solid rgba(154, 101, 50, 0.15);
   overflow: hidden;
 }
 
@@ -34,14 +34,14 @@
   font-size: 16px;
 }
 
-/* ─── Üst Başlık ─── */
+/* â”€â”€â”€ Ãœst BaÅŸlÄ±k â”€â”€â”€ */
 .oylama-bas {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 14px 18px;
-  background: white;
-  border-bottom: 1px solid rgba(42, 157, 143, 0.2);
+  background: #fbf3dd;
+  border-bottom: 1px solid rgba(154, 101, 50, 0.2);
   box-shadow: var(--golge-yumusak);
   flex-shrink: 0;
 }
@@ -67,7 +67,7 @@
   margin-top: 2px;
 }
 
-/* ─── Sayaç ─── */
+/* â”€â”€â”€ SayaÃ§ â”€â”€â”€ */
 .oylama-sayac {
   display: flex;
   align-items: baseline;
@@ -104,14 +104,14 @@
   letter-spacing: 0.05em;
 }
 
-/* ─── Bilgi Şerit ─── */
+/* â”€â”€â”€ Bilgi Åerit â”€â”€â”€ */
 .oylama-bilgi-serit {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 8px 16px;
-  background: rgba(168, 218, 220, 0.25);
-  border-bottom: 1px solid rgba(42, 157, 143, 0.1);
+  background: rgba(226, 205, 159, 0.25);
+  border-bottom: 1px solid rgba(154, 101, 50, 0.1);
   font-family: var(--font-ui);
   font-size: 13px;
   color: var(--derin);
@@ -127,11 +127,11 @@
 }
 
 .oylama-katilim-yok {
-  color: rgba(38, 70, 83, 0.55);
+  color: rgba(92, 58, 23, 0.55);
   font-style: italic;
 }
 
-/* ─── Oyuncu Listesi (1. Oylama) ─── */
+/* â”€â”€â”€ Oyuncu Listesi (1. Oylama) â”€â”€â”€ */
 .oylama-liste {
   flex: 1;
   overflow-y: auto;
@@ -147,8 +147,8 @@
   justify-content: space-between;
   padding: 14px 18px;
   border-radius: 14px;
-  background: white;
-  border: 2px solid rgba(42, 157, 143, 0.2);
+  background: #fbf3dd;
+  border: 2px solid rgba(154, 101, 50, 0.2);
   cursor: pointer;
   transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
   text-align: left;
@@ -167,27 +167,27 @@
 .oylama-kart-secili {
   border-color: var(--deniz);
   background: linear-gradient(135deg, white 0%, #e0f5f3 100%);
-  box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.15);
+  box-shadow: 0 0 0 3px rgba(154, 101, 50, 0.15);
 }
 
-/* Kendi kartı — görünür ama tıklanamaz */
+/* Kendi kartÄ± â€” gÃ¶rÃ¼nÃ¼r ama tÄ±klanamaz */
 .oylama-kart-ben {
   opacity: 0.55;
   cursor: not-allowed;
-  background: rgba(168, 218, 220, 0.18);
-  border-color: rgba(42, 157, 143, 0.15);
+  background: rgba(226, 205, 159, 0.18);
+  border-color: rgba(154, 101, 50, 0.15);
 }
 
 .oylama-kart-ben:hover {
-  border-color: rgba(42, 157, 143, 0.15);
-  background: rgba(168, 218, 220, 0.18);
+  border-color: rgba(154, 101, 50, 0.15);
+  background: rgba(226, 205, 159, 0.18);
 }
 
 .oylama-kart-ben:active {
   transform: none;
 }
 
-/* V1 Kaosçu — Hakan baskı altındaki oyuncuya yasaklı hedefin kartı */
+/* V1 KaosÃ§u â€” Hakan baskÄ± altÄ±ndaki oyuncuya yasaklÄ± hedefin kartÄ± */
 .oylama-kart-yasakli {
   opacity: 0.45;
   cursor: not-allowed;
@@ -229,7 +229,7 @@
   font-family: var(--font-ui);
   font-size: 11px;
   font-weight: 500;
-  background: rgba(42, 157, 143, 0.12);
+  background: rgba(154, 101, 50, 0.12);
   color: var(--deniz);
   padding: 2px 8px;
   border-radius: 999px;
@@ -246,7 +246,7 @@
   font-weight: 600;
   font-size: 18px;
   color: var(--derin);
-  background: rgba(42, 157, 143, 0.12);
+  background: rgba(154, 101, 50, 0.12);
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -261,13 +261,13 @@
   font-weight: 700;
 }
 
-/* ─── Savunma ─── */
+/* â”€â”€â”€ Savunma â”€â”€â”€ */
 .oylama-savunma-kutu {
   margin: 16px 12px;
   padding: 18px;
-  background: white;
+  background: #fbf3dd;
   border-radius: 14px;
-  border: 1px solid rgba(42, 157, 143, 0.2);
+  border: 1px solid rgba(154, 101, 50, 0.2);
 }
 
 .oylama-savunma-mesaj {
@@ -284,7 +284,7 @@
   font-size: 16px;
 }
 
-/* ─── Hazır Banner ─── */
+/* â”€â”€â”€ HazÄ±r Banner â”€â”€â”€ */
 .oylama-hazir-banner {
   display: flex;
   align-items: center;
@@ -348,7 +348,7 @@
   background: var(--deniz);
 }
 
-/* ─── 2. Oylama: Evet / Hayır ─── */
+/* â”€â”€â”€ 2. Oylama: Evet / HayÄ±r â”€â”€â”€ */
 .oylama-iki-btn-grup {
   display: flex;
   gap: 12px;
@@ -405,7 +405,7 @@
   box-shadow: 0 0 0 3px rgba(27, 122, 69, 0.2);
 }
 
-/* ─── Oy Çubukları ─── */
+/* â”€â”€â”€ Oy Ã‡ubuklarÄ± â”€â”€â”€ */
 .oylama-sayac-cubuklari {
   padding: 0 16px 16px;
   display: flex;
@@ -432,7 +432,7 @@
 .oylama-cubuk-arka {
   flex: 1;
   height: 10px;
-  background: rgba(42, 157, 143, 0.1);
+  background: rgba(154, 101, 50, 0.1);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -464,18 +464,18 @@
 .oylama-cubuk-alt {
   font-family: var(--font-ui);
   font-size: 12px;
-  color: rgba(38, 70, 83, 0.5);
+  color: rgba(92, 58, 23, 0.5);
   text-align: center;
   margin-top: 2px;
 }
 
-/* ─── Sonuç Bantları ─── */
+/* â”€â”€â”€ SonuÃ§ BantlarÄ± â”€â”€â”€ */
 .oylama-sonuc-bant {
   margin: 12px;
   padding: 14px 18px;
   border-radius: 12px;
-  background: white;
-  border: 1px solid rgba(42, 157, 143, 0.3);
+  background: #fbf3dd;
+  border: 1px solid rgba(154, 101, 50, 0.3);
   font-family: var(--font-ui);
   font-size: 14px;
   color: var(--derin);
@@ -499,13 +499,13 @@
   margin-bottom: 10px;
 }
 
-/* ─── Açıklama Listesi (kim kime oy verdi) ─── */
+/* â”€â”€â”€ AÃ§Ä±klama Listesi (kim kime oy verdi) â”€â”€â”€ */
 .oylama-aciklama-kutu {
   margin: 12px;
   padding: 14px 18px;
-  background: white;
+  background: #fbf3dd;
   border-radius: 12px;
-  border: 1px solid rgba(42, 157, 143, 0.2);
+  border: 1px solid rgba(154, 101, 50, 0.2);
   flex-shrink: 0;
 }
 
@@ -538,7 +538,7 @@
 }
 
 .oylama-aciklama-ok {
-  color: rgba(38, 70, 83, 0.4);
+  color: rgba(92, 58, 23, 0.4);
   font-size: 13px;
 }
 
@@ -559,11 +559,11 @@
   color: #1B7A45;
 }
 
-/* ─── Oylama Sonucu (Madde 2 — 20sn not defteri okuma) ─── */
+/* â”€â”€â”€ Oylama Sonucu (Madde 2 â€” 20sn not defteri okuma) â”€â”€â”€ */
 .oylama-sonuc-ayrilan-kart {
   margin: 12px;
   padding: 16px 18px;
-  background: white;
+  background: #fbf3dd;
   border-radius: 12px;
   border: 1px solid rgba(192, 57, 43, 0.25);
   border-left: 4px solid #C0392B;
@@ -601,7 +601,7 @@
   font-family: var(--font-alinti);
   font-style: italic;
   font-size: 13px;
-  color: rgba(38, 70, 83, 0.7);
+  color: rgba(92, 58, 23, 0.7);
 }
 
 .oylama-sonuc-not-kart {
@@ -638,12 +638,12 @@
   font-family: var(--font-alinti);
   font-style: italic;
   font-size: 14px;
-  color: rgba(38, 70, 83, 0.45);
+  color: rgba(92, 58, 23, 0.45);
   text-align: center;
   padding: 10px 0;
 }
 
-/* ─── Tekrar Tartışma (Aşama C sade hali) ─── */
+/* â”€â”€â”€ Tekrar TartÄ±ÅŸma (AÅŸama C sade hali) â”€â”€â”€ */
 .oylama-tartisma-mod {
   height: 100%;
 }
@@ -651,8 +651,8 @@
 .oylama-not-bandi {
   margin: auto 16px 16px;
   padding: 10px 14px;
-  background: rgba(168, 218, 220, 0.25);
-  border: 1px dashed rgba(42, 157, 143, 0.3);
+  background: rgba(226, 205, 159, 0.25);
+  border: 1px dashed rgba(154, 101, 50, 0.3);
   border-radius: 10px;
   font-family: var(--font-alinti);
   font-style: italic;
@@ -675,11 +675,11 @@
   font-family: var(--font-alinti);
   font-style: italic;
   font-size: 14px;
-  color: rgba(38, 70, 83, 0.5);
+  color: rgba(92, 58, 23, 0.5);
   padding: 24px 12px;
 }
 
-/* Mesaj stilleri (tartışmayla aynı dil) */
+/* Mesaj stilleri (tartÄ±ÅŸmayla aynÄ± dil) */
 .oylama-chat .mesaj-sistem {
   text-align: center;
   padding: 4px 16px;
@@ -690,7 +690,7 @@
   font-style: italic;
   font-size: 14px;
   color: var(--deniz);
-  background: white;
+  background: #fbf3dd;
   padding: 6px 14px;
   border-radius: 999px;
   display: inline-block;
@@ -728,7 +728,7 @@
 }
 
 .oylama-chat .mesaj-icerik {
-  background: white;
+  background: #fbf3dd;
   padding: 8px 14px;
   border-radius: 14px;
   border-top-left-radius: 4px;
@@ -748,13 +748,13 @@
   border-top-right-radius: 4px;
 }
 
-/* ─── Chat Giriş Kutusu ─── */
+/* â”€â”€â”€ Chat GiriÅŸ Kutusu â”€â”€â”€ */
 .oylama-giris {
   display: flex;
   gap: 8px;
   padding: 10px 12px;
-  background: white;
-  border-top: 1px solid rgba(42, 157, 143, 0.2);
+  background: #fbf3dd;
+  border-top: 1px solid rgba(154, 101, 50, 0.2);
   flex-shrink: 0;
 }
 
@@ -775,7 +775,7 @@
 }
 
 .oylama-giris-alan::placeholder {
-  color: rgba(38, 70, 83, 0.4);
+  color: rgba(92, 58, 23, 0.4);
 }
 
 .oylama-giris-btn {
@@ -790,7 +790,7 @@
 }
 
 .oylama-giris-btn:hover:not(:disabled) {
-  background: #228679;
+  background: #834f24;
 }
 
 .oylama-giris-btn:disabled {

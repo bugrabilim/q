@@ -1,4 +1,4 @@
-/* Faz 1 — Açılış Ekranı stilleri (v2: canlı palet, el yazısı yok) */
+﻿/* Faz 1 â€” AÃ§Ä±lÄ±ÅŸ EkranÄ± stilleri (v2: canlÄ± palet, el yazÄ±sÄ± yok) */
 
 .acilis {
   min-height: 100vh;
@@ -6,8 +6,8 @@
   align-items: center;
   justify-content: center;
   padding: 24px 16px;
-  /* v1.5 — Madde 6 (a): Hareketli açılış gradient'i — gokyuzu↔deniz-acik arası yavaş döngü */
-  background: linear-gradient(180deg, var(--gokyuzu) 0%, #D4ECF5 50%, var(--deniz-acik) 100%);
+  /* v1.5 â€” Madde 6 (a): Hareketli aÃ§Ä±lÄ±ÅŸ gradient'i â€” gokyuzuâ†”deniz-acik arasÄ± yavaÅŸ dÃ¶ngÃ¼ */
+  background: linear-gradient(180deg, var(--gokyuzu) 0%, #f3e6c6 50%, var(--deniz-acik) 100%);
   background-size: 100% 200%;
   background-position: 0% 0%;
   animation: acilis-gradient 18s ease-in-out infinite alternate;
@@ -20,7 +20,7 @@
   100% { background-position: 0% 100%; }
 }
 
-/* Hafif bulut/parıltı katmanı — pseudo-element ile, performans dostu */
+/* Hafif bulut/parÄ±ltÄ± katmanÄ± â€” pseudo-element ile, performans dostu */
 .acilis::before {
   content: '';
   position: absolute;
@@ -45,7 +45,7 @@
   100% { transform: translate(4%, 2%); }
 }
 
-/* Hareket azaltma tercihine saygı (erişilebilirlik) */
+/* Hareket azaltma tercihine saygÄ± (eriÅŸilebilirlik) */
 @media (prefers-reduced-motion: reduce) {
   .acilis { animation: none; }
   .acilis::before { animation: none; }
@@ -57,15 +57,15 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  /* v1.5 — Madde 6: animasyonlu arka plan katmanının üstünde dursun */
+  /* v1.5 â€” Madde 6: animasyonlu arka plan katmanÄ±nÄ±n Ã¼stÃ¼nde dursun */
   position: relative;
   z-index: 1;
 }
 
-/* Üst — isim bölümü (her iki seçenek için ortak) */
+/* Ãœst â€” isim bÃ¶lÃ¼mÃ¼ (her iki seÃ§enek iÃ§in ortak) */
 .isim-bolumu {
   background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(42, 157, 143, 0.18);
+  border: 1px solid rgba(154, 101, 50, 0.18);
   border-radius: 14px;
   padding: 16px;
   backdrop-filter: blur(4px);
@@ -81,7 +81,7 @@
   margin-top: 2px;
 }
 
-/* Alt — iki ayrı seçenek bölümü */
+/* Alt â€” iki ayrÄ± seÃ§enek bÃ¶lÃ¼mÃ¼ */
 .secenekler {
   display: flex;
   flex-direction: column;
@@ -89,14 +89,14 @@
 }
 
 .secenek-kart {
-  background: white;
+  background: #fbf3dd;
   border: 1px solid var(--deniz-acik);
-  border-radius: 14px;
+  border-radius: 10px;
   padding: 18px 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  box-shadow: 0 2px 8px rgba(38, 70, 83, 0.06);
+  box-shadow: var(--golge-orta);
 }
 
 .secenek-baslik {
@@ -119,6 +119,14 @@
 .acilis-baslik {
   text-align: center;
   margin-bottom: 24px;
+}
+
+.qlogo {
+  display: block;
+  width: 100%;
+  max-width: 330px;
+  height: auto;
+  margin: 0 auto;
 }
 
 .logo {
@@ -158,7 +166,7 @@
   width: 100%;
   padding: 14px 16px;
   font-size: 16px;
-  background: white;
+  background: #fbf3dd;
   border: 1px solid var(--deniz-acik);
   border-radius: 12px;
   color: var(--derin);
@@ -166,13 +174,13 @@
 }
 
 .alan::placeholder {
-  color: rgba(38, 70, 83, 0.4);
+  color: rgba(92, 58, 23, 0.4);
 }
 
 .alan:focus {
   outline: none;
   border-color: var(--deniz);
-  box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.15);
+  box-shadow: 0 0 0 3px rgba(154, 101, 50, 0.15);
 }
 
 .alan-kod {
@@ -205,16 +213,16 @@
 .btn-birincil {
   background: var(--deniz);
   color: white;
-  box-shadow: 0 2px 6px rgba(42, 157, 143, 0.3);
+  box-shadow: 0 2px 6px rgba(154, 101, 50, 0.3);
 }
 
 .btn-birincil:hover:not(:disabled) {
-  background: #228679;
-  box-shadow: 0 3px 10px rgba(42, 157, 143, 0.4);
+  background: #834f24;
+  box-shadow: 0 3px 10px rgba(154, 101, 50, 0.4);
 }
 
 .btn-ikincil {
-  background: white;
+  background: #fbf3dd;
   color: var(--derin);
   border: 1px solid var(--deniz);
 }
@@ -253,11 +261,11 @@
   letter-spacing: 0.12em;
 }
 
-/* v1.8 — Açılış footer: Wiki linki */
+/* v1.8 â€” AÃ§Ä±lÄ±ÅŸ footer: Wiki linki */
 .acilis-footer {
   margin-top: 20px;
   padding-top: 16px;
-  border-top: 1px solid rgba(42, 157, 143, 0.15);
+  border-top: 1px solid rgba(154, 101, 50, 0.15);
   text-align: center;
 }
 
@@ -273,7 +281,7 @@
 }
 
 .acilis-wiki-link:hover {
-  background: rgba(168, 218, 220, 0.25);
+  background: rgba(226, 205, 159, 0.25);
   text-decoration: underline;
 }
 

@@ -7,6 +7,7 @@ import { socket } from '../socket.js';
 import OyuncuListesi from './OyuncuListesi.jsx';
 import RolKartPaneli from './RolKartPaneli.jsx';
 import SohbetPaneli from './SohbetPaneli.jsx';
+import KoySahnesi from '../bilesenler/KoySahnesi.jsx';
 import AyarlarMenusu from '../ses/AyarlarMenusu.jsx';
 import { fazaMuzikEslestir } from '../ses/sesHaritasi.js';
 import './OyunDuzeni.css';
@@ -47,6 +48,9 @@ export default function OyunDuzeni({
 
   return (
     <div className="oyun-duzeni" data-mobil-sekme={mobilSekme} data-faz={faz}>
+      {/* Köy sahnesi — arka plan (oyuncu sayısı kadar ev, faza göre gündüz/gece) */}
+      <KoySahnesi gece={faz === 'gece' || faz === 'savunma'} oyuncuSayisi={oyuncularSnapshot.length} />
+
       {/* v1.5 — Madde 7: Tek "Ayarlar" menüsü altında ses aç/kapa + ses ayarları + oyundan çık.
           Mobilde sadece "Köy/Rol" sekmesinde görünür (CSS ile gizleniyor). */}
       <div className="oyun-duzeni-sag-ust">

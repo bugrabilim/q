@@ -1,4 +1,4 @@
-/* Q — Ses Aç/Kapat Düğmesi */
+﻿/* Q â€” Ses AÃ§/Kapat DÃ¼ÄŸmesi */
 
 .ses-btn {
   font-family: var(--font-ui);
@@ -17,7 +17,7 @@
   gap: 6px;
 }
 
-/* İlk kullanım — büyük etiketli buton */
+/* Ä°lk kullanÄ±m â€” bÃ¼yÃ¼k etiketli buton */
 .ses-btn--ilk {
   padding: 8px 14px;
   border-radius: 999px;
@@ -26,14 +26,14 @@
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.3px;
-  box-shadow: 0 2px 6px rgba(38, 70, 83, 0.2);
+  box-shadow: 0 2px 6px rgba(92, 58, 23, 0.2);
 }
 
 .ses-btn--ilk:hover {
   background: var(--derin);
 }
 
-/* Aç-kapa — küçük ikon düğmesi */
+/* AÃ§-kapa â€” kÃ¼Ã§Ã¼k ikon dÃ¼ÄŸmesi */
 .ses-btn--toggle,
 .ses-btn--ayarlar {
   width: 32px;
@@ -45,12 +45,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 6px rgba(38, 70, 83, 0.2);
+  box-shadow: 0 2px 6px rgba(92, 58, 23, 0.2);
 }
 
 .ses-btn--toggle,
 .ses-btn--ayarlar:hover {
-  background: white;
+  background: #fbf3dd;
 }
 
 .ses-btn--kapali {

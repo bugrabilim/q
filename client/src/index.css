@@ -1,18 +1,23 @@
-/* Queer Quest Quench — Global Stiller (v2)
-   Renk paleti: gökyüzü mavisi + deniz yeşili (canlı ton)
+/* Queer Quest Quench — Global Stiller (v3)
+   Renk paleti: sıcak piksel-art — parşömen + ahşap (Stardew havası)
    Fontlar: Lora (başlık), UI sans (gövde) — el yazısı yok */
 
 :root {
-  /* Ana renk paleti — canlı, deniz/gökyüzü teması */
-  --gokyuzu: #E8F4FB;        /* Ana arkaplan (gündüz) — açık gökyüzü */
-  --deniz-acik: #A8DADC;     /* Yüzey, kart — deniz yeşili açık */
-  --deniz: #2A9D8F;          /* Aksan, border — deniz yeşili */
-  --derin: #264653;          /* Başlık, koyu metin — derin lacivert-yeşil */
-  --gunes: #F4A261;          /* Vurgu — sıcak turuncu */
-  --gece: #1D3557;           /* Gece arkaplanı — derin gece mavisi */
-  --ayisigi: #A8DADC;        /* Gece aksanı */
+  /* Ana renk paleti — sıcak parşömen/ahşap teması (v3) */
+  --gokyuzu: #ecdcb4;        /* Ana arkaplan (gündüz) — parşömen */
+  --deniz-acik: #e8d6ad;     /* Yüzey, kart kenarı — açık ahşap/parşömen */
+  --deniz: #9a6532;          /* Aksan, border — ahşap kahve */
+  --derin: #3d2b1c;          /* Başlık, koyu metin — koyu kahve */
+  --gunes: #e0892b;          /* Vurgu — altın/güneş */
+  --gece: #2d2236;           /* Gece arkaplanı — sıcak koyu mor-kahve (v3) */
+  --ayisigi: #e2cd9f;        /* Gece aksanı — açık parşömen */
 
-  /* Grup renkleri — daha canlı */
+  /* Ahşap/parşömen yardımcıları (v3) */
+  --parsomen: #fbf3dd;       /* Açık panel zemini */
+  --ahsap: #9a6532;          /* Ahşap çerçeve */
+  --ahsap-koyu: #5c3a17;     /* Koyu ahşap — kalın kenar/gölge */
+
+  /* Grup renkleri — oyun mantığına bağlı, SABİT (dokunma) */
   --ozgurlukcu: #06A77D;     /* Canlı yeşil */
   --tarafsiz: #F4A261;       /* Altın turuncu */
   --gelenekci: #E63946;      /* Canlı kırmızı */
@@ -24,9 +29,9 @@
   --font-alinti: 'Lora', Georgia, serif;
   --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-  /* Gölgeler */
-  --golge-yumusak: 0 1px 3px rgba(38, 70, 83, 0.10);
-  --golge-orta: 0 2px 8px rgba(38, 70, 83, 0.15);
+  /* Gölgeler — piksel-art: ahşap çerçeve (ring) + sert alt gölge */
+  --golge-yumusak: 0 0 0 1px var(--ahsap), 0 2px 0 rgba(92, 58, 23, 0.18);
+  --golge-orta: 0 0 0 2px var(--ahsap), 0 5px 0 rgba(92, 58, 23, 0.22);
 }
 
 * {

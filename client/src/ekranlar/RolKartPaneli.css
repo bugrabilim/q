@@ -1,9 +1,9 @@
-/* Sürekli Rol Kart Paneli — sol kolonun alt yarısı */
+﻿/* SÃ¼rekli Rol Kart Paneli â€” sol kolonun alt yarÄ±sÄ± */
 
 .rol-kart-paneli {
   display: flex;
   flex-direction: column;
-  background: white;
+  background: #fbf3dd;
   flex: 1;
   min-height: 0;
   overflow: hidden;
@@ -14,7 +14,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 14px;
-  border-bottom: 1px solid rgba(42, 157, 143, 0.12);
+  border-bottom: 1px solid rgba(154, 101, 50, 0.12);
   background: linear-gradient(to right, white 0%, #FFF8EE 100%);
   cursor: pointer;
   flex-shrink: 0;
@@ -42,7 +42,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  background: rgba(42, 157, 143, 0.1);
+  background: rgba(154, 101, 50, 0.1);
   font-weight: 700;
 }
 
@@ -78,7 +78,7 @@
   margin-top: 10px;
 }
 
-/* v1.8 — Lobi RolPopup ile aynı tasarım (Hikaye/Oyun bölümleri + alt başlıklar) */
+/* v1.8 â€” Lobi RolPopup ile aynÄ± tasarÄ±m (Hikaye/Oyun bÃ¶lÃ¼mleri + alt baÅŸlÄ±klar) */
 .rol-kart-paneli-bolum-baslik {
   font-family: var(--font-baslik, 'Lora', serif);
   font-size: 14px;
@@ -87,7 +87,7 @@
   color: var(--deniz);
   margin: 0 0 8px;
   padding-bottom: 4px;
-  border-bottom: 1px solid rgba(42, 157, 143, 0.18);
+  border-bottom: 1px solid rgba(154, 101, 50, 0.18);
 }
 
 .rol-kart-paneli-bolum-altbaslik {
@@ -117,7 +117,7 @@
   font-family: var(--font-alinti);
   font-style: italic;
   font-size: 13.5px;
-  color: rgba(38, 70, 83, 0.85);
+  color: rgba(92, 58, 23, 0.85);
 }
 
 .rol-kart-paneli-burc {
@@ -131,11 +131,11 @@
   font-family: var(--font-alinti);
   font-style: italic;
   font-size: 13px;
-  color: rgba(38, 70, 83, 0.5);
+  color: rgba(92, 58, 23, 0.5);
 }
 
-/* v1.3 — "Diğer Roller →" butonu */
-/* v1.8 — Header'daki kompakt "Diğer Roller" butonu */
+/* v1.3 â€” "DiÄŸer Roller â†’" butonu */
+/* v1.8 â€” Header'daki kompakt "DiÄŸer Roller" butonu */
 .rol-kart-paneli-galeri-mini {
   flex-shrink: 0;
   padding: 4px 10px;
@@ -143,28 +143,28 @@
   font-size: 11px;
   font-weight: 600;
   color: var(--deniz);
-  background: rgba(168, 218, 220, 0.25);
-  border: 1px solid rgba(42, 157, 143, 0.3);
+  background: rgba(226, 205, 159, 0.25);
+  border: 1px solid rgba(154, 101, 50, 0.3);
   border-radius: 5px;
   cursor: pointer;
   white-space: nowrap;
 }
 
 .rol-kart-paneli-galeri-mini:hover {
-  background: rgba(42, 157, 143, 0.15);
+  background: rgba(154, 101, 50, 0.15);
   border-color: var(--deniz);
 }
 
 .rol-kart-paneli-baslik { cursor: pointer; }
 
-/* Eski full-width buton (artık header'da; alt sınıf bırakıldı yedek için) */
+/* Eski full-width buton (artÄ±k header'da; alt sÄ±nÄ±f bÄ±rakÄ±ldÄ± yedek iÃ§in) */
 .rol-kart-paneli-galeri-btn {
   margin-top: 14px;
   width: 100%;
   padding: 9px 12px;
-  border: 1px solid rgba(42, 157, 143, 0.3);
+  border: 1px solid rgba(154, 101, 50, 0.3);
   border-radius: 8px;
-  background: white;
+  background: #fbf3dd;
   color: var(--deniz);
   font-family: var(--font-ui);
   font-size: 13px;
@@ -174,11 +174,11 @@
 }
 
 .rol-kart-paneli-galeri-btn:hover {
-  background: rgba(42, 157, 143, 0.08);
+  background: rgba(154, 101, 50, 0.08);
   border-color: var(--deniz);
 }
 
-/* v1.3 — Galeri modal: lobi-popup-kart geniş hâli */
+/* v1.3 â€” Galeri modal: lobi-popup-kart geniÅŸ hÃ¢li */
 .rol-galeri-popup {
   max-width: 720px;
   max-height: 85vh;

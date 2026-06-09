@@ -1,0 +1,23 @@
+/* Köy Sahnesi — oyun arka plan katmanı */
+.koy-sahne {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.koy-sahne-resim,
+.koy-sahne-resim svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+/* Üstüne hafif perde — paneller/metin okunur kalsın */
+.koy-sahne-perde {
+  position: absolute;
+  inset: 0;
+  background: rgba(236, 220, 180, 0.20);
+}
+.koy-sahne--gece .koy-sahne-perde {
+  background: rgba(36, 29, 54, 0.26);
+}

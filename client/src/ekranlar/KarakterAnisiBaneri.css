@@ -1,4 +1,4 @@
-/* q — Karakter Anısı Banner stili (Aşama 3, v1.8.30+) */
+﻿/* q â€” Karakter AnÄ±sÄ± Banner stili (AÅŸama 3, v1.8.30+) */
 
 .karakter-anisi-banner {
   position: fixed;
@@ -11,7 +11,7 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   color: var(--ayisigi, #A8DADC);
-  border: 1px solid rgba(168, 218, 220, 0.28);
+  border: 1px solid rgba(226, 205, 159, 0.28);
   border-radius: 14px;
   box-shadow: 0 4px 28px rgba(0, 0, 0, 0.32);
   opacity: 0;

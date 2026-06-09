@@ -1,27 +1,27 @@
-/* Sürekli Sohbet Paneli — sağ kolon, layout içinde sabit */
+﻿/* SÃ¼rekli Sohbet Paneli â€” saÄŸ kolon, layout iÃ§inde sabit */
 
 .sohbet-paneli {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: white;
-  border-left: 1px solid rgba(42, 157, 143, 0.18);
+  background: rgba(251, 243, 221, 0.86);
+  border-left: 1px solid rgba(154, 101, 50, 0.18);
   min-width: 0;
 }
 
-/* Üst başlık */
+/* Ãœst baÅŸlÄ±k */
 .sohbet-bas {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 10px 14px;
-  border-bottom: 1px solid rgba(42, 157, 143, 0.15);
+  border-bottom: 1px solid rgba(154, 101, 50, 0.15);
   background: linear-gradient(to right, white 0%, #F5FBFA 100%);
   flex-shrink: 0;
 }
 
-/* Masaüstünde sağ üst köşedeki ⚙️ Ayarlar butonu (oyun-duzeni-sag-ust)
-   bu başlığın üstüne oturuyor — sağdan boşluk bırakıp çakışmayı önle. */
+/* MasaÃ¼stÃ¼nde saÄŸ Ã¼st kÃ¶ÅŸedeki âš™ï¸ Ayarlar butonu (oyun-duzeni-sag-ust)
+   bu baÅŸlÄ±ÄŸÄ±n Ã¼stÃ¼ne oturuyor â€” saÄŸdan boÅŸluk bÄ±rakÄ±p Ã§akÄ±ÅŸmayÄ± Ã¶nle. */
 @media (min-width: 861px) {
   .sohbet-bas {
     padding-right: 60px;
@@ -42,7 +42,7 @@
   color: var(--deniz);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  background: rgba(42, 157, 143, 0.1);
+  background: rgba(154, 101, 50, 0.1);
   padding: 3px 8px;
   border-radius: 999px;
 }
@@ -63,7 +63,7 @@
   font-family: var(--font-alinti);
   font-style: italic;
   font-size: 13px;
-  color: rgba(38, 70, 83, 0.45);
+  color: rgba(92, 58, 23, 0.45);
   padding: 16px 0;
 }
 
@@ -89,7 +89,7 @@
   font-style: italic;
   font-size: 12px;
   color: var(--deniz);
-  background: white;
+  background: #fbf3dd;
   padding: 4px 12px;
   border-radius: 999px;
   border: 1px solid var(--deniz-acik);
@@ -100,7 +100,7 @@
   font-family: var(--font-ui);
   font-size: 11px;
   font-weight: 600;
-  color: rgba(38, 70, 83, 0.6);
+  color: rgba(92, 58, 23, 0.6);
   padding: 0 8px;
   margin-bottom: 2px;
 }
@@ -110,8 +110,8 @@
 }
 
 .sohbet-mesaj-metin {
-  background: white;
-  border: 1px solid rgba(42, 157, 143, 0.18);
+  background: #fbf3dd;
+  border: 1px solid rgba(154, 101, 50, 0.18);
   border-radius: 12px;
   border-top-left-radius: 4px;
   padding: 8px 12px;
@@ -158,8 +158,8 @@
   display: flex;
   gap: 6px;
   padding: 8px 10px;
-  background: white;
-  border-top: 1px solid rgba(42, 157, 143, 0.15);
+  background: #fbf3dd;
+  border-top: 1px solid rgba(154, 101, 50, 0.15);
   flex-shrink: 0;
 }
 
@@ -167,7 +167,7 @@
   flex: 1;
   padding: 8px 12px;
   border-radius: 999px;
-  border: 1px solid rgba(42, 157, 143, 0.2);
+  border: 1px solid rgba(154, 101, 50, 0.2);
   background: var(--gokyuzu);
   color: var(--derin);
   font-size: 14px;
@@ -180,7 +180,7 @@
 }
 
 .sohbet-input::placeholder {
-  color: rgba(38, 70, 83, 0.4);
+  color: rgba(92, 58, 23, 0.4);
 }
 
 .sohbet-input:disabled {
@@ -199,7 +199,7 @@
 }
 
 .sohbet-gonder:hover:not(:disabled) {
-  background: #228679;
+  background: #834f24;
 }
 
 .sohbet-gonder:disabled {

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { socket } from '../socket.js';
+import Logo from '../Logo.jsx';
 import './AcilisEkrani.css';
 
 export default function AcilisEkrani({ onOdayaGir }) {
@@ -69,7 +70,7 @@ export default function AcilisEkrani({ onOdayaGir }) {
     <div className="acilis">
       <div className="acilis-icerik">
         <header className="acilis-baslik">
-          <h1 className="logo">Queer Quest Quench</h1>
+          <Logo />
           <p className="slogan">"Hepimiz bir şeyden kaçtık."</p>
         </header>
 

@@ -1,5 +1,5 @@
-/* Queer Quest Quench — SabahEkrani.css
-   Sıcak gündüz paleti — gokyuzu zemin, gunes vurgu */
+﻿/* Queer Quest Quench â€” SabahEkrani.css
+   SÄ±cak gÃ¼ndÃ¼z paleti â€” gokyuzu zemin, gunes vurgu */
 
 .sabah-kapsayici {
   height: 100%;
@@ -10,7 +10,7 @@
   overflow-y: auto;
 }
 
-/* Üst başlık */
+/* Ãœst baÅŸlÄ±k */
 .sabah-header {
   display: flex;
   align-items: center;
@@ -41,9 +41,9 @@
   margin-top: 4px;
 }
 
-/* Bölüm */
+/* BÃ¶lÃ¼m */
 .sabah-bolum {
-  background: white;
+  background: #fbf3dd;
   border-radius: 14px;
   padding: 18px 20px;
   margin-bottom: 16px;
@@ -101,10 +101,10 @@
   flex-shrink: 0;
 }
 
-/* Ayrılan kartı */
+/* AyrÄ±lan kartÄ± */
 .sabah-ayrilan-kart {
-  background: rgba(168, 218, 220, 0.15);
-  border: 1px solid rgba(42, 157, 143, 0.18);
+  background: rgba(226, 205, 159, 0.15);
+  border: 1px solid rgba(154, 101, 50, 0.18);
   border-radius: 10px;
   padding: 12px 14px;
   margin-bottom: 10px;
@@ -139,7 +139,7 @@
 }
 
 .sabah-ayrilan-not {
-  background: white;
+  background: #fbf3dd;
   border-radius: 8px;
   padding: 8px 12px;
   margin-top: 8px;
@@ -169,7 +169,7 @@
   padding: 4px 0;
 }
 
-/* Kişisel sabah */
+/* KiÅŸisel sabah */
 .sabah-kisisel-liste {
   list-style: none;
   display: flex;
@@ -217,7 +217,7 @@
   line-height: 1.5;
 }
 
-/* v1.5 — Madde 2: Sabah otomatik devam sayacı */
+/* v1.5 â€” Madde 2: Sabah otomatik devam sayacÄ± */
 .sabah-sayac-yazi {
   display: inline-flex;
   align-items: center;
