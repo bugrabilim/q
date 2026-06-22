@@ -59,6 +59,15 @@ export default function RolKartiEkrani({ benimIsmim, rol: rolProp = null, sonZam
   const [onayDurumu, setOnayDurumu] = useState({ onayli: 0, toplam: 0 });
   // v1.5 — Madde 1: 30 sn otomatik geçiş sayacı
   const [kalanSn, setKalanSn] = useState(null);
+  // v1.9 — 2.5D: kart kapalı gelir, dokununca 3D çevrilir
+  const [cevrildi, setCevrildi] = useState(false);   // çevirme animasyonu başladı
+  const [tamAcik, setTamAcik] = useState(false);     // animasyon bitti, kart normal akışta
+
+  function kartiCevir() {
+    if (cevrildi) return;
+    setCevrildi(true);
+    setTimeout(() => setTamAcik(true), 900); // animasyon süresi + küçük pay
+  }
 
   useEffect(() => {
     if (rolProp) setRol(rolProp); // prop sonradan da gelse güncelle
@@ -132,8 +141,34 @@ export default function RolKartiEkrani({ benimIsmim, rol: rolProp = null, sonZam
           <p className="rol-ipucu">ama bu köyde…</p>
         </div>
 
-        {/* Ana kart — v1.8 ortak tasarım (Lobi RolPopup ile aynı) */}
-        <article className="rol-kart" style={{ borderColor: grup.renk }}>
+        {/* Ana kart — v1.8 ortak tasarım (Lobi RolPopup ile aynı)
+            v1.9 — 2.5D: kapalı gelir, dokununca rotateY ile çevrilir */}
+        <div className={`rol-kart-sahne ${tamAcik ? 'rol-kart-sahne--acik' : ''}`}>
+          <div
+            className={`rol-kart-cevirici ${cevrildi ? 'rol-kart-cevirici--cevrildi' : ''}`}
+            onClick={kartiCevir}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') kartiCevir(); }}
+            role="button"
+            tabIndex={cevrildi ? -1 : 0}
+            aria-label={cevrildi ? undefined : 'Rol kartını çevir'}
+          >
+            {!tamAcik && (
+              <div className="rol-kart-yuz rol-kart-yuz--arka" aria-hidden="true">
+                <div className="rol-kart-arka-ic">
+                  <svg className="rol-kart-arka-muhur" viewBox="0 0 64 64" aria-hidden="true">
+                    <circle cx="32" cy="32" r="29" fill="#9a6532" stroke="#5c3a17" strokeWidth="3" />
+                    <circle cx="32" cy="32" r="23" fill="#fbf3dd" stroke="#cda972" strokeWidth="1.5" />
+                    <text x="32" y="44" fontFamily="Lora, Georgia, serif" fontSize="34" fontWeight="700" fontStyle="italic" fill="#5c3a17" textAnchor="middle">q</text>
+                    <path d="M 16 45 A 16 16 0 0 0 48 45" fill="none" stroke="#E63946" strokeWidth="2.4" />
+                    <path d="M 19.5 45 A 12.5 12.5 0 0 0 44.5 45" fill="none" stroke="#F4A261" strokeWidth="2.4" />
+                    <path d="M 23 45 A 9 9 0 0 0 41 45" fill="none" stroke="#06A77D" strokeWidth="2.4" />
+                  </svg>
+                  <p className="rol-kart-arka-baslik">Rolün hazır</p>
+                  <p className="rol-kart-arka-ipucu">Karta dokun, çevir</p>
+                </div>
+              </div>
+            )}
+            <article className="rol-kart rol-kart-yuz rol-kart-yuz--on" style={{ borderColor: grup.renk }}>
           <header className="rol-kart-bas">
             <div className="rol-kart-portre-sarmal">
               <KarakterPortresi
@@ -194,23 +229,27 @@ export default function RolKartiEkrani({ benimIsmim, rol: rolProp = null, sonZam
               </>
             )}
           </div>
-        </article>
-
-        {/* Alt: onay */}
-        <div className="rol-alt">
-          {!onayli ? (
-            <button className="btn btn-birincil" onClick={anladim}>
-              Anladım
-            </button>
-          ) : (
-            <div className="rol-bekleme">
-              <p className="rol-bekleme-yazi">Diğerleri okuyor…</p>
-              <p className="rol-bekleme-sayac">
-                {onayDurumu.onayli} / {onayDurumu.toplam}
-              </p>
-            </div>
-          )}
+            </article>
+          </div>
         </div>
+
+        {/* Alt: onay — kart çevrilince görünür (v1.9) */}
+        {cevrildi && (
+          <div className="rol-alt">
+            {!onayli ? (
+              <button className="btn btn-birincil" onClick={anladim}>
+                Anladım
+              </button>
+            ) : (
+              <div className="rol-bekleme">
+                <p className="rol-bekleme-yazi">Diğerleri okuyor…</p>
+                <p className="rol-bekleme-sayac">
+                  {onayDurumu.onayli} / {onayDurumu.toplam}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
