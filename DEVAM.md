@@ -24,11 +24,22 @@ Proje = **3 ayaklı IP**: 🎮 Oyun (canlı, **artık görsel kimlikli**) · �
 
 ## DEPLOY HATIRLATMA
 - Git deposu: `q-v11/` (kök DEĞİL). Push: `main` → `bugrabilim/q` → Railway otomatik deploy.
-- Master belge (`q-master-belge12.md`) ve `hikayeler/` kökte, depo dışında — commit gerektirmez.
+- Master belge artık GitHub'da: `bugrabilim/q` → `q-master-belge12.md`
+- `hikayeler/` kökte, depo dışında — commit gerektirmez.
 
 ---
 
 ## YENİ SESSION NASIL BAŞLATILIR
-1. Yeni sohbette proje klasörünü + `q-master-belge12.md`'yi aç.
+
+### Seçenek A — Dosyasız (GitHub'dan oku)
+1. Yeni sohbet aç, proje klasörü eklemene gerek yok.
+2. Şunu yaz:
+   > **"GitHub'dan master belgeyi oku: https://raw.githubusercontent.com/bugrabilim/q/main/q-master-belge12.md — nerede kaldığımızı söyle."**
+3. Claude WebFetch ile okur, özet verir.
+
+### Seçenek B — Klasörle (yerel dosya)
+1. Yeni sohbette proje klasörünü aç.
 2. Şunu yaz: **"DEVAM.md ve q-master-belge12.md'yi oku, nerede kaldığımızı söyle."**
-3. Claude kuralları: Türkçe konuş, kısa/listeli cevap ver, büyük adımdan önce onay al (detay: master Bölüm A).
+
+### Her iki seçenekte de Claude kuralları:
+Türkçe konuş, kısa/listeli cevap ver, büyük adımdan önce onay al (detay: master Bölüm A).
