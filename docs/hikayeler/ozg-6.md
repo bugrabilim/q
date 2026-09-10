@@ -1,0 +1,16 @@
+# Maya — 29, Mimar
+🟢 Özgürlükçü — Başkalarına eşik tasarlayan, kendi eşiğinde donmuş
+
+**Kısa:** Maya küçükken annesiyle camiye, babasıyla kiliseye, teyzesiyle bir cem evine gitmişti. Hiçbiri ona bir yuva olmadı. Mimari okudu, binalar tasarladı, ama içinde bir yer eksikti. Bir gün bir köy projesi yaparken kendi tasarladığı evi gördü, sonra orada yaşamak istedi.
+
+**Detaylı:**
+
+Plan çizmek, Maya'ya göre, bir karar değil bir akıstı. Kalem kağıda değer, çizgi nereye gideceğini bilir, duvar nereye oturacağını bilir, kapı nereye açılacağını bilir. O karar vermiyordu — mekân kendi kararını kendisi veriyordu. İlk büyük projesi bir kütüphaneydi; doğal ışıkla çalışan bir okuma salonu. Duvarların kalınlığını güneşin açısına göre ayarlamıştı, sabah doğudan girsin, akşam batıdan çıksın. İnsanlar o salona gelir, saatlerce otururdu. Maya da oturdu bir kez, bekledi, ışığın nasıl aktığını izledi. İçinde aradığı sessizliğin bir kopyasıydı ama aslı değildi. Mekânı tasarlamak sessizliği vermiyordu — sadece başkasına taşıyordu.
+
+Çocukluğu inanç turları gibiydi. Annesi camiye götürürdü, ramazanda orucun ağırlığı, cuma namazının sonrası. Babası kiliseye götürürdü — bir Alevi köyünden gelmişti ama bir Rum komşuyla arkadaştı, o arkadaşın vaftizinde çocuğunu tutmuştu, o günden beri o kiliseye bağlıydı. Teyzesi başka bir şehirde, cemevine götürürdü; semah, dede, müziğin içinde hareket. Maya bu üç dünyanın çocuğuydu. Hiçbirinde tam oturamıyordu — sanki her kapının önünde durur, içerisi bakışıyla tarardı, sonra bir adım geri atardı. Arkadaşları "şanslısın, istediğini seçebilirsin" derdi. Seçim ona şans değil ağırlıktı. Bir şey seçmek başka bir şeyi reddetmek demekse, seçemezdi. Reddedemezdi.
+
+Mimari ona bir dil verdi: eşikler dili. İki mekânın arasındaki o kritik geçiş — kapı söğesi, giriş holü, koridorun kırıldığı nokta. Tezinde yazmıştı: "Eşik, ne içerinin ne dışarının; ama ikisini de bilen tek noktadır." Bunu binalar için yazmıştı. Kendi hayatı için de doğruydu ama bunu yazmamıştı. İlişkilerinde cinsiyete, kimliğe, formüle bakmadı. Sadece o insanı gördü, o insanı seçti. Bazıları "Sen kararsızsın" dedi. Kararsız değildi — seçim kriterleri farklıydı. Ama kendi içsel yerini bulamıyordu. Bunu otuzuna yaklaşırken anladı: dışarıdan bir insanla doldurulamıyordu o boşluk.
+
+Köy projesi geldiğinde masasına küçük bir dosya bıraktı asistanı: organik kooperatif, sürdürülebilir konut, bir hafta alan çalışması. Maya bavulunu hazırladı. Birinci gün etrafa baktı, ikinci gün insanları dinledi, üçüncü gün küçük bir tepeye çıktı. Aşağıda evler, bahçeler, küçük bir dere; yukarıda gökyüzü. Hiçbir kitaba ait değildi o gökyüzü, hiçbir mabede ait değildi — sadece gökyüzüydü. Maya orada uzun süre oturdu ve içindeki uğultu sustu. Bir iskele gibi, inşaat bitmeden duran, beklemeye alışmış bir gürültü: sustu.
+
+Projeyi teslim etti. Ama köydeki kendi evi için küçük bir çizim sakladı — hiç müşteriye göstermedi, hiç sunum yapmadı. Sadece çizdi: küçük, doğuya bakan, eşiği geniş tutulmuş bir ev. Şimdi o evde yaşıyor. Pencereleri sabah ışığını alıyor. Hâlâ projeler yapıyor, ama her çizimde artık eşiklere daha çok yer açıyor. Geçen hafta komşu bir çocuk bahçe kapısında durdu, içeri girip girmemeye karar veremedi. Maya onu seyretti, gülümsedi. Kapıyı ne itmedi ne de koydu kapattı — sadece açık bıraktı.

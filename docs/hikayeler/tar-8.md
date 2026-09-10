@@ -1,0 +1,16 @@
+# Can — 41, Spor Salonu Sahibi
+🟡 Tarafsız — Çapkın
+
+**Kısa:** Konyaaltı sahilinin arkasındaki spor salonunun sahibi Can, yirmi yıldır turist ve yerli karması bir kalabalığa hocalık etti. Selam veren çok, ev telefonunu bilen tek yok. Kırk birinde sırtında tanımadığı bir ağrı belirdi. Doktor "bedeniniz size yeni bir dil konuşmaya başlıyor" dedi. Çantasına bir kitap koydu, kuzeye sürdü.
+
+**Detaylı:**
+
+Can yirmi yaşındayken Antalya'da bir spor salonunun resepsiyon görevlisiydi; otuz yaşında salonun ortağıydı; otuz beşinde tek sahibiydi. Konyaaltı sahiline yürüyüş mesafesindeki o iki katlı salon, yazları Rus turistlerin, kışları yerlilerin uğrak yeriydi. Akdeniz güneşi sabahın dokuzundan itibaren camlardan içeri sızar, terli vücutlarda parlardı; müzik seslerin üstüne çıktığında bile komutları duyulurdu. Müşteriler ona "hocam" derdi, hocam derken biraz daha alçaktan; el sıkışırken gözleri belleğinde saklı bir güne takılırdı. Sokağa çıktığında selam veren çok olurdu — sabah koşusunda tişört fırlatan, kasiyerin gülümsemesi, bardaki kendinizi-tanıtma ritüeli. Ama akşam eve dönüldüğünde, o büyük sükûnetin ortasında, ev telefonunu bilen bir tane bile yoktu.
+
+Bedenle fazlasıyla barışıktı, bu yüzden başkalarının bedenlerine de kolay dokundu. Kadınlarla, erkeklerle, akşam yarısı barda tanışılanlarla, sabaha karşı WhatsApp'ta bulunan numaralarla. Lara'daki rezidanslar, Kaleiçi'nin arka sokakları, Olimpos'a kaçılan hafta sonları. Her teni hatırlardı; isimleri unuturdu — isim bir bağlamdı, ten ise anlık bir gerçek. Yorgunluk değil, bir tür gelgit hissi gelirdi her sabah; sahile vuran ama hep çekilen bir dalga. Salonun aynaları o dalgayı da yansıtırdı: sabah kendine bakan adam akşam aynı bedene bir yabancı gibi bakıyordu.
+
+Kırk birinde, bir sabah ısınma setinin ortasında sırtında daha önce hiç tanımadığı bir ağrı belirdi — kısa, kibar, ama ısrarcı. Bir haftada gitti, başka bir omuzda geri geldi. Doktor ciddi bir şey söylemedi; sadece "bedeniniz size yeni bir dil konuşmaya başlıyor, dinleyin" dedi. Can o cümleyi salonun arka odasında, tek başına, üç kere tekrarladı. Aynalarla çevrili bir hayatın içinde aynayı uzun süredir gerçekten görmediğini anladı o anda — kendine bakıyordu, ama kendini görmüyordu. Salonun her duvarı ayna olan bu mekânda yirmi yıldır kaç set, kaç tekrar sayılmıştı; kaç yüz binlerce ton, kaç binlerce öğün. Sayılar vardı ama altında ne vardı?
+
+Sorgulamak alışkanlık değildi; ama o ağrı geri gelmeye devam etti. Bir akşam Konyaaltı kıyısında denizin akşam rengi gri kesildi, sahil boştu, Toros'lar arkada mor bir çizgiydi. Telefonunu kapattı. Salonu güvendiği eski bir antrenöre teslim etti, çantasına sadece terlik, bir kitap ve yıllardır okumadığı bir mektubu koydu — kimin mektubu olduğunu söylemedi kimseye, belki de kendisine de söylemedi. Antalya-Karadeniz arası yolu arabayla kesti; dağlardan geçerken pencereyi açtı, kalabalık müzik yerine rüzgâr doldu içeriye.
+
+Köye geldiğinde ilk yaptığı şey koşmamak oldu. Bir taşa oturdu — sığ bir dere sesi, uzakta bir köpek, kendi nefesi. Motor sesi yoktu, salon müziği yoktu, koteji sallanmıyordu. Kaç yıldır nefes alıyordu; ilk defa sesini duydu. Aynalar yoktu; sadece su yüzeyi vardı, derede. Can eğildi baktı. Tanıdık geldi, ilginç bir biçimde — görüntüyü tanıdı ama adresini unuttuğu biri gibi. Kendisiyle tanışmanın, belki, bu kadar sürdüğünü düşündü.

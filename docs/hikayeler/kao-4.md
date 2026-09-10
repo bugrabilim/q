@@ -1,0 +1,16 @@
+# Hakan — 38, İnşaat Müteahhidi
+⚫ Kaosçu
+
+**Kısa:** İstanbul'da otuz katlı kuleler diken Hakan, on yıl önce dedesinin köy arsasını imar geçer diye ucuza tapuladı. Aile mirasıyla birleşince beş dönüm oldu. Şirket çökünce avukatı dosyayı kapatırken eline tapu gelmiş; minibüsüne bir bavul attı, köye geldi. Hırsı sönmedi, sadece sığacak yer bulamadı.
+
+**Detaylı:**
+
+Yirmili yaşlarında küçük bir kalfa, yirmi beşinde kendi şirketi, otuzunda şehrin doğusunda üç kuleli bir site — Hakan'ın hayatı hep bir sonraki kata çıkmak üzerine kuruluydu. Esenyurt-Beylikdüzü hattında soyadı yazılı reklam panoları dikildi; gazetelerde "genç müteahhit", "yeni nesil yatırımcı", "rüzgârı arkasına aldı" başlıkları çıktı. Maslak'taki ofisine o haberleri çerçevelettirip astı; her sabah masasına otururken önce onlara bakardı. İnsanlar geri dönüp baktığında büyüme devam ediyordu — durmak geri gitmekti.
+
+Hırs, başlangıçta bir motordu; sonra bir gürültüye, sonra bir baskıya dönüştü. Daha büyük proje, daha hızlı teslim, daha geniş cephe. Bankalardan çekilen krediler birbirinin üstüne bindi. Kâğıt üzerinde her şey yerli yerindeydi; sahada çatlaklar başladı — bir taşeron parasını alamadı, bir mühendis raporu imzalamadı, bir müşteri dava açtı. Hakan bunların hepsini "küçük pürüz" diye etiketleyip masanın çekmecesine attı. Çekmece doldu, taştı. Çöküş sabahın yedisinde icrayla geldi, kapıya mühür vuruldu; öğleden sonra ortağı telefonu kapatmaya başladı; akşam karısı çocukları alıp ablasına gitti, "geçici" dedi, üç ay sonra "kalıcı" oldu.
+
+Birkaç ay Şişli'de otel odalarında, sonra Cihangir'de arkadaş kanepelerinde yattı. Avukatı dosyaları kapattığında geriye yalnızca bir şey kalmıştı: yıllar önce "imar çıkar, yol gelir" diye ucuza kapattığı bir köy arsası. Dedesinden kalan tarlayla yan yana, toplamda beş dönüm. Tapular on iki yıl boyunca çekmecede unutulmuştu. Avukat o kâğıtları uzatırken Hakan baktı ve baba evine değil bir yere gitmesi gerektiğini bildi. Minibüsüne bir bavul attı, GPS'e köyün adını yazdı — sanki yeni bir proje dosyası açıyormuş gibi.
+
+Köye geldiğinde otuz katlı kule dikmek için gelen adam, üç odalı köy evini göremedi. Ölçtü, çizdi, hesapladı. Komşunun bahçesine girdi, "burası senin değil aslında, kadastroya baktım" dedi. Muhtara üç kez gitti, her seferinde farklı proje anlattı: butik otel, kır düğünü tesisi, organik market zinciri. Muhtar her seferinde çay ikram etti, hiçbir şeye evet demedi. Hakan'ın baskısı bağırmakla değil, kaplamakla işliyordu — köy meclisinde söz alır, kimsenin kalkamayacağı kadar uzun konuşur, itiraz edeni küçümseyici bir gülümsemeyle keserdi: "abla sen merak etme, biz hallederiz."
+
+Geceleri yalnız kalır, eski telefonundaki fotoğraflara bakardı. Maslak'taki ofis duvarına astığı çerçeveler artık yoktu; ama telefon galerisinde hepsi oradaydı — iskeleler, kalıplar, henüz bitmemiş katlar, krenin gölgesi. Otuz katın yerinde şimdi üç odalı bir taş ev var; o evin yanında kendi arsası, yanı başında yabancıların tarlası. Hırs sönmedi — sadece küçük bir köyün damarlarında dolaşmaya zorlanıyor. Hakan bunu bir geçiş dönemi sanıyor. Geceleri o eski fotoğraflara bakarken bir şey soruyor kendine ama soruyu bitiremiyor, kapatıyor galeriyi, uzanıyor. Köy ise farkında olmasa da bir basıncın altında, yavaş yavaş soluğunu tutmaya başlıyor.

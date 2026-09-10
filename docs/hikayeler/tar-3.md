@@ -1,0 +1,15 @@
+# Irmak — 33, Sosyal Medya Uzmanı
+🟡 Tarafsız — Kendi Adına Susma
+
+**Kısa:** Irmak yedi yıl Londra'da, Shoreditch'teki bir ajansta küresel bir markanın sesi oldu; saatlerce başkalarının tweetlerini yazdı, başkalarının kavgalarını yumuşattı. Asıl yorgunluğu konuşmaların kendisiydi. Bir cuma akşamı ofisin camından Hackney'in ışıklarına baktı, hiçbirine başlık düşünmedi. Köye sessiz bir hesap kapama gibi taşındı.
+
+**Detaylı:**
+
+Irmak işe yeni başladığında sayfayı her sabah açmak heyecan veriyordu. Bir markanın sesi olmak demek o markanın binlerce takipçisiyle aynı anda konuşmak demekti; bu, küçük ama gerçek bir güçtü. Boğaziçi'nde sosyoloji, Londra'da yüksek lisans, Shoreditch'teki ajansa stajyer. Üç yıl içinde dört büyük hesabı yönetir oldu: bir içecek firması, bir spor giyim markası, bir kahve zinciri, bir streaming platformu. Her sabah dört ayrı tonla yazıyordu — birinde esprili, birinde resmi, birinde "genç ve dinamik", birinde "güven veren." İngilizce, Almanca, ara sıra Türkçe. Kendi sesinin hangisi olduğunu unuttuğu günler oldu. Bildirimler kesilmediğinde, farklı saat dilimlerinden gelen mesajlara gece yarısı cevap yazdığında, aylarca herkese yakınlık üretirken kimseye gerçekten yakın olmadığını hissetti — ama bu hissin adını koymaya vakti yoktu.
+
+İşin görünmez kısmı krizdi. Bir tweet yanlış anlaşıldığında New York saat farkıyla gece yarısı kalkıp yanıt yazardı. Yorumlar bölümünde küfreden insanları sakinleştirmek, hakaretleri filtreleyip ekibe geçirmek, krizlerde Slack'te dakikalar sayarak strateji kurmak. Yedi yıl boyunca insanların en bağırgan, en aceleci hâlleriyle muhatap oldu. Tatile çıktığında ilk üç gün ellerini titreyerek telefondan uzak tutmaya çalıştı, sonra çekildi. Döndüğünde gelen kutusunda iki binden fazla mesaj vardı. Hackney'deki dairesinde akşamları camdan dışarıyı izlerdi — yağmur, taksiler, sokağı dolduran tilkiler. Bunların hepsini, normalde fotoğraflayıp paylaşacağı şeyleri, sadece görmek istedi; hiçbirine başlık düşünmedi, hiçbirini "içerik" olarak işaretlemedi.
+
+Bir cuma akşamı ofisin camından dışarı baktı, birkaç dakika öyle durdu. İçinde aylardır biriken şeyin adını o an koydu: yalnızca izlemek istiyordu, konuşmak değil. Sosyal medyanın ironisi buydu — herkesi birbirine yakın gösteriyor, onu ise yıllar içinde herkes için ses üretiyor ama kendi adına bir bekleyen sohbet bırakıyordu. Gelen kutusunda okunmamış kişisel mesajlar vardı, cevap vermemişti; arkadaşlarına "çok yoğunum" demişti, bu yalnızca doğruydu. İstifa edip Londra'dan ayrıldığında kimseye veda etmedi.
+
+İstanbul'a indi, üç gün annesinde kaldı, sonra köyün yolunu tuttu. İlk gün kimseyle uzun konuşmadı. Tepelere çıktı, bir taşın üstüne oturdu, uzaktaki kavakların yapraklarının dönüşünü saatlerce izledi. Tweet düşünmedi. Bir paylaşım formatı aklına gelmedi. Akşam odasına döndüğünde telefonu prizden çekti, ekran karardı. Irmak ilk kez bir ekranın kararmasından rahatsız olmadı — tam tersi, karanın içinde bildirim sesi beklemediğini, yalnızca dinginlik duyduğunu fark etti. Kendi sesini hatırlamak için önce susmayı denemesi gerekiyordu ve köy, şimdiye kadar bulduğu en geniş sessizlikti.
+

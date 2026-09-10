@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>q — 2.5D Rol Kartı Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{--ahsap:#9a6532;--ahsap-koyu:#5c3a17;--gunes:#e0892b;--derin:#3d2b1c;--gelenekci:#E63946}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--derin);background:#ecdcb4;
+       background-image:repeating-linear-gradient(0deg,rgba(92,58,23,.02) 0 2px,transparent 2px 4px);
+       padding:26px 16px;min-height:100vh}
+  h2{font-family:'Lora',serif;color:var(--ahsap-koyu);text-align:center;font-size:21px;margin-bottom:4px}
+  .alt{text-align:center;color:#7a6347;font-size:13px;margin-bottom:8px}
+  .dokun-cagri{text-align:center;font-family:'Lora',serif;font-style:italic;font-size:16px;color:var(--gunes);font-weight:600;margin-bottom:18px}
+
+  .sira{display:flex;gap:26px;justify-content:center;align-items:flex-start;flex-wrap:wrap;max-width:1100px;margin:0 auto}
+  .adim{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .adim-etiket{background:var(--ahsap-koyu);color:#fbf3dd;font-size:12px;font-weight:700;padding:4px 12px;border-radius:14px}
+  .adim-etiket--vurgu{background:var(--gunes);color:var(--ahsap-koyu)}
+
+  .sahne{perspective:1400px;width:300px;height:430px}
+  .kart3d{position:relative;width:100%;height:100%;transform-style:preserve-3d;
+          transition:transform .85s cubic-bezier(.35,.1,.25,1)}
+  .yuz{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:16px}
+
+  .yuz--arka{
+    background:linear-gradient(160deg,#a9743b 0%,#8a5a2b 55%,#7a4e24 100%);
+    border:3px solid var(--ahsap-koyu);
+    box-shadow:inset 0 0 0 3px rgba(251,243,221,.25),inset 0 0 0 12px rgba(92,58,23,.18),0 0 0 2px var(--ahsap),0 6px 0 rgba(92,58,23,.25);
+    display:flex;align-items:center;justify-content:center;text-align:center;
+  }
+  .muhur{width:108px;height:108px;filter:drop-shadow(0 4px 0 rgba(0,0,0,.25))}
+  .arka-baslik{font-family:'Lora',serif;font-weight:600;font-size:23px;color:#fbf3dd;margin-top:12px;text-shadow:1px 2px 0 rgba(92,58,23,.6)}
+  .arka-ipucu{font-family:'Lora',serif;font-style:italic;font-size:14px;color:#f3e3c4;opacity:.85;margin-top:6px}
+
+  .yuz--on{
+    transform:rotateY(180deg);
+    background:#fbf3dd;border:2px solid var(--gelenekci);
+    box-shadow:0 0 0 2px var(--ahsap),0 5px 0 rgba(92,58,23,.22);
+    padding:20px;text-align:center;overflow:hidden;
+  }
+  .on-portre{width:92px;height:92px;border-radius:50%;margin:6px auto 10px;border:3px solid var(--ahsap-koyu);overflow:hidden;background:#e8d6ad}
+  .on-portre img{width:100%;height:100%;object-fit:cover;object-position:center top}
+  .on-grup{font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--gelenekci);text-transform:uppercase}
+  .on-ad{font-family:'Lora',serif;font-weight:600;font-size:30px;margin:4px 0 10px}
+  .on-cizgi{border-bottom:1px solid rgba(154,101,50,.25);margin:10px 0}
+  .on-kucuk{font-size:11px;font-weight:700;letter-spacing:.6px;color:var(--derin);opacity:.6;text-transform:uppercase;text-align:left}
+  .on-metin{font-size:13px;line-height:1.5;text-align:left;margin-top:3px}
+  .on-italik{font-family:'Lora',serif;font-style:italic}
+
+  .kare-0 .kart3d{transform:rotateY(0deg);transition:none}
+  .kare-1 .kart3d{transform:rotateY(68deg);transition:none}
+  .kare-2 .kart3d{transform:rotateY(180deg);transition:none}
+
+  /* İnteraktif kart */
+  #canli{cursor:pointer;-webkit-tap-highlight-color:transparent}
+  #canli.acik .kart3d{transform:rotateY(180deg)}
+  #canli .muhur{animation:salinim 2.6s ease-in-out infinite}
+  @keyframes salinim{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+
+  .dipnot{max-width:860px;margin:26px auto 0;background:#fff7e6;border:2px dashed var(--ahsap);border-radius:8px;padding:12px 16px;font-size:13px;color:#6b5640;line-height:1.5}
+</style>
+</head>
+<body>
+  <h2>q — 2.5D Rol Kartı: "dokun ve çevir"</h2>
+  <div class="alt">Rol kartı artık kapalı gelir; oyuncu dokununca 3D dönerek açılır.</div>
+  <div class="dokun-cagri">👇 En soldaki PARLAK kart canlı — DOKUN ve çevir! (tekrar dokun, geri döner)</div>
+
+  <div class="sira">
+    <!-- CANLI İNTERAKTİF KART -->
+    <div class="adim" id="canli" onclick="this.classList.toggle('acik')">
+      <span class="adim-etiket adim-etiket--vurgu">▶ DENE — DOKUN!</span>
+      <div class="sahne"><div class="kart3d">
+        <div class="yuz yuz--arka"><div>
+          <svg class="muhur" viewBox="0 0 64 64"><circle cx="32" cy="32" r="29" fill="#9a6532" stroke="#5c3a17" stroke-width="3"/><circle cx="32" cy="32" r="23" fill="#fbf3dd" stroke="#cda972" stroke-width="1.5"/><text x="32" y="44" font-family="Lora,Georgia,serif" font-size="34" font-weight="700" font-style="italic" fill="#5c3a17" text-anchor="middle">q</text><path d="M 16 45 A 16 16 0 0 0 48 45" fill="none" stroke="#E63946" stroke-width="2.4"/><path d="M 19.5 45 A 12.5 12.5 0 0 0 44.5 45" fill="none" stroke="#F4A261" stroke-width="2.4"/><path d="M 23 45 A 9 9 0 0 0 41 45" fill="none" stroke="#06A77D" stroke-width="2.4"/></svg>
+          <p class="arka-baslik">Rolün hazır</p>
+          <p class="arka-ipucu">Karta dokun, çevir</p>
+        </div></div>
+        <div class="yuz yuz--on">
+          <div class="on-portre"><img src="data:image/png;base64,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" alt="Kaan"></div>
+          <div class="on-grup">🔴 Gelenekçi</div>
+          <div class="on-ad">Homofobik</div>
+          <div class="on-cizgi"></div>
+          <div class="on-kucuk">Kim?</div>
+          <div class="on-metin"><b>Kaan</b> · 45 · Motosiklet Kurye · ♉ Boğa</div>
+          <div class="on-kucuk" style="margin-top:10px">Neden bu köye geldin?</div>
+          <div class="on-metin on-italik">"Bu insanlar köyümüzü bozdu. Burayı eskisi gibi yapmaya geldim."</div>
+          <div class="on-kucuk" style="margin-top:10px">Ne yaparsın?</div>
+          <div class="on-metin">Ekonomik Abluka — her gece 1 kişiyi köyden uzaklaştırırsın…</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- DONMUŞ 3 KARE -->
+    <div class="adim kare-0">
+      <span class="adim-etiket">1 — KAPALI GELİR</span>
+      <div class="sahne"><div class="kart3d">
+        <div class="yuz yuz--arka"><div>
+          <svg class="muhur" viewBox="0 0 64 64"><circle cx="32" cy="32" r="29" fill="#9a6532" stroke="#5c3a17" stroke-width="3"/><circle cx="32" cy="32" r="23" fill="#fbf3dd" stroke="#cda972" stroke-width="1.5"/><text x="32" y="44" font-family="Lora,Georgia,serif" font-size="34" font-weight="700" font-style="italic" fill="#5c3a17" text-anchor="middle">q</text><path d="M 16 45 A 16 16 0 0 0 48 45" fill="none" stroke="#E63946" stroke-width="2.4"/><path d="M 19.5 45 A 12.5 12.5 0 0 0 44.5 45" fill="none" stroke="#F4A261" stroke-width="2.4"/><path d="M 23 45 A 9 9 0 0 0 41 45" fill="none" stroke="#06A77D" stroke-width="2.4"/></svg>
+          <p class="arka-baslik">Rolün hazır</p>
+          <p class="arka-ipucu">Karta dokun, çevir</p>
+        </div></div>
+        <div class="yuz yuz--on"></div>
+      </div></div>
+    </div>
+
+    <div class="adim kare-1">
+      <span class="adim-etiket">2 — DÖNERKEN (3D)</span>
+      <div class="sahne"><div class="kart3d">
+        <div class="yuz yuz--arka"><div>
+          <svg class="muhur" viewBox="0 0 64 64"><circle cx="32" cy="32" r="29" fill="#9a6532" stroke="#5c3a17" stroke-width="3"/><circle cx="32" cy="32" r="23" fill="#fbf3dd" stroke="#cda972" stroke-width="1.5"/><text x="32" y="44" font-family="Lora,Georgia,serif" font-size="34" font-weight="700" font-style="italic" fill="#5c3a17" text-anchor="middle">q</text></svg>
+          <p class="arka-baslik">Rolün hazır</p>
+        </div></div>
+        <div class="yuz yuz--on"></div>
+      </div></div>
+    </div>
+
+    <div class="adim kare-2">
+      <span class="adim-etiket">3 — ROLÜN AÇILIR</span>
+      <div class="sahne"><div class="kart3d">
+        <div class="yuz yuz--arka"></div>
+        <div class="yuz yuz--on">
+          <div class="on-portre"><img src="data:image/png;base64,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" alt="Kaan"></div>
+          <div class="on-grup">🔴 Gelenekçi</div>
+          <div class="on-ad">Homofobik</div>
+          <div class="on-cizgi"></div>
+          <div class="on-kucuk">Kim?</div>
+          <div class="on-metin"><b>Kaan</b> · 45 · Motosiklet Kurye · ♉ Boğa</div>
+          <div class="on-kucuk" style="margin-top:10px">Neden bu köye geldin?</div>
+          <div class="on-metin on-italik">"Bu insanlar köyümüzü bozdu. Burayı eskisi gibi yapmaya geldim."</div>
+          <div class="on-kucuk" style="margin-top:10px">Ne yaparsın?</div>
+          <div class="on-metin">Ekonomik Abluka — her gece 1 kişiyi köyden uzaklaştırırsın…</div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="dipnot"><b>Gerçek oyunda hazır:</b> Bu mekanik rol dağıtımı ekranına eklendi ve local'de test edildi — kart kapalı gelir, dokununca döner, "Anladım" butonu ancak kart çevrilince görünür. Onaylarsan canlıya göndeririz.</div>
+</body>
+</html>

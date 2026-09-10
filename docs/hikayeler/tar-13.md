@@ -1,0 +1,14 @@
+# Nehir — 28, UX Tasarımcı
+🟡 Tarafsız — Lovebuddy
+
+**Kısa:** Nehir, Alsancak'taki bir teknoparka beş yıl boyunca aynı laptopla gidip geldi; her sohbette karşısındakinin "bilişsel yükünü" hesaplamayı bir refleks haline getirdi. Aşka da öyle baktı: akış, çıkış noktası, sürtünme alanı. Bir sevgilisi "beni A/B test ediyorsun" dediğinde haksız olmadığını anladı. Köye yorgun ama meraklı geldi.
+
+**Detaylı:**
+
+Gönderilmemiş mesaj dosyası her ay büyüdü. Telefonunun Taslaklar klasörü bir kullanıcı akışı haritasına benziyordu artık: başlanan ama gönderilmeden bırakılan cümleler, düzeltilmiş ama silinmiş kelimeler, sürtünme noktasında vazgeçilen açıklamalar. Tasarım dilini öğrendiğinden beri her şey bu dile dönüşüyordu — sevgiliye yazılan mesaj bile bir metin prototipine dönüşüyordu; göndermeden önce bir kere daha okunuyor, "kullanıcı bunu nasıl alır" sorusuyla gözden geçiliyor ve çoğu zaman Taslaklar'da kalıyordu.
+
+UX'e başladığında onu çeken şey empati kullanmaktı — birinin gününü kolaylaştırmak, doğru anda doğru bilgiyi sunmak. Bornova'da bilgisayar mühendisliği okumuştu, mezun olunca Alsancak'a geçti, küçük bir stüdyoda yabancı müşterilere tasarım yaptı. Beş yılda bu empati bir refleks haline geldi. Her sohbette bilişsel yük hesaplıyordu — "bunu söylersem fazla mı bilgi olur, şu kelimeyi kullansam yük azalır mı." Aşka da böyle baktı: ilişkinin akışı, çıkış noktaları, sürtünme alanları. Bir sevgilisi "beni A/B test ediyorsun" dediğinde kalbi acıdı ama haklı olduğunu da biliyordu. Her ilişki bir wireframe olmuştu — duygular gönderilmeden önce bir kere daha onaylanması gereken bir kopya.
+
+Prototip mantığı ilerledi, ilerledi, o Cumartesi sabahına kadar. Çaydanlığın kaynadığını izlerken bir an "ne kadar sürede kaynıyor, optimal mi" diye düşündüğünü fark etti. Çaydanlığı ocaktan aldı, kanepeye oturdu, iki saat hiçbir şey yapmadan kaldı — bunu son ne zaman yapmıştı, hatırlayamadı. O iki saatte bir cümle netleşti: başkalarının gününü tasarlıyor, kendiminkini değil. Telefonu açtı, Taslaklar klasörünü buldu — yüzden fazla gönderilmemiş mesaj. Silmedi. Köy ilanını orada açtı; aylardır şifreli bir not gibi duruyordu klasörün dibinde.
+
+Köye ilk hafta planlı tasarım yapmaktan kaçındı: yemeği yanık, yolu yanlış, sözü kaba bıraktı. Hepsinde bir miktar rahatlama vardı — kusur bir sürtünme değil, sadece bir olayın kendisiydi. İkinci hafta komşu kadına bahçede bir şey gösterirken farkında olmadan eski mesleğine döndü — adımları sırayla anlatıyor, bilişsel yükü azaltmaya çalışıyordu. Kadın gülerek "Otur birlikte yapalım" dedi. Nehir içinden o cümleyi tekrarladı. Eldivenleri aldı, çömeldi. Taslaklar klasörüne o gece baktı, bir mesaj seçti, gönderdi — düzeltmeden, ikinci okumadan, optimal mi diye sormadan. Karşı taraftan "iyi ki yazdın" geldi. Bunu bir kullanıcı deneyimi olarak not etmedi; sadece hissetti.

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.5D Rol Kartı Çevirme — Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{--ahsap:#9a6532;--ahsap-koyu:#5c3a17;--gunes:#e0892b;--derin:#3d2b1c;--gelenekci:#E63946}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--derin);background:#ecdcb4;
+       background-image:repeating-linear-gradient(0deg,rgba(92,58,23,.02) 0 2px,transparent 2px 4px);padding:26px 18px}
+  h2{font-family:'Lora',serif;color:var(--ahsap-koyu);text-align:center;font-size:21px;margin-bottom:4px}
+  .alt{text-align:center;color:#7a6347;font-size:13px;margin-bottom:24px}
+  .sira{display:flex;gap:26px;justify-content:center;align-items:flex-start;flex-wrap:wrap;max-width:1100px;margin:0 auto}
+  .adim{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .adim-etiket{background:var(--ahsap-koyu);color:#fbf3dd;font-size:12px;font-weight:700;padding:4px 12px;border-radius:14px}
+
+  .sahne{perspective:1400px;width:300px;height:430px}
+  .kart3d{position:relative;width:100%;height:100%;transform-style:preserve-3d}
+  .yuz{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:16px}
+
+  /* ARKA YÜZ — kapalı kart */
+  .yuz--arka{
+    background:linear-gradient(160deg,#a9743b 0%,#8a5a2b 55%,#7a4e24 100%);
+    border:3px solid var(--ahsap-koyu);
+    box-shadow:inset 0 0 0 3px rgba(251,243,221,.25),inset 0 0 0 12px rgba(92,58,23,.18),0 0 0 2px var(--ahsap),0 6px 0 rgba(92,58,23,.25);
+    display:flex;align-items:center;justify-content:center;text-align:center;
+  }
+  .muhur{width:108px;height:108px;filter:drop-shadow(0 4px 0 rgba(0,0,0,.25))}
+  .arka-baslik{font-family:'Lora',serif;font-weight:600;font-size:23px;color:#fbf3dd;margin-top:12px;text-shadow:1px 2px 0 rgba(92,58,23,.6)}
+  .arka-ipucu{font-family:'Lora',serif;font-style:italic;font-size:14px;color:#f3e3c4;opacity:.85;margin-top:6px}
+
+  /* ÖN YÜZ — rol kartı */
+  .yuz--on{
+    transform:rotateY(180deg);
+    background:#fbf3dd;border:2px solid var(--gelenekci);
+    box-shadow:0 0 0 2px var(--ahsap),0 5px 0 rgba(92,58,23,.22);
+    padding:20px;text-align:center;overflow:hidden;
+  }
+  .on-portre{width:92px;height:92px;border-radius:50%;margin:6px auto 10px;border:3px solid var(--ahsap-koyu);overflow:hidden;background:#e8d6ad}
+  .on-portre img{width:100%;height:100%;object-fit:cover;object-position:center top}
+  .on-grup{font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--gelenekci);text-transform:uppercase}
+  .on-ad{font-family:'Lora',serif;font-weight:600;font-size:30px;margin:4px 0 10px}
+  .on-cizgi{border-bottom:1px solid rgba(154,101,50,.25);margin:10px 0}
+  .on-kucuk{font-size:11px;font-weight:700;letter-spacing:.6px;color:var(--derin);opacity:.6;text-transform:uppercase;text-align:left}
+  .on-metin{font-size:13px;line-height:1.5;text-align:left;margin-top:3px}
+  .on-italik{font-family:'Lora',serif;font-style:italic}
+
+  /* Donmuş kareler */
+  .kare-0 .kart3d{transform:rotateY(0deg)}
+  .kare-1 .kart3d{transform:rotateY(68deg)}
+  .kare-2 .kart3d{transform:rotateY(180deg)}
+
+
+  .dipnot{max-width:860px;margin:26px auto 0;background:#fff7e6;border:2px dashed var(--ahsap);border-radius:8px;padding:12px 16px;font-size:13px;color:#6b5640;line-height:1.5}
+</style>
+</head>
+<body>
+  <h2>2.5D Rol Kartı — "dokun ve çevir"</h2>
+  <div class="alt">Rol kartı artık kapalı gelir; oyuncu dokununca 3D dönerek açılır. Aşağıda animasyonun 3 anı:</div>
+
+  <div class="sira">
+    <div class="adim kare-0">
+      <span class="adim-etiket">1 — KAPALI GELİR</span>
+      <div class="sahne"><div class="kart3d">
+        <div class="yuz yuz--arka"><div>
+          <svg class="muhur" viewBox="0 0 64 64"><circle cx="32" cy="32" r="29" fill="#9a6532" stroke="#5c3a17" stroke-width="3"/><circle cx="32" cy="32" r="23" fill="#fbf3dd" stroke="#cda972" stroke-width="1.5"/><text x="32" y="44" font-family="Lora,Georgia,serif" font-size="34" font-weight="700" font-style="italic" fill="#5c3a17" text-anchor="middle">q</text><path d="M 16 45 A 16 16 0 0 0 48 45" fill="none" stroke="#E63946" stroke-width="2.4"/><path d="M 19.5 45 A 12.5 12.5 0 0 0 44.5 45" fill="none" stroke="#F4A261" stroke-width="2.4"/><path d="M 23 45 A 9 9 0 0 0 41 45" fill="none" stroke="#06A77D" stroke-width="2.4"/></svg>
+          <p class="arka-baslik">Rolün hazır</p>
+          <p class="arka-ipucu">Karta dokun, çevir</p>
+        </div></div>
+        <div class="yuz yuz--on"></div>
+      </div></div>
+    </div>
+
+    <div class="adim kare-1">
+      <span class="adim-etiket">2 — DOKUNUNCA DÖNER</span>
+      <div class="sahne"><div class="kart3d">
+        <div class="yuz yuz--arka"><div>
+          <svg class="muhur" viewBox="0 0 64 64"><circle cx="32" cy="32" r="29" fill="#9a6532" stroke="#5c3a17" stroke-width="3"/><circle cx="32" cy="32" r="23" fill="#fbf3dd" stroke="#cda972" stroke-width="1.5"/><text x="32" y="44" font-family="Lora,Georgia,serif" font-size="34" font-weight="700" font-style="italic" fill="#5c3a17" text-anchor="middle">q</text><path d="M 16 45 A 16 16 0 0 0 48 45" fill="none" stroke="#E63946" stroke-width="2.4"/><path d="M 19.5 45 A 12.5 12.5 0 0 0 44.5 45" fill="none" stroke="#F4A261" stroke-width="2.4"/><path d="M 23 45 A 9 9 0 0 0 41 45" fill="none" stroke="#06A77D" stroke-width="2.4"/></svg>
+          <p class="arka-baslik">Rolün hazır</p>
+          <p class="arka-ipucu">Karta dokun, çevir</p>
+        </div></div>
+        <div class="yuz yuz--on"></div>
+      </div></div>
+    </div>
+
+    <div class="adim kare-2">
+      <span class="adim-etiket">3 — ROLÜN AÇILIR</span>
+      <div class="sahne"><div class="kart3d">
+        <div class="yuz yuz--arka"></div>
+        <div class="yuz yuz--on">
+          <div class="on-portre"><img src="karakterler/kaan.png" alt=""></div>
+          <div class="on-grup">🔴 Gelenekçi</div>
+          <div class="on-ad">Homofobik</div>
+          <div class="on-cizgi"></div>
+          <div class="on-kucuk">Kim?</div>
+          <div class="on-metin"><b>Kaan</b> · 45 · Motosiklet Kurye · ♉ Boğa</div>
+          <div class="on-kucuk" style="margin-top:10px">Neden bu köye geldin?</div>
+          <div class="on-metin on-italik">"Bu insanlar köyümüzü bozdu. Burayı eskisi gibi yapmaya geldim."</div>
+          <div class="on-kucuk" style="margin-top:10px">Ne yaparsın?</div>
+          <div class="on-metin">Ekonomik Abluka — her gece 1 kişiyi köyden uzaklaştırırsın…</div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+
+  <div class="dipnot"><b>Gerçek oyunda:</b> bu mekanik rol dağıtımı ekranına eklendi ve test edildi — kart kapalı gelir, "Anladım" butonu ancak kart çevrilince görünür. Aynı yüz tasarımı (ahşap arka + madalyon mühür) kullanılır; ön yüz oyuncunun gerçek rol kartıdır.</div>
+</body>
+</html>

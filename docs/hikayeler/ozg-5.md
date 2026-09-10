@@ -1,0 +1,16 @@
+# Baran — 30, Biyolog
+🟢 Özgürlükçü — Doğanın sınıflandırma reddettiğini bilen, kendini sınıflandıranlar arasında büyüyen
+
+**Kısa:** Baran doğduğunda doktorlar bir karar verdiler — Baran'ın bedenine danışmadan. Otuz yıl boyunca o kararla yaşadı. Bornova'daki üniversitenin gelişim biyolojisi laboratuvarında, doğanın insandan çok daha geniş olduğunu öğrendi. Bir sabah kordonda yürürken mikroskobunu kapatma kararını verdi; üç gün sonra istifa dilekçesini yazdı.
+
+**Detaylı:**
+
+Biyoloji lisansının birinci yılında sınıflandırma dersini öğretti profesör: Alem, Şube, Sınıf, Takım, Aile, Cins, Tür. Bir hiyerarşi, bir kafes — her canlı tam yerine konulacaktı. Baran not aldı, sınavı geçti, ama aklının bir köşesinde o kafes hep biraz dar kaldı. İkinci yılda doğanın bu hiyerarşiyi her nesilde biraz kırdığını gördü: hibridler, polimorfizmler, eşeysiz üreyen türler, hermafroditler. Lisans tezi interseks balıklar üzerineydi — laboratuvarda mikroskopta bakarken bazen durur, içini çekerdi. Kimse neden durduğunu sormadı.
+
+Annesi küçükken "Sen özelsin" derdi. Baran on dört yaşında tavan arasındaki kartonu açtı; içinde hastane raporları, cerrahi bir not, küçük bir bebeğin fotoğrafı. Anladı. Anladıktan sonra hiç sormadı — sorular bir kez çıkınca geri alınamazdı. Ailesinin gizlediği şeyi gizlemeye devam etti, ama bu sefer gizlediğini biliyordu. Biyoloji okumak bilinçli bir seçim değildi belki, ama sonradan baktığında anlam kazanıyordu: doğa ona haksızlık etmemişti. İnsanlar etmişti.
+
+Laboratuvar sığınaktı. Ege Üniversitesi'nin Bornova kampüsünde aynı taş bloğun arka kapısından girdi yıllarca; koridorlar hep aynı koku, aynı soğukluk, aynı floresan tık-tık. Mikroskopun başında oturduğunda hücreler kavga etmiyordu, hücreler "Sen ne tarafsın?" diye sormuyordu. Sadece var oluyorlardı, ürüyorlardı, döngülerine devam ediyorlardı. Baran bu döngünün içinde huzurluydu. Başını kaldırdığında dünya yine aynıydı — kantinde "evlilik ne zaman" şakaları, ailesinin uzaktan endişeleri, kendi bedeninde hâlâ taşıdığı o eski karar. Karar ondan önce verilmişti. Bedeni onu sormadan.
+
+İki yıl önce başka bir interseksüel kişinin yazdığı bir makaleye denk geldi — akademik değil, kişisel. Bir yetişkinin, doktorlara verilmemiş bir gencin hikayesini anlatıyordu. Baran o yazıyı üç kez okudu, sonra ağladı. Otuz yaşında, ofisinde, bilgisayar başında ağladı. Öfke değildi, hüzün de tam değildi — bir yas. Kendi bebeğine yas, hiç sorulmadan değiştirilmiş bir bedene yas. Yas tutmak iyi geldi. Ertesi sabah kalktığında biraz daha ağır ama biraz daha gerçek hissetti kendini.
+
+Alsancak'taki sempozyumda bir kadınla tanıştı. Köyde küçük bir botanik bahçesinden söz etti — gönüllüye ihtiyaçları vardı. Baran o gün kordon boyunca yürüdü: deniz gri, vapurlar ufukta, ayaklarının altında taş. "Ben gelirim," dedi telefonda. Üç ay düşünmedi, üç saatte verdi kararı. Laboratuvarı bıraktı, dairesini boşalttı, biletini aldı. Bahçede çalışırken bir gün bitkileri sınıflandırmaya başladı ve durdu: hint inciri ne kadar tam bir hint inciriydi, o gül ne kadar tam bir gül? Her biri eksiksiz, her biri kendine özgü, hiçbiri sormadan var oluyordu. Belki bir gün bedeniyle daha derin bir konuşma yapacak. Belki yapmayacak. Ama bu kez karar onun olacak — ve bu fark, bahçedeki toprağın ısısı kadar gerçekti.

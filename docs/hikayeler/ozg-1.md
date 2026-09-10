@@ -1,0 +1,16 @@
+# Deniz — 25, İK Uzmanı
+🟢 Özgürlükçü — Hoş geldin diyemeyen oryantasyon uzmanı
+
+**Kısa:** Çankaya'daki ofisin penceresinden Atakule'nin tepesi görünürdü; Deniz her sabah o tepeye değil, ekranındaki mülakat takvimine bakardı. Beş yıldır aynı maskeyi taktığını çok geç fark etti. Bir Pazar kahvaltısında teyzesi "utandırıyorsun bizi" dediğinde, çatalı bıraktı. Hafta sonu valizini topladı.
+
+**Detaylı:**
+
+Deniz sabahlarını hep aynı şekilde başlatırdı: bilgisayarı açmadan önce masanın üstündeki küçük yapışkanlı kağıda bakmak. Üzerinde kaç mülakatın yapıldığı, kaç kişinin kabul edildiği, kaç kişinin ilk hafta "uyum sağladığı" yazardı. İK Uzmanı olarak Çankaya'daki ofiste beş yıl geçirmiş, yüzlerce insana eşliğini kâğıda tutmuştu. Birini işe alırken şirkete yazdığı formlarda hep aynı kelime çıkardı: "uyumlu." Uyumlu mühendis. Uyumlu pazarlama uzmanı. Uyumlu eleman. Deniz "uyumlu" kelimesinin ne anlama geldiğini bilirdi — zira bizzat prova yapmıştı, yıllarca, her sabah.
+
+İlk işe başladığında amiri ona oryantasyon sürecinin önemini anlatmıştı. "İlk gün çok kritik, insanlar kendilerini evlerinde hissettirmeli." Deniz buna inanmıştı. Her yeni çalışan için kişiselleştirilmiş bir karşılama paketi hazırlar, masa başına taze bir bitki koyar, ismin doğru telaffuzunu öğrenir ve gülümserek yönlendirirdi. "Hoş geldiniz, burada kendiniz olabilirsiniz," derdi. Bunu otuz iki farklı kişiye demişti. Otuz iki kez kastetmeden söylemişti. Kendisi beş yıl boyunca o ofiste yabancı gibi oturmuş, kendi masasında kendi oryantasyonunu beklemişti — ama kimse gelmemişti.
+
+Kızılay'da büyümek, Ankara'nın gri katiplik havasında "uygun çocuk" olarak yetişmek demekti. Bayram sofralarında yedi teyze, dört amca, sayısız kuzen. "Şu yaşa geldin, sen neden hâlâ böylesin?" sorusu değişmeden tekrar ediyordu. Annesi mutfağa kaçar, babası gözünü tabağa diker, Deniz cevap yerine çayını yudumlardı. Ofiste de benzerdi — bir kolektif suskunluk, hiçbir şeyi doğrudan söylememe geleneği, herkesin birbirinin halini gördüğü hâlde görmezden geldiği o Ankara ritmi. Deniz bu ritme o kadar alışmıştı ki artık şarkısını söyleyemez olmuştu — ritim onu soluklandırıyor, o da ritme ayak uyduruyordu.
+
+Bir Pazar kahvaltısıydı; halasının Bahçelievler'deki evi her zamanki gibi bayram kalabalığıyla doluydu. Teyzesi o sabah beklediğinden fazlasını söyledi: "Sen utandırıyorsun bizi." Deniz çatalını tabağa bıraktı — ne sert ne de yavaş, tam da öyle bir bırakıştı bu. Başını kaldırmadı, cevap vermedi. İçinde bir şeyin son kez gerilip koptuğunu hissetti, ama kimse fark etmedi. Eve döndüğünde gardırobu açtı: yıllardır "kabul edilebilir" diye astığı gömlekler sıralanmıştı. En alta koyduğu rahat sweatshirt'ü en üste aldı. Hafta sonu valizini topladı. Küçük bavuldu; hayatı da öyle küçülmüştü işte.
+
+Köye ilk sabah vardığında uyandı, güneş hâlâ alçaktaydı. Yataktan çıkmadı hemen. Tavanı izledi — alçıpan değil ahşap kirişler, çatlaksız, düz. Avluya indi, çayını aldı. Kimse onu test etmedi. Bir komşu kadın geçerken sadece "günaydın" dedi, yürümeye devam etti. Deniz o günaydının nasıl bir şey olduğunu o an tam kavrayamadı — teşekkür de beklemiyordu, açıklama da, gülümseme de. Sadece sabahı teslim edip geçti. Deniz çayı soğuyuncaya kadar oturdu, avludaki incir ağacının yapraklarını izledi. O sabah kendisi için tek bir oryantasyon cümlesi düşündü, sessizce, içinden: hoş geldin.

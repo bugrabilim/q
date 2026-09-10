@@ -1,0 +1,14 @@
+# Beren — 32, Psikoterapist
+🟡 Tarafsız — Mazoşist
+
+**Kısa:** Adana'da, Seyhan'ın bir özel kliniğinde sekiz yıl başkalarının ağırlığını taşıdı. Güney sıcağı duvarları, danışanların cümleleri kendisini ısıttı. Bir cumartesi sabahı bir danışanının çocukluğuna ait cümlenin kendi uykusunda dolaştığını fark etti. Sessizliği duyabilmek için köye geldi.
+
+**Detaylı:**
+
+Her seans saat doksanla başlardı ve doksanla biterdi — duvarın saati tıklamaz, titreşirdi; Beren o titreşimi kliniğin masasına koyduğu bardağın suyundan okurdu. Klinik Seyhan'ın orta yerindeydi, bekleme odası küçüktü, klima sesi bir süre sonra fark edilmez olurdu. Yaz aylarında Adana'nın sıcağı camı kirletir, danışanlar terli gelir, koltukta biraz daha derin otururlardı — ağırlık hem havada hem sözlerdeydi. Beren sekiz yıl boyunca her seansta kapıyı açan kişi oldu ve kapıyı kapatan da. Aradaki doksan dakika başkasına aitti; dokuz dakikalık aralar ise su içmeye, nefes almaya, bir sonraki dosyaya geçmeye.
+
+Terapist olmak için empatiden fazlasını öğrenmişti: nerede susacağını, soruyu ne zaman askıda bırakacağını, acının hangi kıvrımında konuşmak yerine sadece bakmak gerektiğini. Ama hiç öğrenemediği şey empatinin nerede bittiğini ve kendisinin nerede başladığını ayırt etmekti. Sekiz yıl boyunca her akşam eve geldiğinde başkasının o günkü hikâyesinin sedimenti üstünde oturuyordu — bu birikim görünmüyordu, ama birikiyordu. Süpervizörüne söylediğinde adam güldü: "Hepimizin sorunu bu." Beren not aldı, ama kendini inandıramadı.
+
+Bir cumartesi sabahı uykusunda tanımadığı bir çocukluk anısı dolaşıyordu — ve anıyı önce kendi sanıp şaşırdı, sonra danışanın hangi seansına ait olduğunu buldu. Başkasının rüyası kendi uykusuna sızmıştı. Süpervizörüne söyledi bu sefer; adam güldü yine ama sonra ciddi baktı: "Sen başkalarının odasında çok uzun kaldın, Beren. Kendi odanı boş bırakmışsın." Bu cümleyi defterine yazmadı — çünkü artık not almak istemiyordu. Hastalarını yavaş yavaş, herkesin onurunu koruyarak, ortağına ve diğer meslektaşlarına aktardı. Son seansta kapıyı kapatırken kilidin sesi ona bir şey gibi geldi — iyilik gibi, değil de dürüstlük gibi.
+
+Köyün adını yıllar önce bir danışan söylemişti, geçerken, başka bir şeyden bahsederken. Beren o cümleyi unutmamış. Yola çıkarken yanına ne aldı, sonradan hatırlayamayacaktı — sadece geride bıraktıklarını biliyordu: yedi yıllık seans defteri, bekleme odasının duvar saati, oturduğu koltuğun yıpranmış kolçağı. Seyhan Nehri'nin kıyısında yürüyüş yapma alışkanlığını bırakmadı; köyde de bir su kenarı vardı, daha dar ama daha sessiz. Köyde ilk hafta köy ebesinin yanında bir bebeğin doğumuna tanık oldu; ebe ona "Sen sus, sadece ellerini hazır tut" dedi. Beren iki saat boyunca tek bir yorum yapmadan birinin gözüne baktı. Eve döndüğünde sekiz yıldır ilk kez "dinleyen" olmadan, yalnızca "yanında olan" olarak yorulduğunu hissetti — ve bu yorgunluk, divanın kolçağına yayılmış değil, kendi içinde oturuyordu.

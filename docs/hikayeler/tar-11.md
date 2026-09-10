@@ -1,0 +1,14 @@
+# Ekin — 31, Çevirmen
+🟡 Tarafsız — Poliamorist
+
+**Kısa:** Ekin sekiz yıl Viyana'da bir UN ajansında Türkçe-Almanca-İngilizce arasında metin taşıdı. Wieden'deki apartmandaki üç ayrı odadan üç ayrı insan onu bekliyordu, üçüne de farklı tonlamayla "merhaba" diyordu. Bir akşam yatağa uzandığında hangi dilde düşündüğünü hatırlayamadı. Sözlüklerini tavan arasına koymak için köye geldi.
+
+**Detaylı:**
+
+Çevrilemez kelimeler meselesini ilk kez master tezinde ele almıştı Ekin — Portekizce "saudade", Japonca "mono no aware", Almanca "Weltschmerz". Hepsinin ortak yanı, taşındıkları dilin ruhunu bünyesinde barındırmasıydı; çevirmek bu ruhu söküp başka bir toprağa dikmekti, ve bir şeyler her zaman yolda kalırdı. Boğaziçi'nden Viyana Üniversitesi'ne geçişi de böyle bir çeviri gibiydi — kendisinden bir şeyler yolda kaldı, nerede tam bilemedi. BM ajansında sekiz yıl boyunca sabah hukuk, öğle tıp, akşam siyaset çevirdi; her gün bambaşka bir insanın kafasının içinden geçti, çıktığında kendi kafasını yerinde bulmakta gecikmeler yaşandı.
+
+Wieden'deki dairenin üç ayrı odasından üç ayrı insan bekliyordu: biriyle iki yıllık, bilinen, adı konmuş bir bağ; ikincisiyle bir buçuk yıllık, sahne arkasında tanışılmış, sessiz buluşmalar dizisi; üçüncüsüyle yarım yıllık, dilini yeni öğrenen biri gibi aceleli, her cümlesi biraz ham. Üçü de poliamori kelimesini biliyordu, üçü de razıydı. Sorun razılık değildi. Sorun şuydu: Ekin her birine farklı bir tonlamayla "merhaba" diyordu ve bu fark artık kasıtlı değil, yorgunluktu — çevirmenin değil, çevrilen metnin yorgunluğu. Sevinç Almancasını kaybetti, üzüntü Türkçesine sığmadı; aşk ise hiçbir dilde tam oturmuyordu.
+
+Yıllardır yaşadığı şeyi anlatan bir kelime de yoktu sözlüklerde — ne tam birliktelik, ne tam yalnızlık; üç insanın arasında bir o kadar anlam, ama hiçbirinde tam karşılık. Viyana'da bir kelime daha öğrendi, Avusturya argosundan: "zwischen" — arasında. Kendisini giderek daha çok bu kelimenin içinde buldu. Naschmarkt'ta bir Pazar günü bir tezgâhçıya Türkçe "kaç" dedi, adam "wie viel" anladı; Ekin gülmedi. Eve döndü, biletini açtı.
+
+Köye geldiğinde ilk yaptığı şey sözlüklerini bir sandığa koymak oldu — Türkçe-Almanca, Almanca-İngilizce, İngilizce-Türkçe, üstünde yıllarca çalışılan tematik lügatler. Kapağı kapandığında sandık ağır geldi, omuzları hafifledi. Burada da insanlar var, burada da yakınlık var — belki yine birden fazlası olacak, belki tek birisi, belki hiçbirisi; ama artık her bağın başka bir dilde kurulması, başka bir biçime çevrilmesi, yolda hiçbir şey kaybetmeden teslim edilmesi gerekmiyor. Geçen hafta üç komşusuyla aynı sofrada yemek yedi; üçü de farklı şeyler anlatıyordu, Ekin sadece dinledi — hiçbirini bir başkasına aktarmak zorunda kalmadan. Bu yorgun olmayan dinlemenin tadını, sözlüklerin kapağını kapattığı günden bu yana taşıyor. "Arasında" olmak hâlâ gerçek; ama artık kayıp gibi değil, seçim gibi hissettiriyor.
